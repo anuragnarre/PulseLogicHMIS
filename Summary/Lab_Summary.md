@@ -1,0 +1,199 @@
+# Lab Module Summary
+
+## Backend Implementation
+**Directory**: `Code/Websites/PulseLogicHMR/Controllers/Lab`
+
+### API Endpoints
+- **HTTPGET** `GetAllImuTestList` (Method: `GetAllImuTestList`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPOST** `PostDataToIMU` (Method: `PostDataToIMU`)
+- **HTTPPUT** `Put` (Method: `Put`)
+- **HTTPDELETE** `Delete` (Method: `Delete`)
+- **HTTPGET** `WorkList` (Method: `GetLabWorkList`)
+- **HTTPGET** `PatientNotFinalizedTests` (Method: `PatientNotFinalizedTests`)
+- **HTTPGET** `Requisition/SamplePending` (Method: `LabRequisitions`)
+- **HTTPGET** `Requisition/PatientSamplePending` (Method: `PatientSamplePending`)
+- **HTTPGET** `LatestSampleCode` (Method: `LatestSampleCode`)
+- **HTTPGET** `IsSampleCodeValid` (Method: `IsSampleCodeValid`)
+- **HTTPGET** `LabWorkList` (Method: `LabWorkList`)
+- **HTTPGET** `Result/Pending` (Method: `PendingLabResults`)
+- **HTTPGET** `Report/Pending` (Method: `PendingLabReport`)
+- **HTTPGET** `Report/Finalized` (Method: `LabReportForReportDispatch`)
+- **HTTPGET** `PatientListForReportDispatch` (Method: `PatientListForReportDispatch`)
+- **HTTPGET** `PatientListForFinalReport` (Method: `PatientListForFinalReport`)
+- **HTTPGET** `LabDataByBarcodeNumber` (Method: `LabDataByBarcodeNumber`)
+- **HTTPGET** `LabDataByRunNumber` (Method: `LabDataByRunNumber`)
+- **HTTPGET** `LabDataByPatientId` (Method: `LabDataByPatientId`)
+- **HTTPGET** `LabReportByRequisitionIds` (Method: `LabReportByRequisitionIds`)
+- **HTTPGET** `ReportDispatch/LabReportByRequisitionIds` (Method: `LabReportByRequisitionIdsForReportDispatch`)
+- **HTTPGET** `LabReportTemplates` (Method: `GetLabReportTemplates`)
+- **HTTPGET** `LabResultsByVisitId` (Method: `GetLabResultsByVisitId`)
+- **HTTPGET** `LabRequisitionsByVisitId` (Method: `GetLabRequisitionsByVisitId`)
+- **HTTPGET** `LabResultsByPatientId` (Method: `GetLabResultsByPatientId`)
+- **HTTPGET** `LabTests` (Method: `LabTests`)
+- **HTTPGET** `Requisition/LabSpecimen` (Method: `GetSpecimen`)
+- **HTTPGET** `RequisitionsByRequisitionIds` (Method: `RequisitionsByRequisitionIds`)
+- **HTTPGET** `RequisitionsForExternalLab` (Method: `GetReqiusitionsForExternalLab`)
+- **HTTPGET** `RequisitionsSentToExternalLab` (Method: `RequisitionsSentToExternalLab`)
+- **HTTPGET** `LabCategories` (Method: `GetLabCategories`)
+- **HTTPGET** `LabTypes` (Method: `GetLabTypes`)
+- **HTTPGET** `LabSpecimens` (Method: `LabSpecimentList`)
+- **HTTPGET** `SampleCollectedRequisitions` (Method: `GetSampleCollectedRequisitions`)
+- **HTTPGET** `Notification/CovidResults` (Method: `GetCovidResults`)
+- **HTTPGET** `Notification/CovidSmsText` (Method: `GetCovidSmsText`)
+- **HTTPPOST** `ComponentResults` (Method: `PostComponentResults`)
+- **HTTPPOST** `Requisitions` (Method: `PostRequisitions`)
+- **HTTPPOST** `LabReport` (Method: `PostLabReport`)
+- **HTTPPOST** `Notification/Sms` (Method: `PostSms`)
+- **HTTPPOST** `Notification/UploadCovidReportToGoogleDrive` (Method: `UploadCovidReportToGoogleDrive`)
+- **HTTPPUT** `GenerateSampleCodeAutomatic` (Method: `GenerateSampleCodeAutomatic`)
+- **HTTPPOST** `LabStickerHtml` (Method: `LabStickerHtml`)
+- **HTTPPOST** `EmailLabReport` (Method: `EmailLabReport`)
+- **HTTPPUT** `updateFileUploadStatus` (Method: `updateFileUploadStatus`)
+- **HTTPPUT** `GenerateSampleCodeManual` (Method: `GenerateSampleCodeManual`)
+- **HTTPPUT** `Report/UpdateSampleCode` (Method: `UpdateSampleCodeFromViewReport`)
+- **HTTPPUT** `Requisition/BillStatus` (Method: `UpdateBillStatus`)
+- **HTTPPUT** `ComponentResults` (Method: `PutComponentResults`)
+- **HTTPPUT** `UpdateLabReport` (Method: `UpdateLabReport`)
+- **HTTPPUT** `Report/PrintCount` (Method: `UpdatePrintCount`)
+- **HTTPPUT** `UpdateDoctorInLabRequisition` (Method: `UpdateDoctorInLabRequisition`)
+- **HTTPPUT** `UpdateDoctorInLabReport` (Method: `UpdateDoctorInLabReport`)
+- **HTTPPUT** `ChangeLabTestWithSamePrice` (Method: `ChangeLabTestWithSamePrice`)
+- **HTTPPUT** `CancelInpatientLabTest` (Method: `CancelInpatientLabTest`)
+- **HTTPPUT** `Requisition/LabSpecimen` (Method: `UpdateLabSpecimen`)
+- **HTTPPUT** `UndoSampleCode` (Method: `UndoSampleCode`)
+- **HTTPPUT** `VerifyTestResultWithSignatory` (Method: `VerifyTestResultWithSignatory`)
+- **HTTPPUT** `VerifyTestResultWithoutSignatory` (Method: `VerifyTestResultWithoutSignatory`)
+- **HTTPPUT** `Requisition/Vendor` (Method: `UpdateVendorInLabRequisition`)
+- **HTTPPUT** `Requisition/ChangeLabType` (Method: `TransferToLab`)
+- **HTTPPUT** `ExternalLabStatus` (Method: `UpdateExternalLabStatus`)
+- **HTTPGET** `ReportTemplates` (Method: `ReportTemplates`)
+- **HTTPGET** `LabTests` (Method: `LabTests`)
+- **HTTPGET** `LabVendors` (Method: `LabVendors`)
+- **HTTPGET** `LabSignatories` (Method: `LabSignatories`)
+- **HTTPGET** `LabTestComponents` (Method: `LabTestComponents`)
+- **HTTPGET** `LabLookupList` (Method: `LabLookupList`)
+- **HTTPGET** `LabGovReportingItems` (Method: `LabGovReportingItems`)
+- **HTTPGET** `LabGovReportMappingDetail` (Method: `LabGovReportMappingDetail`)
+- **HTTPGET** `OutsourceApplicableLabTests` (Method: `GetOutsourceApplicableLabTests`)
+- **HTTPPOST** `LabReportTemplate` (Method: `PostLabReportTemplate`)
+- **HTTPPOST** `LabTest` (Method: `PostLabTest`)
+- **HTTPPOST** `LabComponentsInBulk` (Method: `PostLabComponentsInBulk`)
+- **HTTPPOST** `LabLookup` (Method: `PostLabLookup`)
+- **HTTPPOST** `LabVendor` (Method: `PostLabVendor`)
+- **HTTPPOST** `LabCategory` (Method: `PostLabCategory`)
+- **HTTPPOST** `LabSpecimen` (Method: `PostLabSpecimen`)
+- **HTTPPOST** `GovReportMapping` (Method: `PostGovReportMapping`)
+- **HTTPPUT** `LabReportTemplate` (Method: `PutLabReportTemplate`)
+- **HTTPPUT** `LabTest` (Method: `PutLabTest`)
+- **HTTPPUT** `LabDefaultSignatories` (Method: `PutLabDefaultSignatories`)
+- **HTTPPUT** `LabComponentsInBulk` (Method: `PutLabComponentsInBulk`)
+- **HTTPPUT** `LabLookup` (Method: `PutLabLookup`)
+- **HTTPPUT** `LabVendor` (Method: `PutLabVendor`)
+- **HTTPPUT** `LabCategory` (Method: `PutLabCategory`)
+- **HTTPPUT** `GovReportMapping` (Method: `PutGovReportMapping`)
+- **HTTPPUT** `LabTestActiveStatus` (Method: `PutLabTestActiveStatus`)
+- **HTTPPUT** `LabCategoryActiveStatus` (Method: `PutLabCategoryActiveStatus`)
+- **HTTPPUT** `LabReportTemplateActiveStatus` (Method: `PutLabReportTemplateActiveStatus`)
+- **HTTPPUT** `LabVendorActiveStatus` (Method: `PutLabVendorActiveStatus`)
+- **HTTPGET** `GetAllLISMasterData` (Method: `GetAllLISMasterData`)
+- **HTTPGET** `GetAllMappedData` (Method: `GetAllMappedData`)
+- **HTTPGET** `GetAllNotMappedDataByMachineId` (Method: `GetAllNotMappedDataByMachineId`)
+- **HTTPGET** `GetExistingMappingById` (Method: `GetExistingMappingById`)
+- **HTTPGET** `GetAllMachineResult` (Method: `GetAllMachineResult`)
+- **HTTPGET** `GetAllMachines` (Method: `GetAllMachines`)
+- **HTTPGET** `GetMachineResultByBarcodeNumber` (Method: `GetMachineResultByBarcodeNumber`)
+- **HTTPPOST** `AddUpdateNewMapping` (Method: `AddUpdateNewMapping`)
+- **HTTPPOST** `AddLisDataToResult` (Method: `AddLisDataToResult`)
+- **HTTPPOST** `AddMachineOrder` (Method: `AddMachineOrder`)
+- **HTTPPUT** `UpdateMachineResultSyncStatus` (Method: `UpdateMachineResultSyncStatus`)
+- **HTTPDELETE** `RemoveMapping` (Method: `RemoveMapping`)
+
+---
+
+## Frontend Implementation
+**Directory**: `wwwroot/PulseLogicApp/src/app/labs`
+
+### Routing / Views
+- `/Dashboard`
+- `/Requisition`
+- `/CollectSample`
+- `/AddResult`
+- `/PendingReports`
+- `/PendingLabResults`
+- `/FinalReports`
+- `/WardBilling`
+- `/BarCode`
+- `/ReportDispatch`
+- `/Notification`
+- `/SMS`
+- `/IMUUpload`
+- `/**`
+- `/Settings`
+- `/ExternalLabs`
+- `/TestList`
+- `/ExternalTestList`
+- `/LabTypeSelection`
+- `/Lis`
+- `/LabTest`
+- `/LabTestComponent`
+- `/ReportTemplate`
+- `/Signatories`
+- `/Vendors`
+- `/LookUps`
+- `/LabCategories`
+- `/MapGovernmentItems`
+
+### Angular Components
+- `labs-main`
+- `ward-billing`
+- `external-labs-main`
+- `external-test-list`
+- `internal-test-list`
+- `vendor-select`
+- `lab-vendor-add`
+- `lab-vendor-list`
+- `lis-main`
+- `lis-machine-result`
+- `lis-mapping-add`
+- `lis-mapping`
+- `lab-requests`
+- `lab-type-selection`
+- `lab-settings-main`
+- `add-lab-category`
+- `lab-category`
+- `lookups-add`
+- `lookups-list`
+- `add-lab-report-template`
+- `lab-report-template`
+- `add-labtest`
+- `lab-test`
+- `add-lab-test-comp`
+- `labTestComp`
+- `add-government-items`
+- `edit-signatories`
+- `lab-tests-results`
+- `lab-tests-add-result`
+- `lab-tests-collect-sample`
+- `undo-lab-samplecode`
+- `lab-tests-view-report`
+- `lab-tests-view-report-format2`
+- `lab-tests-pending-results`
+- `lab-list-requisition`
+- `notification-main`
+- `imu-upload`
+- `send-sms`
+- `lab-sticker`
+- `lab-select-category`
+- `signatories`
+
+### Angular Services & Endpoints
+- `lis.bl.service.ts`
+- `lis.dl.service.ts`
+- `lab-settings.bl.service.ts`
+- `lab-settings.dl.service.ts`
+- `lab-selection-guard.service.ts`
+- `lab.service.ts`
+- `labs.bl.service.ts`
+- `labs.dl.service.ts`
+

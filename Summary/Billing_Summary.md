@@ -1,0 +1,263 @@
+# Billing Module Summary
+
+## Backend Implementation
+**Directory**: `Code/Websites/PulseLogicHMR/Controllers/Billing`
+
+### API Endpoints
+- **HTTPGET** `PatientCreditInfo` (Method: `PatientCreditInfo`)
+- **HTTPGET** `PaymentPages` (Method: `LoadPaymentPages`)
+- **HTTPGET** `BillCfgItemsByPriceCategoryId` (Method: `LoadItemsPriceByPriceCategory`)
+- **HTTPGET** `BillCfgItemsVsPriceCategoryMaps` (Method: `LoadBilCfgItemsVsPriceCategoryMapping`)
+- **HTTPGET** `SsfInvoices` (Method: `GetSSFInvoiceDetails`)
+- **HTTPGET** `MembershipTypeVsPriceCategoryMaps` (Method: `LoadMembershipTypeVsPriceCategoryMapping`)
+- **HTTPGET** `PendingIncomingUserHandover` (Method: `GetPendingIncomingUserHandOver`)
+- **HTTPGET** `PendingOutgoingHandover` (Method: `GetPendingOutgoingHandOver`)
+- **HTTPPUT** `HandoverStatus` (Method: `UpdateHandOverStatus`)
+- **HTTPGET** `InsurancePatientsProvisionalInfo` (Method: `InsurancePatientsProvisionalInfo`)
+- **HTTPGET** `TransferHandoverReport` (Method: `TransferHandoverReport`)
+- **HTTPGET** `ProvisionalItemsByPatientId` (Method: `ProvisionalItemsByPatientId`)
+- **HTTPGET** `PatientsProvisionalInfo` (Method: `PatientsProvisionalInfo`)
+- **HTTPGET** `PatientsProvisionaItems` (Method: `PatientsProvisionaItems`)
+- **HTTPGET** `PatientVisitCreditBalance` (Method: `PatientVisitCreditBalance`)
+- **HTTPGET** `ServiceDepartments` (Method: `ServiceDepartments`)
+- **HTTPGET** `MembershipTypes` (Method: `MembershipTypes`)
+- **HTTPGET** `InsurancePatientProvisionalItems` (Method: `InsurancePatientProvisionalItems`)
+- **HTTPGET** `PatientProvisionalSlip` (Method: `PatientProvisionalSlip`)
+- **HTTPGET** `BillCancellationReceipt` (Method: `BillCancellationReceipt`)
+- **HTTPGET** `InpatientsCancelledItems` (Method: `InPatientCancelledItems`)
+- **HTTPGET** `InsurancePatientProvisionalSlip` (Method: `InsurancePatientProvisionalSlip`)
+- **HTTPGET** `InPatientProvisionalItems` (Method: `InPatientProvisionalItems`)
+- **HTTPGET** `Invoices` (Method: `Invoices`)
+- **HTTPGET** `CreditNotes` (Method: `CreditNotes`)
+- **HTTPGET** `DuplicatePrint/ProvisionalReceipts` (Method: `ProvisionalReceiptsDetailsForDuplicatePrint`)
+- **HTTPGET** `PatientReturnedInvoices_Old` (Method: `PatientReturnedInvoices_Old`)
+- **HTTPGET** `PatientsPastBillSummary` (Method: `PatientsPastBillSummary`)
+- **HTTPGET** `InsurancePatientPastBillSummary` (Method: `InsurancePatientPastBillSummary`)
+- **HTTPGET** `PatientBillHistoryDetail` (Method: `PatientBillHistoryDetail`)
+- **HTTPGET** `DoctorOrdersFromAllDepartments` (Method: `DoctorOrdersFromAllDepartments`)
+- **HTTPGET** `PatientPendingRequisitionsByDepartmentName` (Method: `PatientPendingRequisitionsByDepartmentName`)
+- **HTTPGET** `ServiceDepartmentItems` (Method: `ServiceDepartmentItems`)
+- **HTTPGET** `BillCfgItems` (Method: `BillCfgItems`)
+- **HTTPGET** `PendingDoctorOrderTotal` (Method: `PendingDoctorOrderTotal`)
+- **HTTPGET** `NursingOrderList` (Method: `NursingOrderList`)
+- **HTTPGET** `BillingCounters` (Method: `BillingCounters`)
+- **HTTPGET** `GetTxnItemsForEditDoctor` (Method: `GetTxnItemsForEditDoctor`)
+- **HTTPGET** `GetTxnItemsForEditDoctorRad` (Method: `GetTxnItemsForEditDoctorRad`)
+- **HTTPGET** `GetProviderList` (Method: `GetProviderList`)
+- **HTTPGET** `ListDoctors` (Method: `ListDoctors`)
+- **HTTPGET** `ListAllReferrer` (Method: `ListAllReferrer`)
+- **HTTPGET** `BillingPackages` (Method: `BillingPackages`)
+- **HTTPGET** `BillingFiscalYears` (Method: `BillingFiscalYears`)
+- **HTTPGET** `CurrentFiscalYear` (Method: `CurrentFiscalYear`)
+- **HTTPGET** `PatientBillingContext` (Method: `PatientBillingContext`)
+- **HTTPGET** `BillingTransactionByRequisitionId` (Method: `BillingTransactionByRequisitionId`)
+- **HTTPGET** `LabBillCfgItems` (Method: `LabBillCfgItems`)
+- **HTTPGET** `CheckCreditBill` (Method: `CheckCreditBill`)
+- **HTTPGET** `BillingCreditOrganizations` (Method: `BillingCreditOrganizations`)
+- **HTTPGET** `ListUsers` (Method: `ListUsers`)
+- **HTTPGET** `Banks` (Method: `Banks`)
+- **HTTPGET** `EmployeeDueAmount` (Method: `GetEmployeeDueAmount`)
+- **HTTPGET** `PatientPastBillITxntems` (Method: `PatientPastBillITxntems`)
+- **HTTPGET** `GetVisitInfoforStickerPrint` (Method: `GetVisitInfoforStickerPrint`)
+- **HTTPGET** `HandoverTransactions` (Method: `HandoverTransactions`)
+- **HTTPGET** `Report/HandoverReceive` (Method: `GetHandoverReceiveReport`)
+- **HTTPGET** `Report/DailyCollectionVsHandover` (Method: `GetDailyCollectionVsHandoverReport`)
+- **HTTPGET** `Report/HandoverDetail` (Method: `GetHandoverDetailReport`)
+- **HTTPGET** `Report/HandoverSummary` (Method: `GetHandoverSummaryReport`)
+- **HTTPGET** `InvoiceInfo` (Method: `GetInvoiceInfo`)
+- **HTTPPOST** `PayProvisionalBills` (Method: `PayProvisionalBills`)
+- **HTTPPOST** `SaveBillingTransactionItems` (Method: `SaveBillingTransactionItems`)
+- **HTTPPOST** `SaveBillItemsRequisition` (Method: `SaveBillItemsRequisition`)
+- **HTTPPOST** `SaveHTMLFile` (Method: `SaveHTMLFile`)
+- **HTTPPOST** `HandoverTransactionDetail` (Method: `PostHandoverTransactionDetail`)
+- **HTTPPUT** `UpdateBillItemsReqsStatus` (Method: `UpdateBillItemsReqsStatus`)
+- **HTTPPUT** `UpdateBillStatusForCreditCancellation` (Method: `UpdateBillStatusForCreditCancellation`)
+- **HTTPPUT** `CancelBillingTransactionItems` (Method: `CancelBillingTransactionItems`)
+- **HTTPPUT** `InvoicePrintCount` (Method: `InvoicePrintCount`)
+- **HTTPPUT** `BillTxnItemDoctors` (Method: `BillTxnItemDoctors`)
+- **HTTPPUT** `UpdateDoctorafterDoctorEditRadiology` (Method: `UpdateDoctorafterDoctorEditRadiology`)
+- **HTTPPUT** `CancelOutpatientProvisionalItem` (Method: `CancelInPatientBillRequest`)
+- **HTTPPUT** `CancelInpatientItemFromWard` (Method: `CancelInpatientItemFromWard`)
+- **HTTPPUT** `EditItemPriceQtyDiscAndProvider` (Method: `EditItemPriceQtyDiscAndProvider`)
+- **HTTPPUT** `HandoverTransactionDetail` (Method: `PutHandoverTransactionDetail`)
+- **HTTPPUT** `UpdateProvisionalBillingTxnItems` (Method: `PutProvisionalBillingTxnItems`)
+- **HTTPGET** `Deposits` (Method: `Deposits`)
+- **HTTPGET** `PatientDeposits` (Method: `PatientDeposits`)
+- **HTTPGET** `PatientDepositsList` (Method: `PatientDepositsList`)
+- **HTTPGET** `GetDepositHead` (Method: `GetDepositHeads`)
+- **HTTPGET** `AllDepositHeads` (Method: `AllDepositHeads`)
+- **HTTPGET** `OrganizationDeposits` (Method: `GetOrganizationDeposits`)
+- **HTTPPOST** `NewDeposit` (Method: `NewDeposit`)
+- **HTTPPUT** `PrintCount` (Method: `UpdatePrintCount`)
+- **HTTPGET** `SchemePriceCategoriesMap` (Method: `SchemePriceCategoriesMap`)
+- **HTTPGET** `ServiceDepartments` (Method: `ServiceDepartments`)
+- **HTTPGET** `ServiceItemSchemeSetting` (Method: `ServiceItemsSchemeSetting`)
+- **HTTPGET** `AdditionalServiceItems` (Method: `AdditionalServiceItems`)
+- **HTTPGET** `ServiceItemSettings` (Method: `GetServiceItemSchemeSettings`)
+- **HTTPGET** `VistAdditionalServiceItems` (Method: `VisitAdditionalServiceItems`)
+- **HTTPGET** `ServicePackages` (Method: `ServicePackages`)
+- **HTTPPOST** `ServiceItemSetting` (Method: `PostServiceItemSchemeSettings`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPUT** `Put` (Method: `Put`)
+- **HTTPDELETE** `Delete` (Method: `Delete`)
+- **HTTPGET** `InvoiceDetailsForCreditNote` (Method: `InvoiceDetailsForCreditNote`)
+- **HTTPGET** `CreditNoteInfo` (Method: `CreditNoteInfo`)
+- **HTTPPOST** `CreditNote` (Method: `PostCreditNote`)
+- **HTTPPOST** `PostReturnInvoice_Old` (Method: `PostReturnInvoice_Old`)
+- **HTTPGET** `PendingSettlements` (Method: `PendingSettlements`)
+- **HTTPGET** `PatientBillingInfo` (Method: `PatientBillingInfo`)
+- **HTTPGET** `Settlements` (Method: `Settlements`)
+- **HTTPGET** `SettlementInfo` (Method: `SettlementInfo`)
+- **HTTPGET** `InvoiceInfo` (Method: `InvoiceInfo`)
+- **HTTPPOST** `NewSettlement_Old` (Method: `NewSettlement_Old`)
+- **HTTPPOST** `NewSettlement` (Method: `NewSettlement`)
+- **HTTPPUT** `PrintCount` (Method: `PutPrintCount`)
+- **HTTPPOST** `PostBillingAndPharmacyTransactionAndDischarge` (Method: `PostBillAndPharmacyTransactionAndDischarge`)
+- **HTTPGET** `Statements` (Method: `GetDischargeStatements`)
+- **HTTPGET** `StatementInfo` (Method: `StatementInfo`)
+- **HTTPGET** `SummaryInfo` (Method: `SummaryInfo`)
+- **HTTPGET** `AdmittedPatients` (Method: `AdmittedPatients`)
+- **HTTPGET** `InpatientPendingBillItems` (Method: `InpatientPendingBillItems`)
+- **HTTPGET** `BillItemsForDischargeReceipt_Unused` (Method: `BillItemsForDischargeReceipt_Unused`)
+- **HTTPGET** `DischargeReceiptAdditionalInfo` (Method: `DischargeReceiptAdditionalInfo`)
+- **HTTPPOST** `PostBillTransaction_Unused` (Method: `PostBillTransaction_Unused`)
+- **HTTPPUT** `ReCalculateBedQuantity` (Method: `ReCalculateBedQuantity`)
+- **HTTPPUT** `PutIpBillingTxnItems` (Method: `PutIpBillingTxnItems`)
+- **HTTPPUT** `UpdateDiscounts` (Method: `UpdateDiscounts`)
+- **HTTPPOST** `PostBillTransactionAndDischarge` (Method: `PostBillTransactionAndDischarge`)
+- **HTTPGET** `EstimationBill` (Method: `EstimationBill`)
+- **HTTPPOST** `Discharge` (Method: `PostProvisionalDischarge`)
+- **HTTPPOST** `PayProvisional` (Method: `PostPayProvisional`)
+- **HTTPPUT** `DiscardAllItems` (Method: `DiscardAllItems`)
+- **HTTPGET** `ProvisionalDischargeList` (Method: `GetProvisionalDischargeList`)
+- **HTTPGET** `ProvisionalDischargeItems` (Method: `GetProvisionalDischargeItems`)
+
+### Services
+Backend services encapsulate business logic and data access for Billing.
+- `BillingMasterService.cs`
+- `IBillingMasterService.cs`
+
+---
+
+## Frontend Implementation
+**Directory**: `wwwroot/PulseLogicApp/src/app/billing`
+
+### Routing / Views
+- `/Dashboard`
+- `/SearchPatient`
+- `/BillingTransaction`
+- `/PayProvisional`
+- `/ProvisionalClearance`
+- `/Outpatient-Er`
+- `/ProvisionalDischargeList`
+- `/**`
+- `/InsuranceProvisional`
+- `/BillOrderRequest`
+- `/BillingDeposit`
+- `/BillCancellationRequest`
+- `/BillReturnRequest`
+- `/CounterActivate`
+- `/EditDoctor`
+- `/Settlements`
+- `/BillSettlements`
+- `/DuplicatePrints`
+- `/InpatBilling`
+- `/BillingDenomination`
+- `/Counter`
+- `/Accounts`
+- `/HandoverReceiveTransactionReport`
+- `/HandoverSummaryReport`
+- `/DailyCollectionVsHandoverReport`
+- `/HandoverDetailedReport`
+- `/InsuranceMain`
+- `/QrBilling`
+
+### Angular Components
+- `billing-main`
+- `bill-cancellation-request`
+- `bill-copy-receipt`
+- `billing-counter-activate`
+- `bill-denomination-main`
+- `bill-denomination-accounts`
+- `bill-denomination-counter`
+- `bill-denomination-reports`
+- `billing-deposit`
+- `bill-duplicate-prints-main`
+- `duplicate-credit-note-list`
+- `duplicate-deposit-list`
+- `bil-duplicate-discharge-statement-invoice-list`
+- `duplicate-invoice-list`
+- `bil-org-deposit-receipt-duplicate`
+- `duplicate-provisional-list`
+- `duplicate-settlement-list`
+- `billing-package-select`
+- `bil-provisional-clearance-main`
+- `bill-edit-provisional-items`
+- `outpatient-provisional-billing`
+- `billing-pay-provisional`
+- `bil-provisional-discharge-list`
+- `bil-provisional-items`
+- `bill-order-request`
+- `bill-credit-note`
+- `bill-settlement-invoice-detail`
+- `bill-settlements`
+- `settlements.main`
+- `bill-sticker`
+- `billing-transaction-new`
+- `billing-transaction-past-item`
+- `billing-transaction`
+- `change-visit-type`
+- `edit-doctor-feature`
+- `ins-billing-main`
+- `insurance-bill-item-request`
+- `ins-billing-transaction`
+- `insurance.settlements`
+- `ins-patient-registration`
+- `ins-patient-list`
+- `ins-provisional-billing`
+- `ins-reports-main`
+- `ins-income-segregation`
+- `ins-total-items-bill`
+- `update-insurance-balance`
+- `ip-billing.main`
+- `edit-bill-item`
+- `group-discount`
+- `partial-payment`
+- `patient-ip-summary`
+- `update-item-price`
+- `bill-op-patient-add`
+- `bill-print-credit-note`
+- `bil-print-deposit-slip`
+- `detailed-discharge-print`
+- `bil-print-discharge-statement`
+- `bil-print-discharge-statement-summary`
+- `bil-print-invoice-main`
+- `bil-print-invoice-discharge`
+- `discharge-bill-summary`
+- `bil-print-ip-estimation`
+- `bil-print-ip-item-request-slip`
+- `bil-print-invoice-default`
+- `bil-print-provisional-slip`
+- `bil-print-settlement-slip`
+- `billing-search-patient-new`
+- `billing-search-patient-old`
+- `bill-additional-item-select`
+- `edit-doctor`
+- `select-ethnic-group`
+- `other-currency-calcaultion`
+- `payment-mode-info`
+- `price-category-select`
+- `scheme-pricecategory-select`
+- `ward-billitem-request`
+- `update-item-doc-pricecategory`
+
+### Angular Services & Endpoints
+- `gov-ins.bl.service.ts`
+- `gov-ins.dl.service.ts`
+- `billing-invoice.bl.service.ts`
+- `billing-master.bl.service.ts`
+- `billing-master.dl.service.ts`
+- `billing.bl.service.ts`
+- `billing.dl.service.ts`
+- `billing.service.ts`
+

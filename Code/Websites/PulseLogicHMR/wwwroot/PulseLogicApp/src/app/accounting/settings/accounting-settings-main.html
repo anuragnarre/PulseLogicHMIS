@@ -1,0 +1,32 @@
+
+<base href="/">
+<div class="sub-navtab">
+    <ul class="nav nav-tabs" *ngIf="validRoutes != undefined">
+
+        <!--Start: Primary Menu Items -->
+        <li *ngFor="let route of primaryNavItems">
+            <a routerLink="{{route.RouterLink}}" class="nav-padding" [routerLinkActive]="'a-tab-active'"
+                *ngIf="route.IsSecondaryNavInDropdown!=1"> <i class="{{route.Css}}"></i> {{route.DisplayName}} </a>
+        </li>
+        <!--End: Primary Menu Items -->
+
+        <!--Start: Secondary Menu Items-->
+        <li *ngIf="secondaryNavItems && secondaryNavItems.length>0" class="dropdown" style="display:inline-block;"> <a
+                class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                More... <i class="fa fa-angle-down"></i> </a>
+            <ul class="dropdown-menu">
+                <li class="hr-ddlCstm" *ngFor="let route of secondaryNavItems">
+                    <a routerLink="{{route.RouterLink}}" [routerLinkActive]="'a-tab-active'"
+                        [style.color]="route.RouterLink=='ReverseTransaction'?'red':'black'">
+                        <i class="{{route.Css}}"></i> {{route.DisplayName}} </a>
+                </li>
+            </ul>
+        </li>
+        <!--End: Secondary Menu Items-->
+
+    </ul>
+</div>
+
+<router-outlet>
+
+</router-outlet>

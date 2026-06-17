@@ -1,0 +1,17 @@
+﻿<base href="/">
+<div class="modern-page-tabs">
+  <ul *ngIf="validRoutes != undefined">
+    <li *ngFor="let route of validRoutes"> <a routerLink="{{route.RouterLink}}" [routerLinkActive]="'link3-active'">{{route.DisplayName}}<i
+          class="{{route.Css}}"></i></a> <i class="fa fa-circle"></i> </li>
+  </ul>
+</div>
+<div style="padding: 0 24px;">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Apple HIG: content padding override for this module -->
+<style>
+  /* Ensure the content area uses our design tokens */
+  .page-container, .page-wrapper, .page-content { background: transparent !important; }
+  :host > div[style*="padding"] { padding: 0 !important; }
+</style>

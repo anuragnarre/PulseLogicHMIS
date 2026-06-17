@@ -1,0 +1,131 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RuntimeIdentifiers>win-x64;win-x86;linux-x64</RuntimeIdentifiers>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <AssemblyName>PulseLogicHMR</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>PulseLogicHMR</PackageId>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AssemblyVersion>4.6.1.10</AssemblyVersion>
+    <FileVersion>4.6.1.10</FileVersion>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <NoWarn>$(NoWarn);SYSLIB0011;SYSLIB0021;CS0618;CS8073;CS0472</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>Portable</DebugType>
+    <DocumentationFile>PulseLogicEmrAPI.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+    <TypeScriptCompile Remove="wwwroot\**" />
+  </ItemGroup>
+  <!--<ItemGroup>
+    <Compile Remove="Views\PharmacyReport\**" />
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="Views\PharmacyReport\**" />
+    <EmbeddedResource Remove="Views\PharmacyReport\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="Views\PharmacyReport\**" />
+    <None Remove="wwwroot\**" />
+    <TypeScriptCompile Remove="wwwroot\**" />
+  </ItemGroup>-->
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Update="Views\**\*">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Include wwwroot (Angular build output + static assets) in publish -->
+    <Content Include="wwwroot\**" CopyToPublishDirectory="PreserveNewest" Exclude="wwwroot\PulseLogicApp\node_modules\**;wwwroot\PulseLogicApp\src\**" />
+    <!-- Always include production appsettings in publish output -->
+    <Content Include="appsettings.Production.json" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.52.0.2354" />
+    <PackageReference Include="iTextSharp" Version="5.5.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.4.5" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RefactorThis.GraphDiff" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.0.0" />
+    <PackageReference Include="Sendgrid" Version="9.10.0" />
+    <PackageReference Include="Syncfusion.XlsIO.WinForms" Version="20.1.0.52" />
+    <PackageReference Include="System.Buffers" Version="4.4.0" />
+    <PackageReference Include="EPPlus" Version="4.1.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.7.2" />
+    <PackageReference Include="Audit.EntityFramework.Core" Version="21.1.1" />
+    <PackageReference Include="Audit.NET" Version="21.1.1" />
+    <PackageReference Include="Audit.NET.SqlServer" Version="21.1.1" />
+    <PackageReference Include="Audit.WebApi.Core" Version="21.1.1" />
+    <!-- Task 5: Serilog structured logging -->
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+    <PackageReference Include="Wangkanai.Detection" Version="8.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Components\PulseLogicHMR.AccTransfer\PulseLogicHMR.AccTransfer.csproj" />
+    <ProjectReference Include="..\..\Components\PulseLogicHMR.Core\PulseLogicHMR.Core.csproj" />
+    <ProjectReference Include="..\..\Components\PulseLogicHMR.DalLayer\PulseLogicHMR.DalLayer.csproj" />
+    <ProjectReference Include="..\..\Components\PulseLogicHMR.Security\PulseLogicHMR.Security.csproj" />
+    <ProjectReference Include="..\..\Components\PulseLogicHMR.ServerModel\PulseLogicHMR.ServerModel.csproj" />
+    <ProjectReference Include="..\..\Components\PulseLogicHMR.Sync\PulseLogicHMR.Sync.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+	  <Folder Include="Controllers\DispensaryTransfer\" />
+	  <Folder Include="Controllers\Settings\NewFolder\" />
+	  <Folder Include="Services\Pharmacy\DashBoard\" />
+  </ItemGroup>
+  <!--
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  -->
+  <ItemGroup>
+    <Content Update="Views\FractionView\InternalMain.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\PharmacyView\Sale\PHRMRequisitionList.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,137 @@
+<div class="wrapper">
+  <div class="pl-card" style="margin-top: 15px; margin-bottom: 24px;">
+    <div class="row">
+      <div class="col-md-4">
+        <h3 class="pl-card-title">
+          <i class="fa fa-user"></i> Search Patients
+        </h3>
+      </div>
+      <div class="col-md-8 text-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 16px;">
+        <div class="shortcut-key shortkey-right" title="Shortcut Keys" style="margin-top: 0;">
+          <a href="javascript: void(0)"><img alt="keyboard shortcut" src="../../../themes/theme-default/images/Keyboard-icon.svg"></a>
+          <div class="keydropdown">
+            <ul>
+              <li><kbd>ALT</kbd> + <kbd>N</kbd> = <samp>Add New Patient</samp></li>
+            </ul>
+          </div>
+        </div>
+        <button *ngIf="securityService.HasPermission('btn-opbilling-addnewpatient') && showPatRegistration" class="btn-modern btn-modern-success"
+                (click)="ShowOpPatAddPopUp()"><i class="fa fa-plus"></i> Add New Patient</button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 24px;">
+      <div class="col-md-5">
+        <label for="srch_PatientList">Search OPD Patients:</label>
+        <input pulselogic-auto-complete id="srch_PatientList" class="form-control searchtbx" [(ngModel)]="PatientObj"
+               [list-formatter]="PatientListFormatter" [source]="AllPatientSearchAsync.bind(this)" [path-to-data]="'Results'"
+               placeholder="Search by HospitalNo, Patient Name, Phone Number" display-property-name="ShortName" value-property-name=null
+               (ngModelChange)="PatientInfoChanged()" onClick="this.select();" max-num-list="500"
+               (keyup.enter)="SetFocusOnButton('btn_billRequest')" [min-chars]="PatientSearchMinCharacterCount" match-formatted="true"
+               [grid-sort]="'ShortName'" style="width: 100% !important;" />
+      </div>
+      <div class="col-md-2"></div>
+      <div class="col-md-5">
+        <label for="srchIP_PatientList">Search IPD Patients:</label>
+        <input pulselogic-auto-complete id="srchIP_PatientList" class="form-control searchtbx"
+               [(ngModel)]="PatientIPObj" [list-formatter]="IPPatientListFormatter"
+               [source]="IpdPatientSearchAsync.bind(this)" [path-to-data]="'Results'"
+               placeholder="Search by IPD-No, Name, Hospital No, Phone" display-property-name="ShortName" value-property-name=null
+               (ngModelChange)="PatientIPInfoChanged()" onClick="this.select();" max-num-list="500"
+               (keyup.enter)="SetFocusOnButton('btn_billRequest')" [min-chars]="PatientSearchMinCharacterCount" match-formatted="true"
+               [no-match-found-text]="'Patient Not found in IPD'"
+               [grid-sort]="'ShortName'" style="width: 100% !important;" />
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 col-sm-12">
+      <div class="col-md-12" *ngIf="showPatientPanel">
+        <div class="pl-card" style="margin-bottom: 24px;">
+          <div class="row">
+            <div class="col-md-6">
+              <div style="margin-bottom: 8px;">
+                <i class="fa fa-user" style="color: var(--color-primary); margin-right: 8px;"></i>
+                <span style="color: var(--text-secondary);">Name:</span> 
+                <b style="font-size: 1.1rem; color: var(--text-primary);">{{selPatient.ShortName}}</b>
+              </div>
+              <div style="margin-bottom: 8px;">
+                <i class="fa fa-h-sign" style="color: var(--color-primary); margin-right: 8px;"></i>
+                <span style="color: var(--text-secondary);">Hospital #:</span> 
+                <b>{{selPatient.PatientCode}}</b>
+              </div>
+              <div style="margin-bottom: 8px;">
+                <i class="fa fa-male" style="color: var(--color-primary); margin-right: 8px;"></i>
+                <span style="color: var(--text-secondary);">Age/Sex:</span> 
+                {{selPatient.Age}} / {{selPatient.Gender}}
+              </div>
+              <div>
+                <i class="fa fa-hospital-o" style="color: var(--color-primary); margin-right: 8px;"></i>
+                <span style="color: var(--text-secondary);">Visit:</span> 
+                <span class="modern-badge badge-warning" *ngIf="selPatient.IsAdmitted">Inpatient</span>
+                <span class="modern-badge badge-success" *ngIf="!selPatient.IsAdmitted">Outpatient</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div *ngIf="SchemeName" style="margin-bottom: 8px;">
+                <span class="modern-badge badge-info" style="background-color: var(--color-info); color: white;">
+                  <i class="fa fa-shield">&nbsp;</i> Scheme: {{SchemeName}}
+                </span>
+              </div>
+              <div style="margin-bottom: 8px;">
+                <i class="fa fa-map-marker" style="color: var(--color-primary); margin-right: 8px;"></i>
+                <span style="color: var(--text-secondary);">Address:</span> 
+                <b>{{selPatient.Address}}</b>
+              </div>
+              <div *ngIf="selPatient.PhoneNumber" style="margin-bottom: 8px;">
+                <i class="fa fa-phone" style="color: var(--color-primary); margin-right: 8px;"></i>
+                <span style="color: var(--text-secondary);">Contact No:</span> 
+                <b>{{selPatient.PhoneNumber}}</b>
+              </div>
+              <div *ngIf="selPatient.IsAdmitted">
+                <i class="fa fa-bed" style="color: var(--color-primary); margin-right: 8px;"></i>
+                <span style="color: var(--text-secondary);">Ward/Bed:</span> 
+                <b>{{selPatient.WardName}}/{{selPatient.BedCode}}</b>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="showBillingPanel">
+        <div class="pl-card" style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px; padding: 16px 24px;">
+          <button id="btn_billRequest" class="btn-modern btn-modern-primary" (click)="NewBillingRequest()">New Billing Request</button>
+          <button id="btn_addDeposit" class="btn-modern btn-modern-secondary" (click)="NewDeposit()">Add Deposit</button>
+          <button [rbac-permission]="{'name':'billing-pat-sticker-button','actionOnInvalid':'hidden'}"
+                  id="btn_patientSticker" class="btn-modern btn-modern-secondary" (click)="OnClickPatientSticker()">Patient Sticker</button>
+          <div style="margin-left: auto;">
+            <label for="chkLoadBillHistory" style="cursor: pointer; display: flex; align-items: center; gap: 8px; margin: 0;">
+              <input type="checkbox" [(ngModel)]="loadBillHistory" id="chkLoadBillHistory" style="width: 18px; height: 18px;" />
+              Show Bill History
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div *ngIf="loadBillHistory" class="page-bar">
+              <bill-history [showPatientBillHistory]="showBillingPanel" [patient]="selPatient"></bill-history>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <bill-op-patient-add *ngIf="showAddNewOpPopUp" (CallBackAddClose)="GetBackFromOpPatAdd($event)"></bill-op-patient-add>
+</div>
+
+<div class="popup-static portlet box portlet-fullscreen" *ngIf="showPatientSticker">
+  <div class="portlet-body form">
+    <div class="modelbox-div" style="margin-left:30%;margin-right:16%">
+      <div style="margin-left:60px"> <i class="btn btn-danger" style="float: right"
+           (click)="ClosePrintStickerPopup()">X</i>
+        <patient-sticker [patientId]="this.selPatient.PatientId" (after-print-action)="AfterStickerPrint($event)"> </patient-sticker>
+      </div>
+    </div>
+  </div>
+</div>

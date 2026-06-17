@@ -1,0 +1,49 @@
+
+<base href="/">
+
+<!-- Apple HIG Module Header -->
+<div class="pl-module-shell">
+
+  <!-- Module tab bar -->
+  <div class="modern-page-tabs pl-module-tabs">
+    <ul *ngIf="validRoutes != undefined">
+
+      <!--Start: Primary Menu Items -->
+      <li *ngFor="let route of primaryNavItems">
+        <a routerLink="{{route.RouterLink}}" [routerLinkActive]="'link3-active'" *ngIf="route.IsSecondaryNavInDropdown!=1">
+          {{ route.DisplayName }}
+        </a>
+      </li>
+      <!--End: Primary Menu Items -->
+
+      <!--Start: Secondary Menu Items-->
+      <li *ngIf="secondaryNavItems && secondaryNavItems.length>0" class="dropdown bil-hr-bar">
+        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          More&nbsp;<i class="fa fa-angle-down"></i>
+        </a>
+        <ul class="dropdown-menu bil-hr-dropdown">
+          <li class="hr-ddlCstm" *ngFor="let route of secondaryNavItems">
+            <a routerLink="{{route.RouterLink}}" [routerLinkActive]="'link3-active'">
+              {{ route.DisplayName }}
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!--End: Secondary Menu Items-->
+
+    </ul>
+  </div>
+
+  <!-- Content -->
+  <div class="pl-module-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>
+
+<!-- Apple HIG: content padding override for this module -->
+<style>
+.pl-module-shell { display: flex; flex-direction: column; min-height: 100%; }
+.pl-module-content { flex: 1; padding: 28px 32px; }
+.page-container, .page-wrapper, .page-content { background: transparent !important; }
+</style>

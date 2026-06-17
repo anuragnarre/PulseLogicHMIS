@@ -1,0 +1,39 @@
+<div class="wrapper">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="page-title">Telemedicine Portal</h2>
+        <div class="portlet box blue">
+          <div class="portlet-title">
+            <div class="caption">
+              <i class="fa fa-video-camera"></i> Virtual Consultation
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="alert alert-info">
+              <strong>Status:</strong> {{connectionStatus}}
+            </div>
+            
+            <div class="video-container" style="background: #222; height: 400px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: white;">
+              <h3 *ngIf="!inCall">Video Feed Offline</h3>
+              <div *ngIf="inCall" class="active-feed">
+                <!-- Placeholder for actual Twilio Video / WebRTC DOM element -->
+                <i class="fa fa-user-circle fa-5x"></i>
+                <p>Patient Video Feed</p>
+              </div>
+            </div>
+
+            <div class="controls text-center">
+              <button class="btn btn-success btn-lg" *ngIf="!inCall" (click)="startCall()">
+                <i class="fa fa-phone"></i> Start Consultation
+              </button>
+              <button class="btn btn-danger btn-lg" *ngIf="inCall" (click)="endCall()">
+                <i class="fa fa-phone-square"></i> End Consultation
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

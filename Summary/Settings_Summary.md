@@ -1,0 +1,330 @@
+# Settings Module Summary
+
+## Backend Implementation
+**Directory**: `Code/Websites/PulseLogicHMR/Controllers/Settings`
+
+### API Endpoints
+- **HTTPGET** `AutoBillingItems` (Method: `GetAutoBillingItems`)
+- **HTTPGET** `AdtAutoBillingItems` (Method: `GetAdtAutoBillingItems`)
+- **HTTPGET** `Beds` (Method: `Beds`)
+- **HTTPGET** `BedFeatures` (Method: `GetBedFeatures`)
+- **HTTPGET** `BedFeaturesMap` (Method: `BedFeaturesMap`)
+- **HTTPGET** `Wards` (Method: `Wards`)
+- **HTTPGET** `BedFeatureSchemePriceCataegoryMap` (Method: `BedFeatureSchemePriceCataegoryMap`)
+- **HTTPGET** `MinimumDepositSettings` (Method: `GetMinimumDepositSettings`)
+- **HTTPPOST** `Bed` (Method: `PostBed`)
+- **HTTPPOST** `BedFeaturesMap` (Method: `PostBedFeaturesMap`)
+- **HTTPPOST** `Ward` (Method: `PostWard`)
+- **HTTPPOST** `AutoBillingItem` (Method: `AutoBillingItem`)
+- **HTTPPOST** `AdtAutoBillingItem` (Method: `AdtAutoBillingItem`)
+- **HTTPPOST** `BedFeature` (Method: `PostBedFeature`)
+- **HTTPPOST** `BedFeatureSchemePriceCategoryMap` (Method: `ADTBedFeatureSchemePriceCategory`)
+- **HTTPPOST** `MinimumDepositSetting` (Method: `MinimumDepositSetting`)
+- **HTTPPUT** `Bed` (Method: `PutBed`)
+- **HTTPPUT** `BedFeatures` (Method: `PutBedFeatures`)
+- **HTTPPUT** `AdtAutoBillingItem` (Method: `PutAutoBillingItem`)
+- **HTTPPUT** `BedFeaturesMap` (Method: `PutBedFeaturesMap`)
+- **HTTPPUT** `Ward` (Method: `PutWard`)
+- **HTTPPUT** `AutoBillingItem` (Method: `PutBillingItem`)
+- **HTTPPUT** `ActivateDeactivateAutoBillingItem` (Method: `ActiveBillingItem`)
+- **HTTPPUT** `ActivateDeactivateBedFeatureSchemePriceCategoryMap` (Method: `ActivateDeactivateBedFeatureSchemePriceCategoryMap`)
+- **HTTPPUT** `BedFeatureSchemePriceCategoryMap` (Method: `BedFeatureSchemePriceCategoryMap`)
+- **HTTPPUT** `MinimumDepositSetting` (Method: `UpdateMinimumDepositSetting`)
+- **HTTPPUT** `ActivateDeactivateMinimumDepositSetting` (Method: `ActivateDeactivateMinimumDepositSetting`)
+- **HTTPGET** `ServiceDepartments` (Method: `ServiceDepartments`)
+- **HTTPGET** `BillingItemList` (Method: `GetBillingItemList`)
+- **HTTPGET** `ServiceItemList` (Method: `ServiceItemList`)
+- **HTTPGET** `ServiceCategories` (Method: `ServiceCategories`)
+- **HTTPGET** `ReportingItemsList` (Method: `GetReportingItemsList`)
+- **HTTPGET** `DynamicReportingNameList` (Method: `GetDynamicReportingNameList`)
+- **HTTPGET** `BillItemPriceChangeHistory` (Method: `GetBillItemPriceChangeHistory`)
+- **HTTPGET** `BillingPackageList` (Method: `GetBillingPackageList`)
+- **HTTPGET** `BillingPackageServiceItemList` (Method: `GetBillingPackageServiceItemList`)
+- **HTTPGET** `MembershipTypes` (Method: `GetMembershipTypes`)
+- **HTTPGET** `BillingSchemes` (Method: `GetBillingSchemes`)
+- **HTTPGET** `BillingSubSchemesBySchemeId` (Method: `BillingSubSchemesBySchemeId`)
+- **HTTPGET** `BillingScheme` (Method: `GetBillingSchemeById`)
+- **HTTPGET** `SchemesForBillingReport` (Method: `SchemesForBillingReport`)
+- **HTTPGET** `CreditOrganizations` (Method: `GetCreditOrganizations`)
+- **HTTPGET** `BillingItems` (Method: `GetBillingItems`)
+- **HTTPGET** `AdditionalServiceItems` (Method: `AdditionalServiceItems`)
+- **HTTPGET** `BillingItemsByIntegrationName` (Method: `GetBillingItemsByIntegrationName`)
+- **HTTPGET** `BillItemsByServiceDepartmentName` (Method: `GetBillItemsByServiceDepartmentName`)
+- **HTTPGET** `BillItemsByIntegrationName` (Method: `GetBillItemsByIntegrationName`)
+- **HTTPGET** `PrinterSettings` (Method: `GetPrinterSettings`)
+- **HTTPGET** `AllPrinterSettings` (Method: `GetAllPrinterSettings`)
+- **HTTPGET** `BillingToReportingItemMapping` (Method: `GetBillingToReportingItemMapping`)
+- **HTTPGET** `BilCfgItemsVsPriceCategory` (Method: `GetBilCfgItemsVsPriceCategory`)
+- **HTTPGET** `ServiceItemsVsPriceCategory` (Method: `GetServiceItemVsPriceCategory`)
+- **HTTPGET** `SchemePriceCategoryMappedItems` (Method: `SchemePriceCategoryMappedItems`)
+- **HTTPGET** `DepositHeads` (Method: `DepositHeads`)
+- **HTTPPOST** `ServiceDepartment` (Method: `AddServiceDepartment`)
+- **HTTPPOST** `BillingItem` (Method: `AddBillingItem`)
+- **HTTPPOST** `ServiceItem` (Method: `ServiceItems`)
+- **HTTPPOST** `ReportingItem` (Method: `AddReportingItem`)
+- **HTTPPOST** `BillingToReportingItemMapping` (Method: `AddSecurityReportingItemBillItem`)
+- **HTTPPOST** `BillingPackage` (Method: `AddBillingPackage`)
+- **HTTPPOST** `CreditOrganization` (Method: `AddCreditOrganization`)
+- **HTTPPOST** `BillScheme` (Method: `PostBillScheme`)
+- **HTTPPOST** `SchemePriceCategoryMap` (Method: `AddSchemePriceCategoryMap`)
+- **HTTPPOST** `MembershipType` (Method: `AddMembershipType`)
+- **HTTPPOST** `PrinterSetting` (Method: `AddPrinterSetting`)
+- **HTTPPOST** `BillItemsPriceCategoryMap` (Method: `AddBillItemsPriceCategoryMap`)
+- **HTTPPOST** `BillServiceItemsPriceCategoryMap` (Method: `AddServiceBillItemsPriceCategoryMap`)
+- **HTTPPOST** `AdditionalServiceItem` (Method: `AdditionalServiceItem`)
+- **HTTPPOST** `DepositHead` (Method: `DepositHead`)
+- **HTTPPUT** `ServiceDepartment` (Method: `PutServiceDepartment`)
+- **HTTPPUT** `BillingItem` (Method: `PutBillingItem`)
+- **HTTPPUT** `ActivateDeactivateServiceItem` (Method: `ActivateDeactivateServiceItem`)
+- **HTTPPUT** `ServiceItem` (Method: `ServiceItem`)
+- **HTTPPUT** `ReportingItem` (Method: `PutReportingItem`)
+- **HTTPPUT** `BillingAndReportingItemMapping` (Method: `PutBillingAndReportingItemMapping`)
+- **HTTPPUT** `BillingPackage` (Method: `PutBillingPackage`)
+- **HTTPPUT** `ActivateDeactivateBillingPackage` (Method: `ActivateDeactivateBillingPackage`)
+- **HTTPPUT** `CreditOrganization` (Method: `PutCreditOrganization`)
+- **HTTPPUT** `MembershipType` (Method: `PutMembershipType`)
+- **HTTPPUT** `BillingScheme` (Method: `PutBillScheme`)
+- **HTTPPUT** `AdditionalServiceItem` (Method: `PutAdditionalServiceItem`)
+- **HTTPPUT** `ActivateDeactivateAdditionalServiceItem` (Method: `ActivateDeactivateAdditionalServiceItem`)
+- **HTTPPUT** `DepositHead` (Method: `UpdateDepositHead`)
+- **HTTPPUT** `ActivateDeactivateDepositHead` (Method: `ActivateDeactivateDepositHead`)
+- **HTTPPUT** `ActivateDeactivateSubScheme` (Method: `ActivateDeactivateSubScheme`)
+- **HTTPPUT** `PrinterSetting` (Method: `PutPrinterSettinge`)
+- **HTTPPUT** `BillItemsPriceCategoryMap` (Method: `PutBillItemsPriceCategoryMap`)
+- **HTTPPUT** `BillServiceItemsPriceCategoryMap` (Method: `BillServiceItemsPriceCategoryMap`)
+- **HTTPPUT** `SchemePriceCategoryMap` (Method: `SchemePriceCategoryMap`)
+- **HTTPPUT** `ActivateDeactivateSchemePriceCategoryMapItem` (Method: `ActivateDeactivateSchemePriceCategoryMapItem`)
+- **HTTPPUT** `BillSchemeActivation` (Method: `ActiveBillScheme`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPOST** `Post` (Method: `Post`)
+- **HTTPPUT** `Put` (Method: `Put`)
+- **HTTPGET** `Employees` (Method: `GetEmployee`)
+- **HTTPGET** `EmployeeRoles` (Method: `GetEmployeeRole`)
+- **HTTPGET** `EmployeeTypes` (Method: `EmployeeType`)
+- **HTTPGET** `EmployeeSignatoryImage` (Method: `EmployeeSignatoryImage`)
+- **HTTPGET** `ExternalReferrers` (Method: `GetExternalReferrers`)
+- **HTTPGET** `Referrers` (Method: `GetReferrers`)
+- **HTTPPOST** `Employees` (Method: `PostEmployees`)
+- **HTTPPOST** `EmployeeRoles` (Method: `PostEmployeeRoles`)
+- **HTTPPOST** `EmployeeTypes` (Method: `PostEmployeeTypes`)
+- **HTTPPOST** `ExternalReferrer` (Method: `PostExternalReferrer`)
+- **HTTPPUT** `Employees` (Method: `EditEmployees`)
+- **HTTPPUT** `EmployeeRoles` (Method: `EditEmployeeRoles`)
+- **HTTPPUT** `EmployeeTypes` (Method: `EditEmployeeTypes`)
+- **HTTPPUT** `ExternalReferrer` (Method: `EditExternalReferrer`)
+- **HTTPGET** `ImagingItems` (Method: `GetImagingItems`)
+- **HTTPGET** `ImagingTypes` (Method: `GetImagingTypes`)
+- **HTTPGET** `ReportTemplates` (Method: `GetReportTemplates`)
+- **HTTPGET** `ReportTemplate` (Method: `GetReportTemplate`)
+- **HTTPPOST** `ImagingItem` (Method: `PostImagingItem`)
+- **HTTPPOST** `ImagingType` (Method: `PostImagingType`)
+- **HTTPPOST** `ReportTemplate` (Method: `PostReportTemplate`)
+- **HTTPPUT** `ImagingItem` (Method: `PutImagingItem`)
+- **HTTPPUT** `ImagingType` (Method: `PutImagingType`)
+- **HTTPPUT** `ReportTemplate` (Method: `PutReportTemplate`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPOST** `Post` (Method: `Post`)
+- **HTTPPUT** `Put` (Method: `Put`)
+- **HTTPDELETE** `Delete` (Method: `Delete`)
+- **HTTPGET** `Applications` (Method: `Applications`)
+- **HTTPGET** `Routes` (Method: `Routes`)
+- **HTTPGET** `Permissions` (Method: `Permissions`)
+- **HTTPGET** `Roles` (Method: `Roles`)
+- **HTTPGET** `Users` (Method: `Users`)
+- **HTTPGET** `RolePermissions` (Method: `RolePermissions`)
+- **HTTPGET** `UserRoles` (Method: `UserRoles`)
+- **HTTPPOST** `User` (Method: `PostUser`)
+- **HTTPPOST** `Role` (Method: `PostRole`)
+- **HTTPPOST** `RolePermissions` (Method: `PostRolePermissions`)
+- **HTTPPOST** `UserRoles` (Method: `PostUserRoles`)
+- **HTTPPUT** `User` (Method: `PutUser`)
+- **HTTPPUT** `Role` (Method: `PutRole`)
+- **HTTPPUT** `RolePermissions` (Method: `PutRolePermissions`)
+- **HTTPPUT** `UserRoles` (Method: `PutUserRoles`)
+- **HTTPPUT** `ResetPassword` (Method: `PutResetPassword`)
+- **HTTPPUT** `UserIsActive` (Method: `PutUserIsActive`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPOST** `Post` (Method: `Post`)
+- **HTTPPUT** `Put` (Method: `Put`)
+- **HTTPGET** `Departments` (Method: `GetDepartments`)
+- **HTTPGET** `PharmacyStores` (Method: `GetPharmacyStore`)
+- **HTTPGET** `IntegrationNames` (Method: `GetIntegrationNames`)
+- **HTTPGET** `Countries` (Method: `GetCountries`)
+- **HTTPGET** `CountrySubDivisions` (Method: `GetSubDivisions`)
+- **HTTPGET** `Municipalities` (Method: `GetMunicipalities`)
+- **HTTPGET** `Reactions` (Method: `GetReactions`)
+- **HTTPGET** `CoreCfgParameter` (Method: `GetCFGParameters`)
+- **HTTPGET** `PrintExportConfiguration` (Method: `GetPrintExportConfiguration`)
+- **HTTPGET** `OPDServiceItems` (Method: `OPDServiceItems`)
+- **HTTPGET** `IntakeOutputType` (Method: `getIntakeOutputType`)
+- **HTTPGET** `IntakeOutputTypeForGrid` (Method: `getIntakeOutputTypeForGrid`)
+- **HTTPPOST** `PostIntakeOutputVariable` (Method: `postIntakeOutputVariable`)
+- **HTTPPUT** `activate-deactivate-intakeoutput-variables` (Method: `ActivateDeactivateIntakeOutputVariable`)
+- **HTTPPUT** `UpdateIntakeOutputVariable` (Method: `UpdateIntakeOutputVariable`)
+- **HTTPGET** `GetICD10Groups` (Method: `GetICD10Groups`)
+- **HTTPGET** `~/api/Settings/GetStoreVerifiers/{StoreId}` (Method: `GetStoreVerifiers`)
+- **HTTPGET** `~/api/Settings/BillingCreditOrganization` (Method: `GetBillingCreditOrganization`)
+- **HTTPGET** `~/api/Settings/PharmacyCreditOrganization` (Method: `GetPharmacyCreditOrganization`)
+- **HTTPGET** `PriceCategories` (Method: `GetPriceCategories`)
+- **HTTPPUT** `UpdatePaymentModeSettings` (Method: `UpdatePaymentModeSettings`)
+- **HTTPGET** `GetPaymentModes` (Method: `GetPaymentModes`)
+- **HTTPGET** `GetPaymentModeSettings` (Method: `GetPaymentModeSettings`)
+- **HTTPPUT** `UpdateServiceDepartmentStatus` (Method: `UpdateServiceDepartmentStatus`)
+- **HTTPPOST** `Department` (Method: `PostDepartment`)
+- **HTTPPOST** `PharmacyStore` (Method: `PostStore`)
+- **HTTPPOST** `Country` (Method: `PostCountry`)
+- **HTTPPOST** `CountrySubDivision` (Method: `PostSubDivision`)
+- **HTTPPOST** `Municipality` (Method: `PostMunicipality`)
+- **HTTPPOST** `Reaction` (Method: `PostReaction`)
+- **HTTPPOST** `LabTest` (Method: `PostLabItem`)
+- **HTTPPOST** `Bank` (Method: `PostBank`)
+- **HTTPPOST** `PrintExportConfiguration` (Method: `PostPrintExportConfiguration`)
+- **HTTPPOST** `PriceCategory` (Method: `AddPriceCategories`)
+- **HTTPPUT** `Department` (Method: `PutDepartment`)
+- **HTTPPUT** `StoreActivation` (Method: `PutStoreActivation`)
+- **HTTPPUT** `PharmacyStore` (Method: `PutStore`)
+- **HTTPPUT** `Country` (Method: `PutCountry`)
+- **HTTPPUT** `MunicipalityStatus` (Method: `PutMunicipalityStatus`)
+- **HTTPPUT** `CountrySubDivision` (Method: `PutSubDivision`)
+- **HTTPPUT** `Reaction` (Method: `PutReaction`)
+- **HTTPPUT** `CoreCfgParameter` (Method: `PutCFGParameter`)
+- **HTTPPUT** `Bank` (Method: `PutBank`)
+- **HTTPPUT** `PrintExportConfiguration` (Method: `PutPrintExportConfiguration`)
+- **HTTPPUT** `PriceCategory` (Method: `UpdatePriceCategory`)
+- **HTTPPUT** `~/api/Settings/PriceCategoryActivation` (Method: `ActivatePriceCategory`)
+- **HTTPPOST** `NursingWardSupplyMap` (Method: `PostNursingWardStoreMap`)
+- **HTTPGET** `NursingWardSupplyMap` (Method: `GetNursingWardStoreMap`)
+- **HTTPGET** `NursingWardSupplyMapByWardId` (Method: `GetNursingWardStoreMapByWardId`)
+- **HTTPPUT** `NursingWardSupplyMap` (Method: `UpdateSubstoreWardDetail`)
+
+---
+
+## Frontend Implementation
+**Directory**: `wwwroot/PulseLogicApp/src/app/settings-new`
+
+### Routing / Views
+- `/DepartmentsManage`
+- `/RadiologyManage`
+- `/ADTManage`
+- `/EmployeeManage`
+- `/SecurityManage`
+- `/BillingManage`
+- `/GeolocationManage`
+- `/ClinicalManage`
+- `/TaxManage`
+- `/DynamicTemplates`
+- `/EditCoreCFG`
+- `/ExtReferral`
+- `/Banks`
+- `/Printers`
+- `/PrintExportConfiguration`
+- `/PaymentModeSettings`
+- `/PriceCategory`
+- `/**`
+
+### Angular Components
+- `settings-main`
+- `adt-settings-main`
+- `add-auto-billing-items`
+- `auto-billing-item-list`
+- `bed-feature-scheme-pricecategory-list`
+- `bed-feature-scheme-pricectaegory-add`
+- `bed-feature-add`
+- `bed-feature-list`
+- `bed-add`
+- `bed-list`
+- `deposit-settings-add`
+- `deposit-settings-list`
+- `ward-add`
+- `ward-list`
+- `add-banks`
+- `bank-list`
+- `billing-settings-main`
+- `additional-service-items`
+- `billing-package-add`
+- `billing-package-list`
+- `credit-organization-add`
+- `credit-organization-list`
+- `deposit-head-add`
+- `deposit-head-list`
+- `map-scheme-and-pricecategory`
+- `add-scheme-pricecategory-items`
+- `membership-add`
+- `membership-list`
+- `scheme-select`
+- `reporting-items-add`
+- `reporting-items-list`
+- `manage-reporting-items`
+- `bill-scheme-list`
+- `bill-scheme`
+- `bill-service-item-scheme-setting`
+- `bill-service-item-list`
+- `bill-service-item`
+- `clinical-settings-main`
+- `icd10-group-list`
+- `intake-output-add`
+- `intake-output-type`
+- `reaction-add`
+- `reaction-list`
+- `parameter-edit`
+- `parameter-list`
+- `dept-settings-main`
+- `department-add`
+- `department-list`
+- `service-department-add`
+- `substore-add`
+- `substore-list`
+- `ward-substore-map-manage-edit`
+- `ward-substore-map-manage-list`
+- `ward-substore-map-manage`
+- `dynamic-template-main`
+- `field-mapping`
+- `fields`
+- `template`
+- `template-type`
+- `emp-settings-main`
+- `employee-add`
+- `employee-list`
+- `employee-role-add`
+- `employee-role-list`
+- `employee-type-add`
+- `employee-type-list`
+- `add-ext-referral`
+- `list-ext-referral`
+- `select-referrer`
+- `geolocation-settings-main`
+- `country-add`
+- `country-list`
+- `municipality-add`
+- `municipality-list`
+- `country-subdivision-add`
+- `country-subdivision-list`
+- `payment-mode.main`
+- `add-price-category`
+- `price-category-list`
+- `print-export-configuration.main`
+- `add-new-configuration`
+- `add-printer-setting`
+- `list-printer-settings`
+- `printer-select`
+- `radiology-settings.main`
+- `rad-def-signatories`
+- `imaging-type-add`
+- `imaging-type-list`
+- `imaging-item-add`
+- `imaging-item-list`
+- `radiology-report-template`
+- `security-setting.main`
+- `reset-password`
+- `role-permission-manage`
+- `role-add`
+- `role-list`
+- `user-role-map`
+- `user-add`
+- `user-list`
+- `tax-manage`
+
+### Angular Services & Endpoints
+- `settings.bl.service.ts`
+- `settings.dl.service.ts`
+

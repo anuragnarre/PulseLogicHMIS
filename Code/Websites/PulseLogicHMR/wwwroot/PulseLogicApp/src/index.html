@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PulseLogic EMR</title>
+  <base href="./">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    /* Search bar fix — high specificity to override any conflicting styles */
+    .modern-header-search .search-container input[type="text"] {
+      padding-left: 44px !important;
+    }
+    .modern-header-search .search-container .search-icon {
+      position: absolute !important;
+      left: 16px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      z-index: 1;
+      pointer-events: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <my-app></my-app>
+  <script>
+    // ── Global Theme System ──
+    // These functions live outside Angular so they are always available.
+    window.applyTheme = function(theme) {
+      var root = document.documentElement;
+      if (theme === 'light') {
+        root.removeAttribute('data-app-theme');
+      } else {
+        root.setAttribute('data-app-theme', theme);
+      }
+      localStorage.setItem('pulselogic_app_theme', theme);
+      localStorage.setItem('pulselogic_theme',
+        theme === 'dark' ? 'dark' : theme === 'midnight' ? 'midnight' : 'light');
+    };
+
+    window.toggleThemeDropdown = function() {
+      var dd = document.getElementById('app-theme-dropdown');
+      if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+    };
+
+    // ── Global Horizontal Nav System ──
+    window.toggleHorizontalNav = function() {
+      var body = document.body;
+      var isHidden = body.classList.toggle('hide-horizontal-nav');
+      localStorage.setItem('pulselogic_hide_nav', isHidden ? 'true' : 'false');
+    };
+
+    // Event delegation for data-theme-action buttons (Angular strips inline onclick)
+    document.addEventListener('click', function(e) {
+      // Nav toggle check
+      var navToggleTarget = e.target.closest ? e.target.closest('#app-nav-toggle-btn') : null;
+      if (navToggleTarget) {
+        window.toggleHorizontalNav();
+        return;
+      }
+
+      var target = e.target.closest ? e.target.closest('[data-theme-action]') : null;
+      var dd = document.getElementById('app-theme-dropdown');
+      var toggleBtn = document.getElementById('app-theme-toggle-btn');
+
+      if (target) {
+        var action = target.getAttribute('data-theme-action');
+        if (action === 'toggle') {
+          if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+          return;
+        }
+        if (action === 'apply') {
+          var themeName = target.getAttribute('data-theme-name');
+          if (themeName) window.applyTheme(themeName);
+          if (dd) dd.style.display = 'none';
+          return;
+        }
+      }
+
+      // Close dropdown on any outside click
+      if (dd && toggleBtn && !toggleBtn.contains(e.target) && !dd.contains(e.target)) {
+        dd.style.display = 'none';
+      }
+    });
+
+    // Apply saved theme immediately on load
+    (function() {
+      var saved = localStorage.getItem('pulselogic_app_theme') || localStorage.getItem('pulselogic_theme') || 'light';
+      if (saved && saved !== 'light') {
+        if (saved === 'ocean' || saved === 'forest') saved = 'light';
+        if (saved !== 'light') document.documentElement.setAttribute('data-app-theme', saved);
+      }
+      
+      var hideNav = localStorage.getItem('pulselogic_hide_nav');
+      if (hideNav === 'true') {
+        document.body.classList.add('hide-horizontal-nav');
+      }
+    })();
+  </script>
+</body>
+</html>
+

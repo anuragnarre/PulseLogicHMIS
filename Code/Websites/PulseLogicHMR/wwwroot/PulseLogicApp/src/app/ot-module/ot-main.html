@@ -1,0 +1,11 @@
+﻿<!-- <base href="/"> -->
+<div style="padding: 0 24px;">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Apple HIG: content padding override for this module -->
+<style>
+  /* Ensure the content area uses our design tokens */
+  .page-container, .page-wrapper, .page-content { background: transparent !important; }
+  :host > div[style*="padding"] { padding: 0 !important; }
+</style>

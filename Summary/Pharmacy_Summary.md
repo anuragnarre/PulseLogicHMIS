@@ -1,0 +1,561 @@
+# Pharmacy Module Summary
+
+## Backend Implementation
+**Directory**: `Code/Websites/PulseLogicHMR/Controllers/Pharmacy`
+
+### API Endpoints
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPGET** `GetPatientList` (Method: `GetPatientList`)
+- **HTTPGET** `~/api/Pharmacy/getGoodReceiptHistory` (Method: `GetGoodReceiptHistory`)
+- **HTTPGET** `~/api/Pharmacy/GetInvoiceHeader/{Module}` (Method: `GetInvoieHeader`)
+- **HTTPGET** `GetGRDetailsByGRId` (Method: `GetGRDetailsByGRId`)
+- **HTTPGET** `~/api/Pharmacy/GetPODetailsByPOID/{PurchaseOrderId}` (Method: `GetPODetailsByPOID`)
+- **HTTPGET** `~/api/Pharmacy/GetInvoiceReceiptByInvoiceId/{InvoiceId}` (Method: `GetInvoiceReceiptByInvoiceId`)
+- **HTTPGET** `GetMainStoreStock/{ShowAllStock}` (Method: `GetMainStoreStock`)
+- **HTTPGET** `GetMainStoreIncomingStock` (Method: `GetMainStoreIncomingStock`)
+- **HTTPGET** `GetMainStoreIncomingStockById` (Method: `GetMainStoreIncomingStockById`)
+- **HTTPGET** `GetItemListForManualReturn` (Method: `GetItemListForManualReturn`)
+- **HTTPGET** `GetAvailableBatchesByItemId` (Method: `GetAvailableBatchesByItemId`)
+- **HTTPPUT** `ReceiveIncomingStock` (Method: `ReceiveIncomingStock`)
+- **HTTPGET** `~/api/Pharmacy/GetRequisitionDetailsForDispatch/{RequisitionId}` (Method: `GetRequisitionDetailsForDispatch`)
+- **HTTPGET** `GetPharmacySalePatient` (Method: `GetPharmacySalePatient`)
+- **HTTPGET** `GetDateFilteredGoodsReceiptList` (Method: `GetDateFilteredGoodsReceiptList`)
+- **HTTPPOST** `~/api/Pharmacy/postInvoiceHeader` (Method: `PostInvoiceHeader`)
+- **HTTPPOST** `~/api/Pharmacy/PostDirectDispatch` (Method: `PostDirectDispatch`)
+- **HTTPPOST** `Post` (Method: `Post`)
+- **HTTPPOST** `~/api/Pharmacy/PostStoreDispatch` (Method: `PostStoreDispatch`)
+- **HTTPPOST** `PostInvoice` (Method: `PostInvoice`)
+- **HTTPPOST** `PostReturnFromCustomer` (Method: `PostReturnFromCustomer`)
+- **HTTPPUT** `~/api/Pharmacy/putInvoiceHeader` (Method: `PutInvoiceHeader`)
+- **HTTPPUT** `Put` (Method: `Put`)
+- **HTTPPUT** `UpdateStockMRP` (Method: `UpdateStockMRP`)
+- **HTTPPUT** `UpdateStockExpiryDateandBatchNo` (Method: `UpdateStockExpiryDateandBatchNo`)
+- **HTTPGET** `~/api/Pharmacy/getItemRateHistory` (Method: `GetItemRateHistory`)
+- **HTTPGET** `~/api/Pharmacy/getItemFreeQuantityReceivedHistory` (Method: `GetItemFreeQuantityReceivedHistory`)
+- **HTTPGET** `~/api/Pharmacy/getMRPHistory` (Method: `GetMRPHistory`)
+- **HTTPGET** `ExportStocksForReconciliationToExcel` (Method: `ExportStocksForReconciliationToExcel`)
+- **HTTPPOST** `UpdateReconciledStockFromExcelFile` (Method: `UpdateReconciledStockFromExcelFile`)
+- **HTTPPUT** `UpdateNMCNo` (Method: `UpdateNMCNo`)
+- **HTTPPOST** `AddPriceCategory` (Method: `AddPriceCategory`)
+- **HTTPPUT** `UpdatePriceCategory` (Method: `UpdatePriceCategory`)
+- **HTTPGET** `GetAllPharmacyStore` (Method: `GetAllPharmacyStore`)
+- **HTTPPOST** `~/api/Pharmacy/PostSubStoreDispatch` (Method: `PostSubStoreDispatch`)
+- **HTTPGET** `GetRackNoByItemId` (Method: `GetRackNoByItemId`)
+- **HTTPGET** `~/api/Pharmacy/GetFiscalYearList` (Method: `GetFiscalYearList`)
+- **HTTPGET** `GetMultipleInvoiceItemsToReturn` (Method: `GetMultipleInvoiceItemsToReturn`)
+- **HTTPPOST** `ReturnMultipleInvoiceItemsFromCustomer` (Method: `ReturnMultipleInvoiceItemsFromCustomer`)
+- **HTTPGET** `ReceiptDetailToPrintMultipleInvoiceReturn` (Method: `ReceiptDetailToPrintMultipleInvoiceItemReturn`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPGET** `GetAll` (Method: `GetAll`)
+- **HTTPPUT** `UpdatePurchaseOrder` (Method: `UpdatePurchaseOrder`)
+- **HTTPGET** `GoodsReceiptHistory` (Method: `GetGoodReceiptHistory`)
+- **HTTPGET** `GRDetailsByGRId` (Method: `GetGRDetailByGRId`)
+- **HTTPGET** `PODetailsByPOID` (Method: `GetPODetailByPOID`)
+- **HTTPGET** `DateFilteredGoodsReceiptList` (Method: `GetDateFilteredGoodsReceiptList`)
+- **HTTPGET** `ItemRateHistory` (Method: `GetItemRateHistory`)
+- **HTTPGET** `ItemFreeQuantityReceivedHistory` (Method: `GetItemFreeQuantityReceivedHistory`)
+- **HTTPGET** `MRPHistory` (Method: `GetMRPHistory`)
+- **HTTPGET** `PatientsPrescriptions` (Method: `PatientsPrescriptions`)
+- **HTTPPOST** `NewPrescription` (Method: `NewPrescription`)
+- **HTTPPOST** `NewPrescriptionItem` (Method: `NewPrescriptionItem`)
+- **HTTPGET** `Orders` (Method: `GetOrders`)
+- **HTTPGET** `OrderInfo` (Method: `OrderInfo`)
+- **HTTPGET** `GoodReceipts` (Method: `GetGoodReceipts`)
+- **HTTPGET** `SuppliersLedgerInfo` (Method: `SuppliersLedgerInfo`)
+- **HTTPGET** `SupplierLedgerInfo` (Method: `SupplierLedgerInfo`)
+- **HTTPGET** `GoodsReceiptInfo` (Method: `GoodsReceiptInfo`)
+- **HTTPGET** `GoodsReceiptReturnInfo` (Method: `GoodsReceiptReturnInfo`)
+- **HTTPGET** `OrderItemsToGoodsReceipt` (Method: `OrderItemsToGoodsReceipt`)
+- **HTTPGET** `GoodsReceiptDetailsByItemId` (Method: `GoodsReceiptDetailsByItemId`)
+- **HTTPGET** `GoodsReceiptForEdit` (Method: `GoodsReceiptForEdit`)
+- **HTTPPOST** `Order` (Method: `PostOrder`)
+- **HTTPPUT** `Order` (Method: `Order`)
+- **HTTPPOST** `GoodsReceipt` (Method: `PostGoodReceipt`)
+- **HTTPPOST** `GoodsReceiptCancel` (Method: `PostGoodsReceiptCancel`)
+- **HTTPPUT** `GoodsReceipt` (Method: `PutGoodsReceipt`)
+- **HTTPGET** `Verifiers` (Method: `Verifiers`)
+- **HTTPGET** `Items` (Method: `Items`)
+- **HTTPGET** `PharmacyItemsWithTotalAvailableQuantity` (Method: `GetPHRMItemsWithTotalAvailableQuantity`)
+- **HTTPGET** `GoodsReceiptsInfo` (Method: `GetGoodsReceiptsInfo`)
+- **HTTPGET** `ReturnedList` (Method: `GetReturnItemsToSuppliers`)
+- **HTTPGET** `ReturnDetail` (Method: `GetReturnDetailByReturnToSupplierId`)
+- **HTTPGET** `GRDetailWithAvailableStock` (Method: `GetGRDetail`)
+- **HTTPPOST** `NewReturnDetail` (Method: `PostReturnToSupplierItems`)
+- **HTTPGET** `GetActiveStores` (Method: `GetActiveStores`)
+- **HTTPGET** `GetPharmacyUsersForReturnFromCustomerReport` (Method: `GetPharmacyUsersForReturnFromCustomerReport`)
+- **HTTPGET** `GetOnlyItemNameList` (Method: `GetOnlyItemName`)
+- **HTTPGET** `PHRMPurchaseOrderReport` (Method: `PHRMPurchaseOrderReport`)
+- **HTTPGET** `StockManageReport` (Method: `StockManageReport`)
+- **HTTPGET** `DepositBalanceReport` (Method: `DepositBalanceReport`)
+- **HTTPGET** `PHRMUserwiseCollectionReport` (Method: `PHRMUserwiseCollectionReport`)
+- **HTTPGET** `PHRMCashCollectionSummaryReport` (Method: `PHRMCashCollectionSummaryReport`)
+- **HTTPGET** `PHRMSaleReturnReport` (Method: `PHRMSaleReturnReport`)
+- **HTTPGET** `PHRMCounterwiseCollectionReport` (Method: `PHRMCounterwiseCollectionReport`)
+- **HTTPGET** `PHRMDailySalesReport` (Method: `PHRMDailySalesReport`)
+- **HTTPGET** `PHRMNarcoticsDailySalesReport` (Method: `PHRMNarcoticsDailySalesReport`)
+- **HTTPGET** `ExportToExcelPHRMCounterwiseCollectionReport` (Method: `ExportToExcelPHRMCounterwiseCollectionReport`)
+- **HTTPGET** `PHRMBreakageItemReport` (Method: `PHRMBreakageItemReport`)
+- **HTTPGET** `ExportToExcelPHRMBreakageItemReport` (Method: `ExportToExcelPHRMBreakageItemReport`)
+- **HTTPGET** `PHRMReturnToSupplierReport` (Method: `PHRMReturnToSupplierReport`)
+- **HTTPGET** `PHRMTransferToStoreReport` (Method: `PHRMTransferToStoreReport`)
+- **HTTPGET** `PHRMTransferToDispensaryReport` (Method: `PHRMTransferToDispensaryReport`)
+- **HTTPGET** `PHRMGoodsReceiptProductReport` (Method: `PHRMGoodsReceiptProductReport`)
+- **HTTPGET** `PHRMItemWiseStockReport` (Method: `PHRMItemWiseStockReport`)
+- **HTTPGET** `PHRMDispensaryStoreStockReport` (Method: `PHRMDispensaryStoreStockReport`)
+- **HTTPGET** `PHRMNarcoticsDispensaryStoreStockReport` (Method: `PHRMNarcoticsDispensaryStoreStockReport`)
+- **HTTPGET** `PHRMSupplierInformationReport` (Method: `PHRMSupplierInformationReport`)
+- **HTTPGET** `ExportToExcelPHRMSupplierInfoReport` (Method: `ExportToExcelPHRMSupplierInfoReport`)
+- **HTTPGET** `PHRMCreditInOutPatReport` (Method: `PHRMCreditInOutPatReport`)
+- **HTTPGET** `ExportToExcelPHRMCreditInOutPatientReport` (Method: `ExportToExcelPHRMCreditInOutPatientReport`)
+- **HTTPGET** `PHRMSupplierStockSummaryReport` (Method: `PHRMSupplierStockSummaryReport`)
+- **HTTPGET** `ExportToExcelPHRMSupplierStockSummaryReport` (Method: `ExportToExcelPHRMSupplierStockSummaryReport`)
+- **HTTPGET** `PHRMStockItemsReport` (Method: `PHRMStockItemsReport`)
+- **HTTPGET** `ExportToExcelPHRMStockItemsReport` (Method: `ExportToExcelPHRMStockItemsReport`)
+- **HTTPGET** `PHRMStockMovementReport` (Method: `PHRMStockMovementReport`)
+- **HTTPGET** `ExportToExcelPHRMStockMovementReport` (Method: `ExportToExcelPHRMStockMovementReport`)
+- **HTTPGET** `PHRMBatchStockReport` (Method: `PHRMBatchStockReport`)
+- **HTTPGET** `ExportToExcelPHRMBatchStockReport` (Method: `ExportToExcelPHRMBatchStockReport`)
+- **HTTPGET** `PHRMExpiryStockReport` (Method: `PHRMExpiryStockReport`)
+- **HTTPGET** `ExportToExcelPHRMExpiryReport` (Method: `ExportToExcelPHRMExpiryReport`)
+- **HTTPGET** `PHRMDailySalesSummary` (Method: `PHRMDailySalesSummary`)
+- **HTTPGET** `PHRMMinStockReport` (Method: `PHRMMinStockReport`)
+- **HTTPGET** `PHRMSupplierStockReport` (Method: `PHRMSupplierStockReport`)
+- **HTTPGET** `ExportToExcelPHRMSupplierStockReport` (Method: `ExportToExcelPHRMSupplierStockReport`)
+- **HTTPGET** `PHRMEndingStockSummaryReport` (Method: `PHRMEndingStockSummaryReport`)
+- **HTTPGET** `ExportToExcelPHRMEndingStockSummaryReport` (Method: `ExportToExcelPHRMEndingStockSummaryReport`)
+- **HTTPGET** `PHRMBillingReport` (Method: `PHRMBillingReport`)
+- **HTTPGET** `ExportToExcelPHRMBillingReport` (Method: `ExportToExcelPHRMBillingReport`)
+- **HTTPGET** `PHRMDailyStockSummaryReport` (Method: `PHRMDailyStockSummaryReport`)
+- **HTTPGET** `ExportToExcelPHRMDailyStockSummaryReport` (Method: `ExportToExcelPHRMDailyStockSummaryReport`)
+- **HTTPGET** `PHRMStockSummaryReport` (Method: `PHRMStockSummaryReport`)
+- **HTTPGET** `PHRMItemTxnSummaryReport` (Method: `PHRMItemTxnSummaryReport`)
+- **HTTPGET** `PHRM_Daily_StockValue` (Method: `PHRM_Daily_StockValue`)
+- **HTTPGET** `PHRMItemWisePurchaseReport` (Method: `PHRMItemWisePurchaseReport`)
+- **HTTPGET** `PHRMABCVEDStockReport` (Method: `PHRMABCVEDStockReport`)
+- **HTTPGET** `ExportToExcelPHRMABCVEDStockReport` (Method: `ExportToExcelPHRMABCVEDStockReport`)
+- **HTTPGET** `PHRMStoreStock` (Method: `PHRMStoreStock`)
+- **HTTPGET** `PHRMDrugCategoryWiseReport` (Method: `PHRMDrugCategoryWiseReport`)
+- **HTTPGET** `ExportToExcelPHRMDailySales` (Method: `ExportToExcelPHRMDailySales`)
+- **HTTPGET** `PHRMRackStockDistributionReport` (Method: `PHRMRackStockDistributionReport`)
+- **HTTPGET** `ExportToExcelPHRMRackStockDistributionReport` (Method: `ExportToExcelPHRMRackStockDistributionReport`)
+- **HTTPGET** `PHRMDateWisePurchaseReport` (Method: `PHRMDateWisePurchaseReport`)
+- **HTTPGET** `ReturnFromCustomerReport` (Method: `ReturnFromCustomerReport`)
+- **HTTPGET** `SalesStatementReport` (Method: `SalesStatementReport`)
+- **HTTPGET** `SalesSummaryReport` (Method: `SalesSummaryReport`)
+- **HTTPGET** `SetlementSummaryReport` (Method: `SetlementSummaryReport`)
+- **HTTPGET** `PatientWiseSettlementSummaryReport` (Method: `PatientWiseSettlementSummaryReport`)
+- **HTTPGET** `PurchaseSummaryReport` (Method: `PurchaseSummaryReport`)
+- **HTTPGET** `InsurancePatientBimaReport` (Method: `InsurancePatientBimaReport`)
+- **HTTPGET** `PatientSalesDetailReport` (Method: `PatientSalesDetailReport`)
+- **HTTPGET** `StockSummarySecondReport` (Method: `StockSummarySecondReport`)
+- **HTTPGET** `PHRMStockTransfersReport` (Method: `PHRMStockTransfersReport`)
+- **HTTPGET** `PHRMSupplierWiseStockReport` (Method: `PHRMSupplierWiseStockReport`)
+- **HTTPGET** `GetReturnOnInvestmentReport` (Method: `GetReturnOnInvestmentReport`)
+- **HTTPGET** `PHRM_PaymentModeWiseReport` (Method: `PHRM_PaymentModeWiseReport`)
+- **HTTPGET** `RankMembershipwiseSalesReport` (Method: `RankMembershipwiseSalesReport`)
+- **HTTPGET** `GetAllMembership` (Method: `GetAllMembership`)
+- **HTTPGET** `GetAllRank` (Method: `GetAllRank`)
+- **HTTPGET** `PharmacyDailySalesSummaryReport` (Method: `PharmacyDailySalesSummaryReport`)
+- **HTTPGET** `InOutPatientDetails` (Method: `InOutPatientDetails`)
+- **HTTPGET** `ItemWiseWardSupplyReport` (Method: `ItemWiseWardSupplyReport`)
+- **HTTPGET** `ProvisionalDrugRequisitionsByStatus` (Method: `ProvisionalDrugRequisitionsByStatus`)
+- **HTTPGET** `AllProvisionalDrugRequisitions` (Method: `AllProvisionalDrugRequisitions`)
+- **HTTPGET** `DispensaryAvailableStocksDetail` (Method: `DispensaryAvailableStocksDetail`)
+- **HTTPGET** `Invoices` (Method: `Invoices`)
+- **HTTPGET** `InvoiceItems` (Method: `InvoiceItems`)
+- **HTTPGET** `PatientInfo` (Method: `PatientInfo`)
+- **HTTPGET** `PatientBillingSummary` (Method: `PatientBillingSummary`)
+- **HTTPGET** `PatientDeposits` (Method: `PatientDeposits`)
+- **HTTPGET** `PatientBillHistory` (Method: `PatientBillHistory`)
+- **HTTPGET** `PatientsProvisionalInfo` (Method: `PatientsProvisionalInfo`)
+- **HTTPGET** `PatientProvisionaItems` (Method: `PatientProvisionaItems`)
+- **HTTPPOST** `DrugRequisitions_NotImplemented` (Method: `DrugRequisitions_NotImplemented`)
+- **HTTPPOST** `OutdoorPatient` (Method: `OutdoorPatient`)
+- **HTTPPOST** `ProvisionalInvoice` (Method: `PostProvisionalInvoice`)
+- **HTTPPOST** `FinalInvoiceFromProvisional` (Method: `FinalInvoiceFromProvisional`)
+- **HTTPPOST** `Deposit` (Method: `Deposit`)
+- **HTTPPUT** `ProvisionalInvoice` (Method: `UpdateProvisional`)
+- **HTTPPUT** `CancelProvisionalInvoice` (Method: `CancelProvisional`)
+- **HTTPGET** `ProvisionalReturnInfo` (Method: `ProvisionalReturnInfo`)
+- **HTTPPUT** `ProvisionalItemsCancel` (Method: `ProvisionalItemsCancel`)
+- **HTTPPUT** `InvoicePrintCount` (Method: `PutInvoicePrintCount`)
+- **HTTPPUT** `DepositPrintCount` (Method: `PutDepositPrintCount`)
+- **HTTPGET** `GetPatientList` (Method: `GetPatientList`)
+- **HTTPGET** `InvoiceReceiptByInvoiceId` (Method: `GetInvoiceReceipt`)
+- **HTTPGET** `PharmacySalePatient` (Method: `GetPharmacySalePatient`)
+- **HTTPPOST** `PostInvoice` (Method: `PostInvoice`)
+- **HTTPGET** `DispensaryAvailableStock` (Method: `GetDispensaryAvailableStock`)
+- **HTTPGET** `PrescriptionItems` (Method: `PrescriptionItems`)
+- **HTTPPUT** `UpdatePrescriptionOrderStatus` (Method: `UpdatePrescriptionOrderStatus`)
+- **HTTPGET** `CreditNotes` (Method: `GetCreditNotes`)
+- **HTTPGET** `CreditNoteInfo` (Method: `CreditNoteInfo`)
+- **HTTPGET** `CreditNotesInfo` (Method: `CreditNotesInfo`)
+- **HTTPGET** `InvoiceAndItemsDetailForReturn` (Method: `GetReturnFromCustomerDataByInvoiceId`)
+- **HTTPGET** `ProvisionalReturns` (Method: `ProvisionalReturns`)
+- **HTTPGET** `PatientProvisionalReturnItems` (Method: `PatientProvisionalReturnItems`)
+- **HTTPGET** `GetItemListForManualReturn` (Method: `GetItemListForManualReturn`)
+- **HTTPGET** `MultipleInvoiceItemsToReturn` (Method: `GetMultipleInvoiceItemToReturn`)
+- **HTTPPOST** `ReturnFromCustomer` (Method: `PostReturnFromCustomer`)
+- **HTTPPOST** `ManualReturn` (Method: `PostManualReturns`)
+- **HTTPPOST** `ReturnMultipleInvoiceItemsFromCustomer` (Method: `ReturnMultipleInvoiceItemsFromCustomer`)
+- **HTTPGET** `ReceiptDetailToPrintMultipleInvoiceReturn` (Method: `ReceiptDetailToPrintMultipleInvoiceItemReturn`)
+- **HTTPGET** `ActiveSuppliers` (Method: `GetActiveSuppliers`)
+- **HTTPGET** `Suppliers` (Method: `GetSuppliers`)
+- **HTTPGET** `Counters` (Method: `GetCounters`)
+- **HTTPGET** `CreditOrganizations` (Method: `GetCreditOrganizations`)
+- **HTTPGET** `ItemTypes` (Method: `GetItemTypes`)
+- **HTTPGET** `PackingTypes` (Method: `PackagingTypes`)
+- **HTTPGET** `ItemsWithAllDetails` (Method: `GetItemsWithAllDetails`)
+- **HTTPGET** `Taxes` (Method: `GetTaxes`)
+- **HTTPGET** `Items` (Method: `GetItems`)
+- **HTTPGET** `ItemsByItemTypeId` (Method: `GetItemsByItemTypeId`)
+- **HTTPGET** `Companies` (Method: `GetCompanies`)
+- **HTTPGET** `ItemCategories` (Method: `GetItemCategories`)
+- **HTTPGET** `UnitOfMeasurements` (Method: `GetUnitOfMeasurements`)
+- **HTTPGET** `MainStore` (Method: `GetMainStore`)
+- **HTTPGET** `Generics` (Method: `GetGenerics`)
+- **HTTPGET** `ItemsByDispensaryId` (Method: `GetItemsByDispensaryId`)
+- **HTTPGET** `SalesCategories` (Method: `GetSalesCategories`)
+- **HTTPPOST** `Supplier` (Method: `PostSupplier`)
+- **HTTPPOST** `Company` (Method: `PostCompany`)
+- **HTTPGET** `InvoiceHeader` (Method: `GetInvoieHeader`)
+- **HTTPPOST** `Dispensary` (Method: `PostDispensary`)
+- **HTTPPOST** `SalesCategory` (Method: `PostSalesCategory`)
+- **HTTPPOST** `PharmacyCategory` (Method: `PostPharmacyCategory`)
+- **HTTPPOST** `Item` (Method: `PostItem`)
+- **HTTPPOST** `Tax` (Method: `PostTax`)
+- **HTTPPOST** `Generic` (Method: `PostGeneric`)
+- **HTTPPOST** `UnitOfMeasurement` (Method: `PostUnitOfMeasurement`)
+- **HTTPPOST** `ItemType` (Method: `PostItemType`)
+- **HTTPPOST** `PackingType` (Method: `PostPackingType`)
+- **HTTPPOST** `CreditOrganization` (Method: `PostCreditOrganization`)
+- **HTTPPOST** `UpdateReconciledStockFromExcelFile` (Method: `UpdateReconciledStockFromExcelFile`)
+- **HTTPPUT** `Supplier` (Method: `PutSupplier`)
+- **HTTPPUT** `Company` (Method: `PutCompany`)
+- **HTTPPUT** `Dispensary` (Method: `PutDispensary`)
+- **HTTPPUT** `Category` (Method: `PutCategory`)
+- **HTTPPUT** `UnitOfMeasurement` (Method: `PutUnitOfMeasurement`)
+- **HTTPPUT** `ItemType` (Method: `PutItemType`)
+- **HTTPPUT** `PakingType` (Method: `PutPakingType`)
+- **HTTPPUT** `Item` (Method: `PutItem`)
+- **HTTPPUT** `Tax` (Method: `PutTax`)
+- **HTTPPUT** `Generic` (Method: `PutGeneric`)
+- **HTTPPUT** `ItemToRack` (Method: `PutItemToRack`)
+- **HTTPPUT** `CreditOrganization` (Method: `PutCreditOrganization`)
+- **HTTPPUT** `InvoiceHeader` (Method: `UpdateInvoiceHeader`)
+- **HTTPPUT** `CCCharge` (Method: `PutCCCharge`)
+- **HTTPPUT** `NMCNo` (Method: `UpdateNMCNo`)
+- **HTTPPOST** `InvoiceHeader` (Method: `PostInvoicesHeader`)
+- **HTTPPOST** `PriceCategory` (Method: `AddPriceCategory`)
+- **HTTPPUT** `PriceCategory` (Method: `UpdatePriceCategory`)
+- **HTTPGET** `PharmacyStores` (Method: `GetAllPharmacyStore`)
+- **HTTPGET** `RackNoByItemIdAndStoreId` (Method: `GetRackNo`)
+- **HTTPGET** `FiscalYearList` (Method: `GetFiscalYearList`)
+- **HTTPGET** `Stores` (Method: `GetStores`)
+- **HTTPGET** `SubStores` (Method: `GetSubStores`)
+- **HTTPGET** `PendingBills` (Method: `PendingBills`)
+- **HTTPGET** `Settlements` (Method: `PharmacySettlements`)
+- **HTTPGET** `PatientUnpaidInvoices` (Method: `PatientUnpaidInvoices`)
+- **HTTPGET** `PreviewInvoice` (Method: `PreviewInvoice`)
+- **HTTPGET** `PatientProvisionalItems` (Method: `PatientProvisionalItems`)
+- **HTTPGET** `DuplicatePrints` (Method: `DuplicatePrints`)
+- **HTTPGET** `SettlementDetail` (Method: `SettlementDetail`)
+- **HTTPPOST** `NewSettlement` (Method: `NewSettlement`)
+- **HTTPPUT** `PrintCount` (Method: `PrintCount`)
+- **HTTPGET** `WardRequisitions` (Method: `GetAllWardRequsitions`)
+- **HTTPGET** `DrugRequisitions` (Method: `DrugRequsitions`)
+- **HTTPGET** `DrugOrders` (Method: `GetDrugOrders`)
+- **HTTPGET** `DispatchedDrugItems` (Method: `DispatchedDrugItems`)
+- **HTTPGET** `WriteOffs` (Method: `GetWriteOffs`)
+- **HTTPGET** `StockDetails` (Method: `StockDetails`)
+- **HTTPGET** `NarcoticsStock` (Method: `NarcoticsStock`)
+- **HTTPGET** `WriteOff` (Method: `WriteOffById`)
+- **HTTPGET** `StockManage` (Method: `ManageStock`)
+- **HTTPGET** `StockTransactions` (Method: `GetStockTransactions`)
+- **HTTPGET** `AllStockDetails` (Method: `GetAllStockDetail`)
+- **HTTPGET** `RequsitionItems` (Method: `RequsitionbyRequsitionId`)
+- **HTTPGET** `DispatchDetail` (Method: `DispatchDetail`)
+- **HTTPGET** `Dispatch` (Method: `DispatchById`)
+- **HTTPGET** `MainStoreStock` (Method: `GetMainStoreStock`)
+- **HTTPGET** `MainStoreIncomingStockById` (Method: `GetMainStoreIncomingStockById`)
+- **HTTPGET** `AvailableBatchesByItemId` (Method: `GetAvailableBatcheByItemId`)
+- **HTTPPUT** `ReceiveIncomingStock` (Method: `ReceiveIncomingStock`)
+- **HTTPGET** `RequisitionDetailsForDispatch` (Method: `GetRequisitionDetailsForDispatch`)
+- **HTTPPOST** `DirectDispatch` (Method: `PostDirectDispatch`)
+- **HTTPPOST** `StoreDispatch` (Method: `PostStoreDispatch`)
+- **HTTPPOST** `SubStoreDispatch` (Method: `PostSubStoreDispatch`)
+- **HTTPPUT** `StockMRP` (Method: `UpdateStockMRP`)
+- **HTTPPUT** `StockExpiryDateandBatchNo` (Method: `UpdateStockExpiryDateandBatchNo`)
+- **HTTPGET** `ExportStocksForReconciliationToExcel` (Method: `ExportStockForReconciliationToExcel`)
+- **HTTPPOST** `DrugRequsition` (Method: `SaveDrugRequsitions`)
+- **HTTPPOST** `WriteOff` (Method: `SaveWriteOff`)
+- **HTTPPOST** `ManageStock` (Method: `SaveManageStock`)
+- **HTTPPOST** `ManageStore` (Method: `SaveManageStore`)
+- **HTTPPOST** `TransferToDispensary` (Method: `TransferToDispensary`)
+- **HTTPPOST** `TransferToStore` (Method: `TransferToStore`)
+- **HTTPGET** `GetAll` (Method: `GetAll`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPUT** `MakeSupplierLedgerPayment` (Method: `MakeSupplierLedgerPayment`)
+
+### Services
+Backend services encapsulate business logic and data access for Pharmacy.
+
+---
+
+## Frontend Implementation
+**Directory**: `wwwroot/PulseLogicApp/src/app/pharmacy`
+
+### Routing / Views
+- `/Dashboard`
+- `/Billing`
+- `/Order`
+- `/PurchaseOrderItems`
+- `/PurchaseOrder`
+- `/GoodsReceiptItems`
+- `/GoodsReceiptList`
+- `/**`
+- `/Supplier`
+- `/PharmacySuppliersList`
+- `/Report`
+- `/Purchase`
+- `/DateWisePurchaseReport`
+- `/GoodsReceiptProductReport`
+- `/ItemWisePurchaseReport`
+- `/PurchaseOrderReport`
+- `/ReturnToSupplierReport`
+- `/PurchaseSummary`
+- `/SupplierWisePurchaseReport`
+- `/Sales`
+- `/BillingReport`
+- `/CounterwiseCollectionReport`
+- `/CashCollectionSummaryReport`
+- `/DepositBalanceReport`
+- `/DrugCategoryWiseReport`
+- `/LedgerCreditInOutPatientReport`
+- `/PHRMDailySalesSummary`
+- `/PHRMNarcoticsDailySalesReport`
+- `/SaleReturnReport`
+- `/UserwiseCollectionReport`
+- `/SalesStatement`
+- `/INSPatientBima`
+- `/SalesSummary`
+- `/PatientWiseSalesDetail`
+- `/SettlementSummaryReport`
+- `/ReturnOnInvestmentReport`
+- `/PHRMPaymentModeWiseReport`
+- `/RankMembershipwiseSalesReport`
+- `/Stock`
+- `/ABCVEDStock`
+- `/BreakageItemReport`
+- `/BatchStockReport`
+- `/DailyStockSummaryReport`
+- `/EndingStockSummary`
+- `/ExpiryReport`
+- `/ItemWiseStockReport`
+- `/TransferToStoreReport`
+- `/TransferToDispensaryReport`
+- `/PHRMMinStock`
+- `/PHRMNarcoticsStockReport`
+- `/PHRMRackStockDistributionReport`
+- `/ReturnFromCustomerReport`
+- `/StockManageDetailReport`
+- `/StockSummaryReport`
+- `/StockItemsReport`
+- `/SupplierStockSummaryReport`
+- `/StockMovementReport`
+- `/SupplierStockReport`
+- `/StockSummarySecond`
+- `/StockTransfers`
+- `/StockLedgerReport`
+- `/SupplierWiseStockReport`
+- `/ItemWiseWardSupplyReport`
+- `/SupplierInfoReport`
+- `/Report/StoreStockReport`
+- `/Setting`
+- `/SupplierManage`
+- `/CompanyManage`
+- `/CategoryManage`
+- `/UnitOfMeasurementManage`
+- `/ItemTypeManage`
+- `/ItemManage`
+- `/TAXManage`
+- `/GenericManage`
+- `/RackSetting`
+- `/Rack`
+- `/RackAllocation`
+- `/Dispensary`
+- `/CreditOrganizations`
+- `/TermsList/:id`
+- `/InvoiceHeaders/:module`
+- `/Packing`
+- `/ProvisionalItems`
+- `/WardRequisition`
+- `/Store`
+- `/ReturnItemsToSupplier`
+- `/ReturnItemsToSupplierList`
+- `/StoreDetails`
+- `/SalesCategoryList`
+- `/StoreRequisition`
+- `/StoreRequisitionDetails`
+- `/StoreDispatch`
+- `/StoreDispatchDetails`
+- `/DirectDispatch`
+- `/WriteOffItems`
+- `/List`
+- `/Add`
+- `/SupplierLedger`
+- `/SupplierLedgerView`
+- `/SubstoreRequestAndDispatch`
+- `/Requisitions`
+- `/RequisitionDetails`
+- `/Dispatch`
+- `/DispatchDetails`
+
+### Angular Components
+- `pharmacy-main`
+- `phrm-acc-supplier-list`
+- `phrm-accounting-main`
+- `phrm-billing-main`
+- `phrmitem-add`
+- `generic-add`
+- `pharmacy-counter-activate`
+- `pharmacy-duplicate-prints-main`
+- `provisional-return`
+- `return-invoice`
+- `settlement-duplicate`
+- `phrm-order-main`
+- `phrm-goods-receipt`
+- `phrm-gr-item`
+- `phrm-goods-receipt-list`
+- `phrm-goods-receipt-view`
+- `phrm-gr-view-np`
+- `phrm-purchase-order`
+- `phrm-purchase-order-list`
+- `phrm-po-view-np`
+- `patient-consumption-main`
+- `consumption-receipt`
+- `consumption-return-receipt`
+- `phrm-finalize-consumption-wrapper`
+- `phrm-finalize-invoice`
+- `phrm-patient-consumption-add`
+- `phrm-patient-consumption-list`
+- `return-consumption-items`
+- `return-consumption-list`
+- `phrm-prescription-list`
+- `phrm-prescription-main`
+- `phrm-prescription`
+- `phrm-provisional-items`
+- `phrm-rack-add`
+- `phrm-rack-drug-list`
+- `phrm-rack`
+- `phrm-rack-allocation`
+- `phrm-rack-main`
+- `pharmacy-receipt`
+- `pharmacy-credit-note-print`
+- `pharmacy-invoice-print`
+- `pharmacy-provisional-invoice-print`
+- `pharmacy-provisional-invoice-return-print`
+- `phrm-report-main`
+- `phrm-abcved-report`
+- `phrm-batch-stock-report`
+- `phrm-billing-report`
+- `phrm-breakage-item-report`
+- `phrm-counterwise-collection-report`
+- `phrm-credit-in-out-patient-report`
+- `phrm-daily-sales-summary`
+- `phrm-daily-stock-summary-report`
+- `datewise-purchase-report`
+- `phrm-deposit-balance-report`
+- `phrm-drug-categorywise-report`
+- `phrm-ending-stock-summary-report`
+- `phrm-expiry-report`
+- `phrm-good-receipt-product-report`
+- `item-wise-purchase-report`
+- `item-wise-wardsupply-report`
+- `phrm-itemwise-stock-report`
+- `phrm-minstock-report`
+- `phrm-narcotics-stock-report`
+- `phrm-paymentmodewise-report`
+- `phrm-purchase-report`
+- `phrm-purchase-summary`
+- `phrm-sales-report`
+- `phrm-ins-bima-report`
+- `phrm-patient-sales-detail`
+- `phrm-sales-statement`
+- `phrm-sales-summary`
+- `phrm-stock-report`
+- `phrm-stock-summary-second`
+- `stock-transfers-report`
+- `phrm-supplier-report`
+- `supplierwise-stock-report`
+- `phrm-purchase-order-report`
+- `phrm-rack-stock-distribution-report`
+- `RankMembershipwiseSalesReport`
+- `return-from-customer`
+- `return-on-investment-report`
+- `phrm-return-to-supplier-report`
+- `phrm-sale-return-report`
+- `phrm-settlement-summary-report`
+- `phrm-stock-items-report`
+- `stock-ledger-report`
+- `phrm-stock-manage-report`
+- `phrm-stock-movement-report`
+- `phrm-stock-summary-report`
+- `item-txn-summary`
+- `phrm-supplier-information-report`
+- `phrm-supplier-stock-report`
+- `phrm-supplier-stock-summary-report`
+- `supplierwise-purchase-report`
+- `phrm-transfer-to-dispensary-report`
+- `phrm-transfer-to-store-report`
+- `phrm-userwise-collection-report`
+- `phrm-receipt-print`
+- `phrm-credit-bills`
+- `phrm-invoice-view`
+- `phrm-op-patient-add`
+- `settlement`
+- `phrm-settlement-receipt`
+- `phrm-setting-main`
+- `phrm-category-manage`
+- `phrm-company-manage`
+- `phrm-credit-organizations-list`
+- `phrm-credit-organizations`
+- `phrm-dispensary-manage`
+- `phrm-generic-manage`
+- `phrm-item-manage`
+- `phrm-item-type-manage`
+- `phrm-update-mrp`
+- `phrm-packing-type-add`
+- `phrm-packing-type-list`
+- `phrm-supplier-manage`
+- `phrm-tax-manage`
+- `phrm-uom-manage`
+- `phrm-store-main`
+- `phrm-return-item-to-supplier-list`
+- `phrm-return-items-to-supplier`
+- `phrm-sales-category-list`
+- `phrm-store-details-list`
+- `phrm-incoming-stock-list`
+- `receive-incoming-stock`
+- `stock-reconcilation`
+- `write-off-item`
+- `write-off-list`
+- `substore-requisition-dispatch-main`
+- `direct-dispatch`
+- `phrm-store-dispatch-items`
+- `phrm-store-requisition-details`
+- `phrm-store-requisition-list`
+- `supplier-ledger`
+- `supplier-ledger-view`
+- `phrm-ward-requisition`
+
+### Angular Services & Endpoints
+- `pharmacy-po.endpoint.ts`
+- `pharmacy-po.service.ts`
+- `pharmacy.bl.service.ts`
+- `pharmacy.dl.service.ts`
+- `pharmacy.service.ts`
+- `phrm-rack.endpoint.ts`
+- `phrm-rack.service.ts`
+- `supplier-ledger.service.ts`
+

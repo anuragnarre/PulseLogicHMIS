@@ -1,0 +1,121 @@
+<div class="wrapper" style="padding: 24px;">
+  <div class="row" *ngIf="showPatientList">
+    <div class="col-lg-12 col-sm-12" id="patientListGridHolder">
+      <div class="pl-card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+          <div class="pl-card-title" style="margin: 0; font-size: 1.5rem;">
+            <i class="fa fa-users text-primary"></i> Patient Management
+          </div>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div class="modern-header-search" style="width: 300px; justify-content: flex-start;">
+              <div class="search-container" style="max-width: 100%;">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search patients by name or ID..." (keyup)="serverSearchTxt($event.target.value)" />
+              </div>
+            </div>
+            <button class="btn-modern btn-modern-primary" routerLink="/Patient/RegisterPatient/BasicInfo">
+              <i class="fa fa-plus"></i> Add New Patient
+            </button>
+          </div>
+        </div>
+        
+        <div style="overflow-x: auto;">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pat of patients">
+                <td style="font-weight: 500;">{{pat.PatientCode || pat.PatientId}}</td>
+                <td style="font-weight: 600;">{{pat.ShortName}}</td>
+                <td>{{pat.Age}}</td>
+                <td>{{pat.Gender}}</td>
+                <td>{{pat.PhoneNumber}}</td>
+                <td>
+                  <span class="modern-badge" [ngClass]="pat.IsActive ? 'badge-success' : 'badge-danger'">
+                    {{pat.IsActive ? 'Active' : 'Inactive'}}
+                  </span>
+                </td>
+                <td style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                  <button class="btn-modern btn-modern-secondary btn-sm" title="View Details" (click)="PatientGridActions({Action: 'showHistory', Data: pat})">
+                    <i class="fa fa-eye text-info"></i>
+                  </button>
+                  <button class="btn-modern btn-modern-secondary btn-sm" title="Edit" (click)="PatientGridActions({Action: 'edit', Data: pat})">
+                    <i class="fa fa-pencil text-primary"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="patients.length === 0">
+                <td colspan="7" style="text-align: center; padding: 48px 20px;">
+                  <i class="fa fa-search text-tertiary" style="font-size: 48px; margin-bottom: 16px;"></i>
+                  <p class="text-secondary" style="font-size: 1.1rem;">No patients found. Use search to load records.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="showPatientHistory">
+    <div class="col-lg-12 col-sm-12">
+      <div class="pl-card">
+        <div style="margin-bottom: 16px;">
+          <button class="btn-modern btn-modern-secondary" (click)="HidePatientHistory()">
+            <i class="fa fa-arrow-left"></i> Back to List
+          </button>
+        </div>
+        <patient-history [showPatientHistory]="showPatientHistory" [selectedPatient]="selectedPatient"></patient-history>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="displayHealthcard">
+    <div class="col-lg-12 col-sm-12">
+      <patient-health-card *ngIf="hospitalHealthCard && hospitalHealthCard=='default'" [showCard]="displayHealthcard"
+        [selectedPat]="selectedPatient"> </patient-health-card>
+      <hams-health-card *ngIf="hospitalHealthCard && hospitalHealthCard=='hams'" [showCard]="displayHealthcard"
+        [selectedPat]="selectedPatient"> </hams-health-card>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="showNeighbourCard">
+    <div class="col-lg-12 col-sm-12">
+      <patient-neighbour-card [showCard]="showNeighbourCard" [selectedPat]="selectedPatient"> </patient-neighbour-card>
+    </div>
+  </div>
+
+  <div *ngIf="uploadFilesShow">
+    <div class="pl-card" style="margin-top: 24px;">
+      <div style="margin-bottom: 16px;">
+        <button class="btn-modern btn-modern-secondary" (click)="HideUploadFile()">
+          <i class="fa fa-arrow-left"></i> Back to List
+        </button>
+      </div>
+      <patient-upload-files [isShowUploadMode]="isShowUploadMode" [isShowListMode]="isShowListMode"
+        [patientId]="patientId"> </patient-upload-files>
+    </div>
+  </div>
+
+  <!-- PATIENT STICKER MODAL -->
+  <div *ngIf="showPatientSticker" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+    <div class="pl-card" style="padding: 32px; position: relative;">
+        <button class="btn-modern btn-modern-secondary" style="position: absolute; right: 16px; top: 16px; padding: 8px; border: none;" (click)="ClosePrintStickerPopup()">
+            <i class="fa fa-times text-danger"></i>
+        </button>
+        <div class="pl-card-title mb-4">
+            <i class="fa fa-print text-primary"></i> Print Patient Sticker
+        </div>
+        <patient-sticker [patientId]="this.selectedPatient" (after-print-action)="AfterStickerPrint($event)"> </patient-sticker>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,385 @@
+# Inventory Module Summary
+
+## Backend Implementation
+**Directory**: `Code/Websites/PulseLogicHMR/Controllers/Inventory`
+
+### API Endpoints
+- **HTTPGET** `GetAll` (Method: `GetAll`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPGET** `GetAll` (Method: `GetAll`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPOST** `Post` (Method: `Post`)
+- **HTTPPUT** `Put` (Method: `Put`)
+- **HTTPGET** `Vendors` (Method: `GetVendorList`)
+- **HTTPGET** `TermsList` (Method: `GetTermsList`)
+- **HTTPGET** `ItemWiseRequistion` (Method: `GetItemwiseRequistion`)
+- **HTTPGET** `AvailableItemQty` (Method: `GetAvailableItemQty`)
+- **HTTPGET** `RequisitionItemsForView` (Method: `GetRequisitionItemForView`)
+- **HTTPGET** `DispatchView` (Method: `GetDispatchView`)
+- **HTTPGET** `CancelledRequisitionDetail` (Method: `CancelledRequisitionDetail`)
+- **HTTPGET** `DispatchViewByDispatchIdReqIdCreatedOn` (Method: `DispatchViewByDispatchIdRequestIdCreatedOn`)
+- **HTTPGET** `ReturnItemDetails` (Method: `GetReturnItemDetails`)
+- **HTTPGET** `PurchaseOrders` (Method: `GetPurchaseOrderList`)
+- **HTTPGET** `PurchaseOrderItemByPOId` (Method: `GetPurchaseOrderItemByPOId`)
+- **HTTPGET** `RequisitionByRequisitionId` (Method: `GetRequisitionById`)
+- **HTTPGET** `RequisitionItemForView` (Method: `GetRequisitionItemView`)
+- **HTTPGET** `RequisitionByItemId` (Method: `GetRequisitionByItemId`)
+- **HTTPGET** `WriteOffItems` (Method: `GetWriteOffItems`)
+- **HTTPGET** `ReturnVendorItems` (Method: `GetReturnVendorItems`)
+- **HTTPGET** `VendorDetailsByVendorId` (Method: `GetVendorDetailsByVendorId`)
+- **HTTPGET** `VendorsDetail` (Method: `GetVendorsDetail`)
+- **HTTPGET** `Requisitions` (Method: `GetRequisitionList`)
+- **HTTPGET** `DeptWiseRequistions` (Method: `GetDeptWiseRequistionsList`)
+- **HTTPGET** `Department` (Method: `DepartmentByRequisitionId`)
+- **HTTPGET** `GoodsReceipStocks` (Method: `GetGoodsReceipStocks`)
+- **HTTPGET** `GoodsReceipt` (Method: `GetGoodsReceipt`)
+- **HTTPGET** `GoodsReceiptMasterList` (Method: `GetGoodsReceiptMaster`)
+- **HTTPGET** `GoodsReceiptByEachVendor` (Method: `GetGoodsReceiptByVendor`)
+- **HTTPGET** `GoodsReceiptByVendorId` (Method: `GetGrByVendorId`)
+- **HTTPGET** `GoodsReceiptByGRId` (Method: `GRItemsByGRId`)
+- **HTTPGET** `PurchaseOrderItem` (Method: `GetPOItemDetailByPOId`)
+- **HTTPGET** `RequisitionsforPO` (Method: `GetRequisitionforPO`)
+- **HTTPGET** `Stocks` (Method: `GetStockList`)
+- **HTTPGET** `StocksForManage` (Method: `GetStockListForManage`)
+- **HTTPGET** `StocksForDonation` (Method: `GetStocksForDonation`)
+- **HTTPGET** `StocksByItemIdAndStoreId` (Method: `GetStocks`)
+- **HTTPGET** `StocksManageByItemIdStoreId` (Method: `GetStocksManageByItemIdStoreId`)
+- **HTTPGET** `BatchNumbers` (Method: `GetBatchNumbers`)
+- **HTTPGET** `VendorWisePurchaseOrders` (Method: `GetVendorWisePurchaseOrders`)
+- **HTTPGET** `RequestForQuotations` (Method: `GetRequestForQuotations`)
+- **HTTPGET** `RequestForQuotationDetails` (Method: `GetRequestForQuotationDetails`)
+- **HTTPGET** `RequestForQuotationItems` (Method: `GetRequestForQuotationItems`)
+- **HTTPGET** `RequestForQuotationVendors` (Method: `GetRequestForQuotationVendors`)
+- **HTTPGET** `Quotations` (Method: `GetQuotations`)
+- **HTTPGET** `QuotationItems` (Method: `GetQuotationItems`)
+- **HTTPGET** `RequestedQuotations` (Method: `GetRequestedQuotations`)
+- **HTTPGET** `QuotationDetails` (Method: `GetReqForQuotationDetails`)
+- **HTTPGET** `QuotationByStatus` (Method: `GetQuotationByStatus`)
+- **HTTPGET** `CreditNoteNo` (Method: `GetCreditNoteNo`)
+- **HTTPGET** `PurchaseOrderRequisition` (Method: `GetPurchaseOrderRequisition`)
+- **HTTPGET** `PORequisitionByRequisitionIdStoreId` (Method: `GetPORequisitionByRequisitionIdStoreId`)
+- **HTTPGET** `RequisitionsByRequisitionId` (Method: `GetRequisitions`)
+- **HTTPGET** `InventoryStores` (Method: `GetInventoryStoreList`)
+- **HTTPGET** `SubCategories` (Method: `GetSubCategory`)
+- **HTTPGET** `GRItemsDetails` (Method: `GRItemsDetailsByGRId`)
+- **HTTPGET** `Items` (Method: `GetItemList`)
+- **HTTPGET** `AvailableQuantityByItemIdAndStoreId` (Method: `AvailableQuantityByItemIdAndStoreId`)
+- **HTTPGET** `ItemsByStoreId` (Method: `GetItemListByStoreId`)
+- **HTTPGET** `ItemsForReturnToVendor` (Method: `GetItemListForReturnToVendor`)
+- **HTTPGET** `AttachedQuotationFiles` (Method: `GetAttachedQuotationFiles`)
+- **HTTPGET** `GetPreviousQuotationDetailsByVendorId` (Method: `GetPreviousQuotationDetailsByVendorId`)
+- **HTTPGET** `SubstoreRequistionList` (Method: `GetSubstoreRequistionList`)
+- **HTTPGET** `SubstoreRequistions` (Method: `GetAllSubstoreRequistionList`)
+- **HTTPGET** `POVerifiers` (Method: `GetAllPOVerifiers`)
+- **HTTPGET** `TrackRequisition` (Method: `TrackRequisitionByRequisitionId`)
+- **HTTPGET** `PurchaseRequestItems` (Method: `GetPurchaseRequestItemsById`)
+- **HTTPGET** `ItemPriceHistory` (Method: `GetAllItemPriceHistory`)
+- **HTTPGET** `InventoryFiscalYears` (Method: `GetAllInventoryFiscalYears`)
+- **HTTPGET** `GRVendorsBillingHistory` (Method: `GetAllGRVendorBillingHistory`)
+- **HTTPGET** `FixedAssetDonations` (Method: `GetFixedAssetDonation`)
+- **HTTPGET** `AvailableQuantity` (Method: `GetAvailableQuantity`)
+- **HTTPGET** `ActiveInventories` (Method: `GetActiveInventoryList`)
+- **HTTPGET** `ProcurementGRView` (Method: `GetProcurementGRView`)
+- **HTTPGET** `RequestForQuotation` (Method: `GetRFQDetailsById`)
+- **HTTPGET** `QuotationDetailsToAddPO` (Method: `GetQuotationDetailsToAddPO`)
+- **HTTPPOST** `PORequisition` (Method: `PORequisition`)
+- **HTTPPOST** `CancelPurchaseOrder` (Method: `PurchaseOrderCancel`)
+- **HTTPPOST** `ReqForQuotation` (Method: `PostReqForQuotation`)
+- **HTTPPOST** `UploadQuotationFiles` (Method: `UploadQuotationFiles`)
+- **HTTPPOST** `PostQuotations` (Method: `PostQuotations`)
+- **HTTPPOST** `Dispatch` (Method: `Dispatch`)
+- **HTTPPOST** `WriteOffItem` (Method: `PostWriteoffItem`)
+- **HTTPPOST** `ReturnToVendor` (Method: `PostReturnToVendor`)
+- **HTTPPOST** `Requisition` (Method: `PostRequisition`)
+- **HTTPPOST** `WithdrawRequisition` (Method: `PostWithdrawRequisition`)
+- **HTTPPOST** `CancelGoodsReceipt` (Method: `CancelGoodsReceipt`)
+- **HTTPPOST** `WithdrawPurchaseRequest` (Method: `WithdrawPurchaseRequestById`)
+- **HTTPGET** `StockListForDirectDispatch` (Method: `StockListForDirectDispatch`)
+- **HTTPPOST** `DirectDispatch` (Method: `PostDirectDispatch`)
+- **HTTPPOST** `PurchaseOrder` (Method: `PostPurchaseOrder`)
+- **HTTPPOST** `ReconciledStockFromExcelFile` (Method: `UpdateReconciledStockFromExcelFile`)
+- **HTTPGET** `ExportStocksForReconciliationToExcel` (Method: `ExportStocksForReconciliationToExcel`)
+- **HTTPPUT** `PurchaseOrderAndPOItemStatus` (Method: `UpdatePO`)
+- **HTTPPUT** `RequisitionStatus` (Method: `UpdateRequisitionStatus`)
+- **HTTPPUT** `StockManage` (Method: `UpdateStockManage`)
+- **HTTPPUT** `VendorForPO` (Method: `UpdateVendorForPO`)
+- **HTTPPUT** `AssetCheckList` (Method: `UpdateAssetCheckList`)
+- **HTTPPUT** `PurchaseOrder` (Method: `UpdatePurchaseOrder`)
+- **HTTPPUT** `PORequisition` (Method: `UpdatePORequisitionData`)
+- **HTTPPUT** `PORequisitionAfterPOCreation` (Method: `UpdatePORequisition`)
+- **HTTPPUT** `CancelRequisitionItem` (Method: `CancelRequisition`)
+- **HTTPGET** `ReturnFromSubtore` (Method: `ReturnFromSubstore`)
+- **HTTPGET** `AllSubstore` (Method: `GetAllSubstore`)
+- **HTTPPUT** `ReceiveDispatchedItems` (Method: `UpdateReceiveDispatchedItems`)
+- **HTTPGET** `AllInventoryStores` (Method: `GetInventoryStoresList`)
+- **HTTPPOST** `PurchaseOrderDraft` (Method: `PostPODraft`)
+- **HTTPGET** `PurchaseOrderDrafts` (Method: `GetPurchaseOrderDraftList`)
+- **HTTPGET** `PurchaseOrderDraftItem` (Method: `GetPODraftByPODId`)
+- **HTTPPOST** `DiscardPurchaseOrder` (Method: `DiscardDraftPurchaseOrder`)
+- **HTTPPUT** `PurchaseOrderDraft` (Method: `UpdatePODraft`)
+- **HTTPGET** `GetVendorsThatReceiveDonation` (Method: `GetVendorsThatReceiveDonation`)
+- **HTTPGET** `GetAllDonation` (Method: `GetAllDonation`)
+- **HTTPGET** `GetDonationViewById` (Method: `GetDonationViewById`)
+- **HTTPGET** `GetDonationById` (Method: `GetDonationById`)
+- **HTTPPOST** `SaveDonation` (Method: `SaveDonation`)
+- **HTTPPUT** `UpdateDonation` (Method: `UpdateDonation`)
+- **HTTPPUT** `CancelDonation` (Method: `CancelDonation`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPOST** `Post` (Method: `Post`)
+- **HTTPGET** `GetAll` (Method: `GetAll`)
+- **HTTPGET** `GetVendorList` (Method: `GetVendorList`)
+- **HTTPGET** `Get` (Method: `Get`)
+- **HTTPPOST** `Post` (Method: `Post`)
+- **HTTPPUT** `UpdateGoodReceipt` (Method: `UpdateGoodReceipt`)
+- **HTTPPOST** `~/api/InventoryGoodReceipt/ReceiveGoodsReceipt/{GoodsReceiptId}` (Method: `ReceiveGoodsReceipt`)
+- **HTTPGET** `GetINVOtherChargesDetails` (Method: `GetINVOtherChargesDetails`)
+- **HTTPGET** `Vendors` (Method: `Vendors`)
+- **HTTPGET** `InventoryTerms` (Method: `GetInventoryTerms`)
+- **HTTPGET** `CurrencyCodes` (Method: `GetCurrencyCodeList`)
+- **HTTPGET** `VendorsWithDefaultItems` (Method: `GetVendorsWithDefaultItems`)
+- **HTTPGET** `ItemCategories` (Method: `GetItemCategories`)
+- **HTTPGET** `ItemSubCategories` (Method: `GetItemSubCategory`)
+- **HTTPGET** `PackagingTypes` (Method: `GetPackagingType`)
+- **HTTPGET** `AccountHeads` (Method: `GetAccountHeads`)
+- **HTTPGET** `UnitOfMeasurements` (Method: `GetUnitOfMeasurements`)
+- **HTTPGET** `Items` (Method: `GetItemList`)
+- **HTTPGET** `OtherCharges` (Method: `GetAllOtherCharges`)
+- **HTTPGET** `OtherCharge` (Method: `GetOtherCharge`)
+- **HTTPGET** `ItemsWithUnit` (Method: `GetItem`)
+- **HTTPGET** `OtherCharges` (Method: `GetOtherCharges`)
+- **HTTPGET** `TermsListByTermsApplicationId` (Method: `GetTermsListByTermsApplicationId`)
+- **HTTPGET** `ActiveRbacRoles` (Method: `GetActiveRbacRolesRoles`)
+- **HTTPPOST** `Vendor` (Method: `PostNewVendor`)
+- **HTTPPOST** `ItemCategory` (Method: `PostItemCategory`)
+- **HTTPPOST** `ItemSubCategory` (Method: `PostItemSubCategory`)
+- **HTTPPOST** `InventoryTerm` (Method: `PostInventoryTerm`)
+- **HTTPPOST** `UnitOfMeasurement` (Method: `PostUnitOfMeasurement`)
+- **HTTPPOST** `PackagingType` (Method: `PostPackagingType`)
+- **HTTPPOST** `AccountHead` (Method: `AddAccountHead`)
+- **HTTPPOST** `Item` (Method: `PostItem`)
+- **HTTPPOST** `Currency` (Method: `AddCurrency`)
+- **HTTPPOST** `OtherCharge` (Method: `PostOtherCharge`)
+- **HTTPPUT** `Vendor` (Method: `UpdateVendor`)
+- **HTTPPUT** `InventoryTerm` (Method: `UpdateInventoryTerm`)
+- **HTTPPUT** `ItemCategory` (Method: `UpdateItemCategory`)
+- **HTTPPUT** `ItemSubCategory` (Method: `UpdateItemSubCategory`)
+- **HTTPPUT** `UnitOfMeasurement` (Method: `UpdateUnitOfMeasurement`)
+- **HTTPPUT** `PackagingType` (Method: `UpdatePackagingType`)
+- **HTTPPUT** `AccountHead` (Method: `UpdateAccountHead`)
+- **HTTPPUT** `Item` (Method: `UpdateItem`)
+- **HTTPPUT** `Currency` (Method: `UpdateCurrency`)
+- **HTTPPUT** `OtherCharge` (Method: `UpdateOtherCharge`)
+
+### Services
+Backend services encapsulate business logic and data access for Inventory.
+- `IInventoryCompanyService.cs`
+- `IInventoryGoodReceiptService.cs`
+- `IInventoryReceiptNumberService.cs`
+- `InventoryCompanyService.cs`
+- `InventoryGoodReceiptService.cs`
+- `InventoryReceiptNumberService.cs`
+
+---
+
+## Frontend Implementation
+**Directory**: `wwwroot/PulseLogicApp/src/app/inventory`
+
+### Routing / Views
+- `/Dashboard`
+- `/InternalMain`
+- `/Requisition`
+- `/RequisitionList`
+- `/RequisitionDetails`
+- `/DirectDispatch`
+- `/Dispatch`
+- `/DispatchReceiptDetails`
+- `/**`
+- `/WriteOffItems`
+- `/WriteOffItemsList`
+- `/ReturnToVendorDetails`
+- `/PurchaseRequest`
+- `/PurchaseRequestList`
+- `/PurchaseRequestAdd`
+- `/PurchaseRequestDetail`
+- `/ReturnFromSubstore`
+- `/ReturnToVendor`
+- `/ReturnToVendorList`
+- `/ReturnToVendorAdd`
+- `/ReturnToVendorView`
+- `/StockMain`
+- `/StockList`
+- `/StockDetails`
+- `/StockManage`
+- `/GoodsReceiptStockList`
+- `/GoodsReceiptStockDetails`
+- `/Donation`
+- `/DonationList`
+- `/AddDonation`
+- `/DonationView`
+- `/Reports`
+- `/Settings`
+- `/Purchase`
+- `/PurchaseItems`
+- `/CancelledPOandGR`
+- `/ComparisonPOGR`
+- `/PurchaseOrder`
+- `/PurchaseReports`
+- `/FixedAssets`
+- `/PurchaseSummary`
+- `/ReturnToSupplier`
+- `/Stock`
+- `/DetailStockLedger`
+- `/InventorySummary`
+- `/InventoryValuation`
+- `/DailyItemDispatch`
+- `/WriteOff`
+- `/ItemMgmtDetail`
+- `/SubstoreStock`
+- `/StockLevel`
+- `/ExpiryItem`
+- `/ConsumableStockLedger`
+- `/CapitalStockLedger`
+- `/IssuedItemList`
+- `/SubstoreDispatchNConsumption`
+- `/ExpirableStock`
+- `/OpeningStockValuation`
+- `/SubStoreSummary`
+- `/Supplier`
+- `/SupplierWiseStock`
+- `/SupplierInformationReport`
+- `/vendor-list`
+- `/itemcategory-list`
+- `/AccountHeadList`
+- `/packagingtype-list`
+- `/unitofmeasurement-list`
+- `/item-list`
+- `/CurrencyList`
+- `/company-list`
+- `/TermsList`
+- `/sub-category-list`
+- `/InvoiceHeaders/:module`
+- `/other-charges`
+
+### Angular Components
+- `inventory`
+- `donation-create`
+- `donation-edit`
+- `donation-form`
+- `donation-list`
+- `donation-view`
+- `donation-view-np`
+- `direct-dispatch`
+- `dispatch-items`
+- `internal-main`
+- `requisition-details`
+- `requisition-list`
+- `write-off-items-list`
+- `write-off-items`
+- `internalmain-purchase-request-add`
+- `internalmain-purchase-request-detail`
+- `internalmain-purhcase-request-list`
+- `return-from-substore-detail`
+- `return-from-substore`
+- `track-requisition`
+- `inventory-reports`
+- `approved-material-stock-register`
+- `capital-stock-ledger`
+- `consumable-stock-ledger`
+- `daily-item-dispatch`
+- `expirable-stock`
+- `expirable-stock-detail-view`
+- `expiry-item`
+- `fixed-assets`
+- `GoodReceiptEvaluation`
+- `gr-view`
+- `inv-purchase-report-main`
+- `cancelledPOandGR`
+- `comparisonPO-GR`
+- `purchase-report`
+- `inv-purchase-summary`
+- `returnToSupplier`
+- `inv-stock-report-main`
+- `detail-stock-ledger`
+- `stock-level`
+- `substore-stock`
+- `inv-supplier-report-main`
+- `supplier-information-report`
+- `supplier-wise-stock-report`
+- `inventory-summary`
+- `inventory-valuation`
+- `inventory-value-by-item-category`
+- `issued-item-list`
+- `itm-mgmt-detail`
+- `opening-stock-valuation`
+- `po-view`
+- `inv-purchase-items-summary`
+- `purchase-order-summary`
+- `return-to-vendor-report`
+- `substore-dispatch-and-consumption`
+- `substore-wise-summary`
+- `Vendor-transaction-report`
+- `write-off`
+- `return-to-vendor-add`
+- `return-to-vendor-list`
+- `return-to-vendor-view`
+- `inventory-settings`
+- `account-head-add`
+- `account-head-list`
+- `company-add`
+- `company-list`
+- `currency-add`
+- `item-add`
+- `item-category-add`
+- `item-subcategory-add`
+- `mapping-add`
+- `other-charges-edit`
+- `other-charges-form`
+- `other-charges-list`
+- `packaging-type-add`
+- `terms-add`
+- `terms-list`
+- `unit-of-measurement-add`
+- `vendor-add`
+- `goods-receipt-inv-view`
+- `goods-receipt-stock-list`
+- `stock-details`
+- `stock-list`
+- `stock-main`
+- `stock-manage`
+- `goods-receipt-inv-np-view`
+- `stock-reconciliation`
+
+### Angular Services & Endpoints
+- `donation.service.ts`
+- `inventory-reports.bl.service.ts`
+- `inventory-reports.dl.service.ts`
+- `other-charges.endpoint.ts`
+- `other-charges.service.ts`
+- `account-head.bl.service.ts`
+- `account-head.dl.service.ts`
+- `currency.bl.service.ts`
+- `currency.dl.service.ts`
+- `inventory-settings.bl.service.ts`
+- `inventory-settings.dl.service.ts`
+- `item-category.bl.service.ts`
+- `item-category.dl.service.ts`
+- `item.bl.service.ts`
+- `item.dl.service.ts`
+- `packaging-type.bl.service.ts`
+- `packaging-type.dl.service.ts`
+- `unit-of-measurement.bl.service.ts`
+- `unit-of-measurement.dl.service.ts`
+- `vendors.bl.service.ts`
+- `vendors.dl.service.ts`
+- `vertical.bl.service.ts`
+- `vertical.dl.service.ts`
+- `company.endpoint.ts`
+- `company.service.ts`
+- `email.endpoint.ts`
+- `email.service.ts`
+- `inventory.bl.service.ts`
+- `inventory.dl.service.ts`
+- `inventory.service.ts`
+- `good-receipt.endpoint.ts`
+- `good-receipt.service.ts`
+

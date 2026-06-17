@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <CetCompat>false</CetCompat>
+    <NoWarn>$(NoWarn);NU1605</NoWarn>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+</Project>

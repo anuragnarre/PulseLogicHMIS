@@ -1,0 +1,25 @@
+﻿
+<base href="/">
+<div class="modern-page-tabs">
+  <ul>
+
+    <li>
+      <a routerLink="PatientList" [routerLinkActive]="'link3-active'">
+        SSU Patient List
+        <i></i>
+      </a>
+    </li>
+    <!--End: Primary Menu Items -->
+
+  </ul>
+</div>
+<div style="padding: 0 24px;">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Apple HIG: content padding override for this module -->
+<style>
+  /* Ensure the content area uses our design tokens */
+  .page-container, .page-wrapper, .page-content { background: transparent !important; }
+  :host > div[style*="padding"] { padding: 0 !important; }
+</style>

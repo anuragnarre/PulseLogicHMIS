@@ -1,0 +1,143 @@
+<div class="wrapper" style="padding: 24px;">
+    <!-- FILTER CARD -->
+    <div class="pl-card" style="margin-bottom: 24px;">
+        <div class="row" style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <div class="form-group mb-0">
+                    <label class="control-label">Doctor <sup class="text-danger">*</sup></label>
+                    <input class="form-control" pulselogic-auto-complete onClick="this.setSelectionRange(0, this.value.length)" [(ngModel)]="selDoctor" [source]="selectedDoctor" placeholder="Search Doctor..." ngModelOptions="{standalone:true}" display-property-name="PerformerName" value-property-name="PerformerName" (valueChanged)="AssignSelectedDoctor()" [list-formatter]="DocListFormatter" max-num-list="15" (focusout)="providerChanged()" />
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <div class="form-group mb-0">
+                    <label class="control-label">Visit Type <sup class="text-danger">*</sup></label>
+                    <select class="form-control" [(ngModel)]="visitType" name="VistType" [ngModelOptions]="{standalone: true}" (change)="filterByVisitType()">
+                        <option value="" selected>All Visits</option>
+                        <option value="New">New Patient</option>
+                        <option value="followup">Follow-Up Patient</option>
+                    </select>
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <div class="form-group mb-0">
+                    <label class="control-label">From Date <sup class="text-danger">*</sup></label>
+                    <pulselogic-date-picker [(ngModel)]="fromDate" ngDefaultControl [CalendarTypes]="'en,np'" [allow-future-date]="true"></pulselogic-date-picker>
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <div class="form-group mb-0">
+                    <label class="control-label">To Date <sup class="text-danger">*</sup></label>
+                    <pulselogic-date-picker [(ngModel)]="toDate" ngDefaultControl [CalendarTypes]="'en,np'" [allow-future-date]="true"></pulselogic-date-picker>
+                </div>
+            </div>
+            <div style="min-width: 150px;">
+                <button class="btn-modern btn-modern-primary" type="button" (click)="LoadAppointmentList()" style="width: 100%;">
+                    <i class="fa fa-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <div class="row" *ngIf="!showReason" style="display: flex; gap: 24px; flex-wrap: wrap;">
+        <!-- SCHEDULER VIEW -->
+        <div class="pl-card" style="flex: 3; min-width: 600px;">
+            <div class="pl-card-title" style="justify-content: space-between;">
+                <span><i class="fa fa-calendar-check-o text-primary"></i> Appointment Scheduler</span>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-modern btn-modern-secondary btn-sm"><i class="fa fa-chevron-left"></i></button>
+                    <div style="border: 1px solid var(--border-light); padding: 6px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 14px; background: var(--bg-app);">
+                        <i class="fa fa-calendar text-tertiary"></i>
+                        <span>This Week</span>
+                    </div>
+                    <button class="btn-modern btn-modern-secondary btn-sm"><i class="fa fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Time</th>
+                            <th>Sun</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let time of ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00']">
+                            <td style="color: var(--text-tertiary); font-weight: 500;">{{time}}</td>
+                            <td *ngFor="let day of [1,2,3,4,5,6,7]" style="position: relative; height: 80px; padding: 4px; vertical-align: top;">
+                                <!-- Mock calendar items -->
+                                <div *ngIf="time === '08:00' && day === 1" style="background: var(--color-primary-light); color: var(--color-primary-hover); border-radius: 8px; padding: 8px; font-size: 12px; height: 100%; border-left: 3px solid var(--color-primary);">
+                                    <div style="font-weight: 600;">Cardiology</div>
+                                    <div>Dr. Lee</div>
+                                </div>
+                                <div *ngIf="time === '09:00' && day === 2" style="background: rgba(16, 185, 129, 0.1); color: var(--color-success); border-radius: 8px; padding: 8px; font-size: 12px; height: 100%; border-left: 3px solid var(--color-success);">
+                                    <div style="font-weight: 600;">Orthopedics</div>
+                                    <div>Dr. Khan</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- WAITLIST VIEW -->
+        <div class="pl-card" style="flex: 1; min-width: 320px;">
+            <div class="pl-card-title">
+                <i class="fa fa-list-alt text-primary"></i> Today's Waitlist
+                <span class="modern-badge badge-warning" style="margin-left: auto;">{{afterDateFormat.length}}</span>
+            </div>
+            <div style="max-height: 600px; overflow-y: auto; padding-right: 8px;">
+                <div *ngFor="let appt of afterDateFormat" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border-light); border-radius: 12px; margin-bottom: 12px; transition: all var(--transition-fast);" class="hover:bg-gray-50">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-primary-light); color: var(--color-primary); display: flex; justify-content: center; align-items: center; font-size: 18px;">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary); font-size: 15px;">{{appt.FirstName}} {{appt.LastName}}</div>
+                            <div style="color: var(--text-tertiary); font-size: 13px; margin-top: 2px;">
+                                <i class="fa fa-clock-o"></i> {{appt.AppointmentTime}} &bull; {{appt.PerformerName}}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn-modern btn-modern-secondary" style="padding: 6px; border-radius: 8px; border: none; color: var(--color-info);" title="Edit" (click)="AppointmentGridActions({Action: 'edit', Data: appt})"><i class="fa fa-pencil"></i></button>
+                        <button class="btn-modern btn-modern-secondary" style="padding: 6px; border-radius: 8px; border: none; color: var(--color-danger);" title="Cancel" (click)="AppointmentGridActions({Action: 'cancel', Data: appt})"><i class="fa fa-times"></i></button>
+                        <button class="btn-modern btn-modern-secondary" style="padding: 6px; border-radius: 8px; border: none; color: var(--color-success);" title="Check-in" (click)="AppointmentGridActions({Action: 'checkin', Data: appt})"><i class="fa fa-check"></i></button>
+                    </div>
+                </div>
+                <div *ngIf="afterDateFormat.length === 0" style="text-align: center; padding: 40px 20px;">
+                    <i class="fa fa-calendar-times-o" style="font-size: 48px; color: var(--border-light); margin-bottom: 16px;"></i>
+                    <p style="color: var(--text-tertiary); font-size: 15px;">No appointments found for this filter.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CANCEL REASON MODAL -->
+    <div *ngIf="showReason" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+        <div class="pl-card" style="width: 100%; max-width: 500px; padding: 32px; position: relative;">
+            <button class="btn-modern btn-modern-secondary" style="position: absolute; right: 16px; top: 16px; padding: 8px; border: none;" (click)="Close()">
+                <i class="fa fa-times text-danger"></i>
+            </button>
+            <div class="pl-card-title text-danger mb-4">
+                <i class="fa fa-exclamation-triangle"></i> Cancel Appointment
+            </div>
+            <p style="margin-bottom: 24px; color: var(--text-secondary);">You are cancelling the appointment for <strong class="text-primary">{{selectedAppointment.FirstName}}</strong>. Please provide a reason.</p>
+            <div class="form-group mb-4">
+                <label>Cancellation Reason</label>
+                <textarea class="form-control" [(ngModel)]="reason" required rows="3" placeholder="Enter reason here..."></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn-modern btn-modern-secondary" (click)="Close()">Cancel</button>
+                <button class="btn-modern btn-modern-primary" style="background: var(--grad-danger);" (click)="AddReason()">Proceed Cancellation</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,263 @@
+# Accounting Module Summary
+
+## Backend Implementation
+**Directory**: `Code/Websites/PulseLogicHMR/Controllers/Accounting`
+
+### API Endpoints
+- **HTTPGET** `BillingIncomeLedgers` (Method: `GetBillingIncomeLedgers`)
+- **HTTPPOST** `MapBillingIncomeLedger` (Method: `MapBillingIncomeLedger`)
+- **HTTPPUT** `ActivateDeactivateBillingLedgerMapping` (Method: `ActivateDeactivateBillingLedgerMapping`)
+- **HTTPPUT** `MapBillingLedger` (Method: `MapBillingLedger`)
+- **HTTPGET** `Vouchers` (Method: `Vouchers`)
+- **HTTPGET** `VoucherHeads` (Method: `GetVoucherHead`)
+- **HTTPGET** `Ledgers` (Method: `GetLedgers`)
+- **HTTPGET** `MappedLedgers` (Method: `GetMappedLedgers`)
+- **HTTPGET** `FiscalYears` (Method: `GetFiscalYear`)
+- **HTTPGET** `CostCenterItems` (Method: `GetCostCenterItems`)
+- **HTTPGET** `ActiveFiscalYears` (Method: `GetActiveFiscalYear`)
+- **HTTPGET** `Transactions` (Method: `GetTransactionList`)
+- **HTTPGET** `TransactionByVoucherNumber` (Method: `GetTransactionByVoucherNumber`)
+- **HTTPGET** `RefrenceTransactionId` (Method: `CheckRefreceTransactionId`)
+- **HTTPGET** `InventoryToAccounting` (Method: `GetInventoryDataForPostToAccounting`)
+- **HTTPGET** `LedgerMapping` (Method: `GetLedgerMapping`)
+- **HTTPGET** `ConsultantLedgers` (Method: `GetConsultantLedgers`)
+- **HTTPGET** `PharmacySupplierLedgers` (Method: `GetPharmacySupplierLedgers`)
+- **HTTPGET** `InventoryVendorLedgers` (Method: `GetInventoryVendorLedgers`)
+- **HTTPGET** `InventorySubCategoryLedgers` (Method: `GetInventorySubCategoryLedgers`)
+- **HTTPGET** `CreditOrganizationLedgers` (Method: `GetCreditOrganizationLedgers`)
+- **HTTPGET** `BillingToAccounting` (Method: `GetBillingDataForPostToAccounting`)
+- **HTTPGET** `PharmacyToAccounting` (Method: `GetPharmacyDataForPostToAccounting`)
+- **HTTPGET** `IncentiveToAccounting` (Method: `GetIncentiveDataForPostToAccounting`)
+- **HTTPGET** `Voucher` (Method: `GetVoucherDetailForEditVoucher`)
+- **HTTPGET** `ProvisionalVoucherNumber` (Method: `GetProvisionalVoucherNumber`)
+- **HTTPGET** `AccountingCodes` (Method: `GetAccountingCodes`)
+- **HTTPGET** `ProvisionalLedgerCode` (Method: `GetProvisionalLedgerCode`)
+- **HTTPGET** `ProvisionalLedgerDetail` (Method: `ProvisionalLedgerDetail`)
+- **HTTPGET** `Hospitals` (Method: `GetHospitals`)
+- **HTTPGET** `FiscalYearLogs` (Method: `FiscalYearLogs`)
+- **HTTPGET** `EmployeeLedgers` (Method: `GetAllEmployeeLedgers`)
+- **HTTPGET** `TransactionDates` (Method: `GetTransactionDates`)
+- **HTTPGET** `BankReconciliationCategories` (Method: `BankReconciliationCategoies`)
+- **HTTPGET** `GoodReceipts` (Method: `GoodReceiptList`)
+- **HTTPGET** `GetBankReconciliationCategory` (Method: `GetBankReconciliationCategory`)
+- **HTTPGET** `get-paymentmodes` (Method: `GetPaymentModeMapLedgers`)
+- **HTTPGET** `SuspenseAccountReconciliationDetail` (Method: `GetSuspenaseAccountReconciliationInfo`)
+- **HTTPPOST** `Trannsaction` (Method: `PostTransaction`)
+- **HTTPPOST** `Transactions` (Method: `PostTransactionList`)
+- **HTTPPOST** `AccountClose` (Method: `PostAccountClosure`)
+- **HTTPPOST** `Ledgers` (Method: `AddLedgers`)
+- **HTTPPOST** `Ledger` (Method: `AddLedger`)
+- **HTTPPOST** `ReverseTransaction` (Method: `ReverTransaction`)
+- **HTTPPOST** `IncentivePayment` (Method: `IncentivePayment`)
+- **HTTPPOST** `Payment` (Method: `MakePayment`)
+- **HTTPPOST** `UpdateBankReconciliationCategory` (Method: `UpdateBankReconciliationCategory`)
+- **HTTPPOST** `UpdateMedicareTypes` (Method: `UpdateMedicareTypes`)
+- **HTTPPOST** `SuspenseAcc/Reconcile` (Method: `PostSuspenaseAccountReconciliation`)
+- **HTTPPUT** `Transaction` (Method: `UpdateTransaction`)
+- **HTTPPUT** `VerifyVoucher` (Method: `VerifyVoucher`)
+- **HTTPPOST** `LedgerListReport` (Method: `LedgerListReport`)
+- **HTTPGET** `CashBankBookReport` (Method: `CashBankBookReport`)
+- **HTTPGET** `DayBookReport` (Method: `DayBookReport`)
+- **HTTPGET** `BankReconciliationReport` (Method: `BankReconciliationReport`)
+- **HTTPPOST** `SubLedgerReport` (Method: `SubLedgerReport`)
+- **HTTPGET** `VoucherReport` (Method: `VoucherReport`)
+- **HTTPGET** `LedgerReport` (Method: `LedgerReport`)
+- **HTTPGET** `TrailBalanceReport` (Method: `TrailBalanceReport`)
+- **HTTPGET** `GroupStatementReport` (Method: `GroupStatementReport`)
+- **HTTPGET** `ProfitAndLossReport` (Method: `ProfitAndLossReport`)
+- **HTTPGET** `BalanceSheetReport` (Method: `BalanceSheetReport`)
+- **HTTPGET** `DailyTransactionReport` (Method: `DailyTransactionReport`)
+- **HTTPGET** `TransactionOriginDetail` (Method: `TransactionOriginDetail`)
+- **HTTPGET** `CashFlowReport` (Method: `CashFlowReport`)
+- **HTTPGET** `DayWiseVoucherReport` (Method: `DayWiseVoucherReport`)
+- **HTTPGET** `DayWiseVoucherDetailsByVoucherNo` (Method: `DayWiseVoucherDetailsByVoucherNo`)
+- **HTTPGET** `SystemAuditReport` (Method: `SystemAuditReport`)
+- **HTTPGET** `ReverseTransactionDetail` (Method: `ReverseTransactionDetail`)
+- **HTTPGET** `BankReconcilationReport` (Method: `BankReconcilationReport`)
+- **HTTPGET** `BankReconciliationHistory` (Method: `BankReconciliationHistory`)
+- **HTTPGET** `VoucherVerification` (Method: `VoucherForVerification`)
+- **HTTPGET** `AccountHeadDetailReport` (Method: `AccountHeadDetailReport`)
+- **HTTPPOST** `PostReconciliation` (Method: `PostReconciliation`)
+- **HTTPPUT** `Update` (Method: `Update`)
+- **HTTPDELETE** `Delete` (Method: `Delete`)
+- **HTTPGET** `GetSubLedgers` (Method: `GetSubLedgers`)
+- **HTTPPUT** `ActivateDeactiveSubLedger` (Method: `ActivateDeactiveSubLedger`)
+- **HTTPPUT** `UpdateSubLedger` (Method: `UpdateSubLedger`)
+- **HTTPPOST** `AddSubLedger` (Method: `AddSubLedger`)
+- **HTTPPOST** `SubLedger` (Method: `SubLedger`)
+- **HTTPGET** `VoucherHeads` (Method: `GetVoucherHeads`)
+- **HTTPGET** `Vouchers` (Method: `GetVouchers`)
+- **HTTPGET** `Ledgers` (Method: `GetLedgers`)
+- **HTTPGET** `LedgerGroups` (Method: `LedgerGroups`)
+- **HTTPGET** `LedgerGroupsDetails` (Method: `GetLedgerGroupsDetails`)
+- **HTTPGET** `FiscalYearList` (Method: `FiscalYearList`)
+- **HTTPGET** `CostCenterItemList` (Method: `GetCostCenterItemList`)
+- **HTTPGET** `ChartofAccount` (Method: `GetChartofAccount`)
+- **HTTPGET** `LedgersList` (Method: `LedgersList`)
+- **HTTPGET** `SectionsList` (Method: `GetSectionsList`)
+- **HTTPGET** `PharmacySupplier` (Method: `GetPharmacySupplier`)
+- **HTTPGET** `Employee` (Method: `GetEmployee`)
+- **HTTPGET** `PrimaryList` (Method: `GetPrimaryList`)
+- **HTTPGET** `TransferRules` (Method: `TrasferRuleDataBySectionId`)
+- **HTTPPOST** `Ledgers` (Method: `AddLedgers`)
+- **HTTPPOST** `LedgersList` (Method: `PostLedgersList`)
+- **HTTPPOST** `Vouchers` (Method: `Vouchers`)
+- **HTTPPOST** `VoucherHead` (Method: `VoucherHead`)
+- **HTTPPOST** `LedgersGroup` (Method: `LedgersGroup`)
+- **HTTPPOST** `CostCenterItem` (Method: `CostCenterItem`)
+- **HTTPPOST** `LedgerGroupCategory` (Method: `LedgerGroupCategory`)
+- **HTTPPOST** `Section` (Method: `Section`)
+- **HTTPPOST** `ChartOfAccount` (Method: `ChartOfAccount`)
+- **HTTPPUT** `LedgerISActive` (Method: `EditLedgerISActive`)
+- **HTTPPUT** `ReopenFiscalYear` (Method: `EditReopenFiscalYear`)
+- **HTTPPUT** `LedgerGroupActivateDeactivate` (Method: `EditLedgerGroupActivateDeactivate`)
+- **HTTPPUT** `LedgerGroup` (Method: `EditLedgerGroup`)
+- **HTTPPUT** `CostCenterItemStatus` (Method: `EditCostCenterItemStatus`)
+- **HTTPPUT** `LedgerGroupCategoryActivateDeactivate` (Method: `EditLedgerGroupCategoryActivateDeactivate`)
+- **HTTPPUT** `Ledger` (Method: `EditLedger`)
+- **HTTPPUT** `VoucherHead` (Method: `EditVoucherHead`)
+- **HTTPPUT** `Section` (Method: `EditSection`)
+- **HTTPPUT** `ChartOfAccount` (Method: `EditChartOfAccount`)
+- **HTTPPUT** `TransferRuleActivateDeactivate` (Method: `EditTransferRulesActive`)
+- **HTTPPUT** `VoucherShowChequeNo` (Method: `EditVoucherShowChequeNo`)
+- **HTTPPUT** `VoucherShowPayeeName` (Method: `EditVoucherShowPayeeName`)
+- **HTTPPOST** `CostCenter` (Method: `PostCostCenter`)
+- **HTTPGET** `CostCenters` (Method: `GetCostCenters`)
+- **HTTPPUT** `CostCenter` (Method: `UpdateCostCenter`)
+- **HTTPGET** `GetParentCostCenters` (Method: `GetParentCostCenters`)
+- **HTTPPUT** `CostCenter/ActivateDeactivate` (Method: `ActivateDeactivateCostCenter`)
+
+### Services
+Backend services encapsulate business logic and data access for Accounting.
+
+---
+
+## Frontend Implementation
+**Directory**: `wwwroot/PulseLogicApp/src/app/accounting`
+
+### Routing / Views
+- `/Transaction`
+- `/VoucherEntry`
+- `/TransferToACC`
+- `/Sync`
+- `/AccountClosure`
+- `/EditManualVoucher`
+- `/ActivateHospital`
+- `/Payment`
+- `/**`
+- `/Settings`
+- `/Reports`
+- `/Reports/BalanceSheetReport`
+- `/Reports/LedgerReport`
+- `/Reports/VoucherReport`
+- `/Reports/TrailBalanceReport`
+- `/Reports/ProfitLossReport`
+- `/Reports/DailyTransactionReport`
+- `/Reports/CashFlowReport`
+- `/Reports/DaywiseVoucherReport`
+- `/Reports/SystemAuditReport`
+- `/Reports/GroupStatementReport`
+- `/Reports/BankReconciliation`
+- `/Reports/Cash-BankBookReport`
+- `/Reports/DayBookReport`
+- `/Reports/SubLedgerReport`
+- `/Reports/AccountHeadDetailReport`
+- `/Insurance`
+- `/Member`
+- `/Dependent`
+- `/VoucherVerification`
+- `/BankReconciliation`
+- `/Reconcile`
+- `/SuspenseReconcile`
+- `/ItemList`
+- `/LedgerList`
+- `/VoucherList`
+- `/LedgerGroupList`
+- `/FiscalYearList`
+- `/CostCenterItemList`
+- `/LedgerGroupCategoryList`
+- `/VoucherHeadList`
+- `/ReverseTransaction`
+- `/SectionList`
+- `/COAList`
+- `/TransferRules`
+- `/LedgerMapping`
+- `/SubLedger`
+- `/InventorySync`
+
+### Angular Components
+- `accounting`
+- `accounting-hospital-activate`
+- `bank-reconciliation-main`
+- `bank-reconciliation`
+- `suspense-reconciliation`
+- `accounting-reports`
+- `account-head-detail-report`
+- `balance-sheet-report`
+- `cash-bank-book-report`
+- `cash-flow-report`
+- `daily-transaction-report`
+- `day-book-report`
+- `daywise-voucher-details`
+- `daywise-voucher-report`
+- `group-statement-report`
+- `ledger-report`
+- `profit-loss-report`
+- `custom-date-reusable`
+- `ledger-report-reusable`
+- `subledger-report`
+- `system-audit-report`
+- `trail-balance`
+- `voucher-report`
+- `accounting-settings`
+- `coa-list`
+- `fiscalyear-add`
+- `item-add`
+- `ledger-mapping`
+- `billing-ledger-mapping`
+- `old-billing-ledger-mapping`
+- `consultant-ledger-mapping`
+- `credit-org-ledger-mapping`
+- `inv-subcategory-ledger-mapping`
+- `inv-vendor-ledger-mapping`
+- `medicare-type-ledger-mapping`
+- `payment-mode-ledger-mapping`
+- `phrm-supplier-ledger-mapping`
+- `ledger-add`
+- `ledger-edit`
+- `ledger-group-add`
+- `ledgergroup-voucher-manage`
+- `ledger-group-category-add`
+- `reverse-transaction`
+- `sub-ledger`
+- `transfer-rules`
+- `voucher-add`
+- `fiscal-yearlog-shared`
+- `ledger-create-shared`
+- `accounting-sync-base`
+- `accounting-sync`
+- `inventory-sync`
+- `account-closure`
+- `manual-voucher-edit`
+- `transaction-view`
+- `transactions-main`
+- `transfer-to-accounting`
+- `voucher-entry`
+- `new-voucher-entry`
+- `account-payment`
+- `ledger-group-add-reusable`
+- `ledger-add-reusable`
+- `subledger-add`
+- `voucher-edit`
+- `voucher-verification`
+
+### Angular Services & Endpoints
+- `accounting-reports.bl.service.ts`
+- `accounting-reports.dl.service.ts`
+- `accounting-settings.bl.service.ts`
+- `accounting-settings.dl.service.ts`
+- `accounting.bl.service.ts`
+- `accounting.dl.service.ts`
+- `accounting.service.ts`
+- `accounting-sync.dl.service.ts`
+

@@ -1,0 +1,162 @@
+<div class="pl-page-header">
+  <!-- Page Title + Primary Action (Design Spec §5.1) -->
+  <div class="pl-page-header-top">
+    <h1 class="pl-page-title">
+      <i class="fa fa-users"></i>
+      Search Patients
+    </h1>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <!-- Keyboard shortcut helper — shows ONLY on hover -->
+      <div class="shortcut-key shortkey-right" title="Keyboard Shortcuts" style="position:relative;">
+        <a href="javascript:void(0)" style="color:var(--text-disabled); display:flex; align-items:center; padding:6px;">
+          <i class="fa fa-keyboard-o" style="font-size:18px;"></i>
+        </a>
+        <div class="keydropdown" style="display:none; position:absolute; right:0; top:36px; background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); padding:12px 16px; min-width:180px; z-index:100;">
+          <p style="font-size:11px; font-weight:700; color:var(--text-disabled); margin:0 0 8px; text-transform:uppercase; letter-spacing:.5px;">Shortcuts</p>
+          <div style="font-size:13px; color:var(--text-secondary);">
+            <kbd style="background:var(--bg-surface-2); padding:2px 6px; border-radius:4px; font-size:11px;">ALT</kbd>
+            + <kbd style="background:var(--bg-surface-2); padding:2px 6px; border-radius:4px; font-size:11px;">N</kbd>
+            <span style="margin-left:8px;">New Patient</span>
+          </div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:6px;">
+            <kbd style="background:var(--bg-surface-2); padding:2px 6px; border-radius:4px; font-size:11px;">Ctrl</kbd>
+            + <kbd style="background:var(--bg-surface-2); padding:2px 6px; border-radius:4px; font-size:11px;">K</kbd>
+            <span style="margin-left:8px;">Focus search</span>
+          </div>
+        </div>
+      </div>
+      <!-- Add New Patient button -->
+      <button class="pl-btn pl-btn-primary" id="btnNewPatient" (click)="NewPatientAppointment()">
+        <i class="fa fa-user-plus"></i>
+        Add New Patient
+      </button>
+    </div>
+  </div>
+
+  <!-- Unified Search Bar — wired to Angular grid -->
+  <div class="pl-search-bar" role="search">
+    <i class="fa fa-search"></i>
+    <input
+      type="search"
+      placeholder="Search by name, hospital number, phone… (Ctrl+K)"
+      aria-label="Search patients by name, hospital number, or phone"
+      aria-autocomplete="list"
+      class="pl-search-input"
+      id="patientSearchInput"
+      (input)="serverSearchTxt($event.target.value)"
+    />
+    <!-- Scope toggle: OPD / IPD -->
+    <button class="pl-search-scope" id="searchScopeBtn" title="Toggle OPD / IPD scope">
+      OPD <i class="fa fa-chevron-down" style="font-size:10px;"></i>
+    </button>
+    <!-- Advanced filters toggle -->
+    <button class="pl-search-scope" id="advancedFilterBtn" style="background:var(--bg-surface-2); color:var(--text-secondary);" title="Advanced filters">
+      <i class="fa fa-sliders"></i> Filter
+    </button>
+  </div>
+
+  <!-- Advanced filters (progressive disclosure — hidden by default) -->
+  <div id="advancedFilters" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border-subtle);">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12px; font-weight:600; color:var(--text-secondary);">Admission Type</span>
+        <label style="display:flex; align-items:center; gap:4px; font-size:13px; color:var(--text-primary); cursor:pointer;">
+          <input type="radio" name="admissionType" value="opd" checked> OPD
+        </label>
+        <label style="display:flex; align-items:center; gap:4px; font-size:13px; color:var(--text-primary); cursor:pointer;">
+          <input type="radio" name="admissionType" value="ipd"> IPD
+        </label>
+        <label style="display:flex; align-items:center; gap:4px; font-size:13px; color:var(--text-primary); cursor:pointer;">
+          <input type="radio" name="admissionType" value="both"> Both
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Patient Results Card (Design Spec §5.2) -->
+<div class="pl-card">
+  <div class="pl-card-header">
+    <span><i class="fa fa-table" style="color:var(--accent); margin-right:6px;"></i> Patient List</span>
+    <span id="patientResultCount" style="font-size:12px; font-weight:500; color:var(--text-secondary);"></span>
+  </div>
+  <div class="pl-card-body" style="padding:0;">
+    <pulselogic-grid
+      [grid-colDefaults]="AppointmentpatientGridColumns"
+      [grid-data]="patients"
+      (grid-actions)="AppointmentPatientGridActions($event)"
+      (serverSearchText)="serverSearchTxt($event)"
+      [customServerSearch]="enableServerSideSearch"
+      [searchUsingHospitalNo]="SearchPatientUsingHospitalNo"
+      [searchUsingIdCardNo]="SearchPatientUsingIdCardNo">
+    </pulselogic-grid>
+  </div>
+</div>
+
+<!-- In-patient warning modal -->
+<div class="pl-modal-overlay" *ngIf="showInpatientMessage"
+     style="position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div style="background:var(--bg-surface); border-radius:var(--radius-xl); box-shadow:var(--shadow-lg); max-width:440px; width:90%; overflow:hidden;">
+    <div style="padding:16px 20px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between;">
+      <h4 style="margin:0; font-size:16px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+        <i class="fa fa-exclamation-triangle" style="color:var(--state-warning);"></i>
+        Patient Visit Status
+      </h4>
+      <button (click)="showInpatientMessage=false"
+              style="background:transparent; border:none; color:var(--text-disabled); cursor:pointer; font-size:18px; padding:4px 8px; border-radius:var(--radius-sm);">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+    <div style="padding:24px 20px;">
+      <div class="pl-badge pl-badge-warning" style="margin-bottom:14px;">
+        <i class="fa fa-exclamation-circle"></i> Alert
+      </div>
+      <p style="color:var(--text-primary); font-size:14px; line-height:1.6; margin:0;">
+        This patient is already admitted. OPD Visit cannot be created for this patient.
+      </p>
+    </div>
+    <div style="padding:12px 20px; border-top:1px solid var(--border-subtle); text-align:right;">
+      <button class="pl-btn pl-btn-secondary" (click)="showInpatientMessage=false">OK, Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Search bar behavior script -->
+<script>
+(function() {
+  // Ctrl+K shortcut to focus search
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      var inp = document.getElementById('patientSearchInput');
+      if (inp) inp.focus();
+    }
+  });
+
+  // Advanced filter toggle
+  var advBtn = document.getElementById('advancedFilterBtn');
+  var advPanel = document.getElementById('advancedFilters');
+  if (advBtn && advPanel) {
+    advBtn.addEventListener('click', function() {
+      var isOpen = advPanel.style.display !== 'none';
+      advPanel.style.display = isOpen ? 'none' : 'block';
+      advBtn.style.background = isOpen ? 'var(--bg-surface-2)' : 'var(--accent-subtle)';
+      advBtn.style.color = isOpen ? 'var(--text-secondary)' : 'var(--accent)';
+    });
+  }
+
+  // Clear button
+  var searchInp = document.getElementById('patientSearchInput');
+  var clearBtn  = document.getElementById('searchClearBtn');
+  if (searchInp && clearBtn) {
+    searchInp.addEventListener('input', function() {
+      clearBtn.style.display = searchInp.value ? 'flex' : 'none';
+    });
+    clearBtn.addEventListener('click', function() {
+      searchInp.value = '';
+      clearBtn.style.display = 'none';
+      searchInp.focus();
+    });
+  }
+})();
+</script>

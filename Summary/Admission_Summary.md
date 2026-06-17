@@ -1,0 +1,86 @@
+# Admission Module Summary
+
+## Backend Implementation
+**Directory**: `Code/Websites/PulseLogicHMR/Controllers/Admission`
+
+### API Endpoints
+- **HTTPGET** `AdmittedPatientsData` (Method: `GetAdmittedPatientList`)
+- **HTTPGET** `Wards` (Method: `WardList`)
+- **HTTPGET** `Departments` (Method: `Departments`)
+- **HTTPGET** `BedFeatures` (Method: `BedFeatures`)
+- **HTTPGET** `DischargedPatients` (Method: `DischargePatientList`)
+- **HTTPGET** `AdmittedPatients` (Method: `AdmittedPatients`)
+- **HTTPGET** `PatientAndBedInfo` (Method: `GetPatAndBedInfo`)
+- **HTTPGET** `AdmissionInfo` (Method: `GetPatientAdmissionInfo`)
+- **HTTPGET** `AdmittedPatientBedInfo` (Method: `AdmittedPatientBedInfo`)
+- **HTTPGET** `AdmittedPatientForNursing` (Method: `AdmittedPatientInfoForNursing`)
+- **HTTPGET** `TransferredPatientInfo` (Method: `GetTransferredPatientInfo`)
+- **HTTPGET** `PatientAdmissionStatus` (Method: `CheckPatientAdmissionStatus`)
+- **HTTPGET** `ProvisionalBillStatus` (Method: `PatientProvisionalStatus`)
+- **HTTPGET** `Doctors` (Method: `GetDoctors`)
+- **HTTPGET** `AppointmentApplicableDoctorList` (Method: `GetAppointmentApplicableDoctorsList`)
+- **HTTPGET** `AppointmentApplicableDoctors` (Method: `AppointmentApplicableDoctors`)
+- **HTTPGET** `Anaesthetists` (Method: `GetAnaesthetistDoctors`)
+- **HTTPGET** `DischargeTypes` (Method: `DischargeTypes`)
+- **HTTPGET** `DischargeSummary` (Method: `DischargeSummary`)
+- **HTTPGET** `AvailableBeds` (Method: `AvailableBeds`)
+- **HTTPGET** `Ward/BedFeatures` (Method: `BedFeatureByWardAndPriceCategoryId`)
+- **HTTPGET** `SimilarBedFeatures` (Method: `BedFeatureByWardId`)
+- **HTTPGET** `AdmissionHistory` (Method: `AdmissionHistory`)
+- **HTTPGET** `LatestAdmissionInfo` (Method: `LatestAdmissionDetail`)
+- **HTTPGET** `AdmissionSticker` (Method: `AdmissionSticker`)
+- **HTTPGET** `WristBandInfo` (Method: `WristBandInfo`)
+- **HTTPGET** `LatestHemoDialysisReport` (Method: `LastHemoDialysisReport`)
+- **HTTPGET** `HemoDialysisReports` (Method: `AllHemoDialysisReport`)
+- **HTTPGET** `PatientBedInfos` (Method: `GetBedItemsByPatientAndVisitId`)
+- **HTTPGET** `ICD10` (Method: `ICD10List`)
+- **HTTPGET** `MedicationFrequencies` (Method: `MedicationFrequency`)
+- **HTTPGET** `DischargeConditions` (Method: `DischargeConditions`)
+- **HTTPGET** `DeliveryTypes` (Method: `DeliveryTypes`)
+- **HTTPGET** `BirthConditions` (Method: `BabyBirthCondtions`)
+- **HTTPGET** `DeathTypes` (Method: `DeathTypes`)
+- **HTTPGET** `ActiveFiscalYear` (Method: `FiscalYear`)
+- **HTTPGET** `FollowUpPreferences` (Method: `FollowUpPreferences`)
+- **HTTPGET** `PatientCertificate` (Method: `PatientCertificate`)
+- **HTTPGET** `DoctorDeparmentAndWardInfo` (Method: `PatientCertificate`)
+- **HTTPGET** `FavouritePatients` (Method: `FavouritePatients`)
+- **HTTPGET** `NursingFavouritePatients` (Method: `NursingFavouritePatients`)
+- **HTTPGET** `~/api/Admission/GetAllWardBedInfo` (Method: `GetAllWardBedInfo`)
+- **HTTPGET** `AdmissionSlipDetails` (Method: `AdmissionSlipDetails`)
+- **HTTPGET** `DischargeSlipDetails` (Method: `DischargeSlipDetails`)
+- **HTTPGET** `AdmissionSchemePriceCategoryInfo` (Method: `AdmissionSchemePriceCategoryInfo`)
+- **HTTPGET** `AvailableBedsAndBedFeaturePrice` (Method: `AvailableBedsAndBedFeaturePrice`)
+- **HTTPGET** `IsPreviousBedAvailable` (Method: `IsPreviousBedAvailable`)
+- **HTTPPOST** `Admission` (Method: `CreateAdmission`)
+- **HTTPPOST** `DischargeSummary` (Method: `AddDischargeSummary`)
+- **HTTPPOST** `AdmissionRemark` (Method: `AddAdmissionRemark`)
+- **HTTPPOST** `WristBand` (Method: `SaveWristBand`)
+- **HTTPPOST** `CancelDischargeBill` (Method: `CancelCreditDischargeBill`)
+- **HTTPPOST** `HemoDialysisReport` (Method: `SaveHemoDialysisReport`)
+- **HTTPPOST** `BirthCertificate` (Method: `SavePatientBirthCertificate`)
+- **HTTPPOST** `ReserveAdmission` (Method: `SaveAdmissionReservation`)
+- **HTTPPOST** `DischargeOnZeroItem` (Method: `DischargeOnZeroItem`)
+- **HTTPPUT** `Discharge` (Method: `UpdateDischarge`)
+- **HTTPPUT** `ClearDueAmount` (Method: `ClearDue`)
+- **HTTPPUT** `Transfer` (Method: `TransferPatient`)
+- **HTTPPUT** `AdmissionInfo` (Method: `UpdateAdmission`)
+- **HTTPPUT** `AdmittingDoctor` (Method: `ChangeAdmittingDoctor`)
+- **HTTPPUT** `DischargeSummary` (Method: `UpdateDischargeSummary`)
+- **HTTPPUT** `BillingDischarge` (Method: `DischargeFromBilling`)
+- **HTTPPUT** `AdmissionProcedure` (Method: `UpdateAdmissionProcedure`)
+- **HTTPPUT** `CancelAdmission` (Method: `CancelAdmission`)
+- **HTTPPUT** `BirthCertificate` (Method: `UpdateBirthCertificate`)
+- **HTTPPUT** `ReserveAdmission` (Method: `UpdateAdmissionReservation`)
+- **HTTPPUT** `CancelReserveAdmission` (Method: `CancelReservedAdmission`)
+- **HTTPPUT** `UndoTransfer` (Method: `UndoTransfer`)
+- **HTTPPUT** `AdmitTransferredPatient` (Method: `ReceiveTransfer`)
+
+### Services
+Backend services encapsulate business logic and data access for Admission.
+- `AdmissionMasterService.cs`
+- `IAdmissionMasterService.cs`
+
+---
+
+## Frontend Implementation
+No dedicated frontend app folder found.

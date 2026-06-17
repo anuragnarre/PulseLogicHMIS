@@ -1,0 +1,10 @@
+<!-- Location of 'pulselogic-bed-transfer' component directive:
+     wwwroot\PulseLogicApp\src\app\adt\transfer\transfer.component.ts
+-->
+<pulselogic-bed-transfer *ngIf="showTransferPage"
+                     [isPopUp]="showTransferInPopUp"
+                     [selectedBedInfo]="selectedBedInfo"
+                     [all-Departments]="allDepartments"
+                     (transfer)="TransferUpgrade($event)">
+</pulselogic-bed-transfer>
+

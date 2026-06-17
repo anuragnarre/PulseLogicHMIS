@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>PulseLogicHMR User Manual</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; padding: 40px; max-width: 900px; margin: 0 auto; color: #333; }
+img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 20px 0; }
+h1, h2, h3 { color: #111; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+</style>
+</head><body><h1>PulseLogicHMR User Manual (Phase 1)</h1>
+<p>Welcome to <strong>PulseLogicHMR</strong>, your premium hospital management system, reimagined with a modern, hyper-clean Apple HIG-inspired interface. This guide will walk you through navigating the new application and performing day-to-day hospital workflows.</p>
+<h2>1. Introduction &amp; The New Interface</h2>
+<p>The PulseLogicHMR interface is designed for speed, clarity, and beauty. </p>
+<p><img alt="PulseLogicHMR Dashboard - Light Mode" src="./assets/dashboard_light.png" /></p>
+<p><img alt="PulseLogicHMR Dashboard - Dark Mode" src="./assets/dashboard_dark.png" /></p>
+<h3>The Dashboard &amp; Top Bar</h3>
+<ul>
+<li><strong>Global Search</strong>: Located directly in the top center, the widened spotlight search bar allows you to quickly find patients, invoices, or modules from anywhere in the app.</li>
+<li><strong>Keyboard Shortcuts</strong>: Click the keyboard icon next to the notifications bell to open the Shortcuts Menu. You can configure custom hotkeys (e.g., <code>Alt+P</code> for patient registration) to jump instantly to your most used modules.</li>
+</ul>
+<p><img alt="Keyboard Shortcuts Modal" src="./assets/shortcuts_modal.png" />
+- <strong>Theme Toggle</strong>: Switch between <strong>Light Mode</strong> and <strong>Dark Mode</strong> on the fly by clicking the sun/moon icons in the top right. 
+- <strong>User Profile</strong>: Click your avatar to access your profile settings, configure your date format (Gregorian/Nepali), and sign out securely.</p>
+<hr />
+<h2>2. Patients Module (Registration &amp; Appointments)</h2>
+<p>The <strong>Patients</strong> group in the sidebar handles all front-desk operations, including registering new patients and managing their appointments.</p>
+<p><img alt="Patient Search &amp; Appointments" src="./assets/phase1_patients.png" /></p>
+<h3>Step-by-Step: Registering a New Patient</h3>
+<ol>
+<li>In the sidebar under <strong>PATIENTS</strong>, click on <strong>Appointment</strong>.</li>
+<li>From the top-right corner of the Patient Search screen, click the <strong>+ Add New Patient</strong> button.</li>
+<li><strong>Fill Demographics</strong>: Enter the patient's mandatory details including First Name, Last Name, Age, Gender, and Contact Number.</li>
+<li><strong>Select Patient Type</strong>: Choose whether the patient is a <em>General</em>, <em>Insurance</em>, or <em>Corporate</em> patient from the dropdown. This ensures correct billing tariffs are applied later.</li>
+<li><strong>Save</strong>: Click the <strong>Register</strong> button. The system will automatically generate a unique <strong>Hospital Number (UHID)</strong>.</li>
+</ol>
+<h3>Step-by-Step: Booking an Appointment</h3>
+<ol>
+<li>Navigate to <strong>PATIENTS &gt; Appointment</strong>.</li>
+<li>Use the <strong>Search Patients</strong> bar to find an existing patient by their Name, Phone, or newly generated UHID.</li>
+<li>Click the <strong>Check In</strong> button next to their name in the table.</li>
+<li><strong>Select Doctor</strong>: Choose the target Department (e.g., Cardiology, Orthopedics) and pick the Consulting Doctor.</li>
+<li><strong>Confirm &amp; Print</strong>: Confirm the available time slot and print the appointment slip for the patient.</li>
+</ol>
+<hr />
+<h2>3. Clinical Module (Doctors &amp; Surgery)</h2>
+<p>The <strong>Clinical</strong> group is the medical core of the hospital where doctors access the Electronic Medical Record (EMR), view patient queues, and plan surgeries.</p>
+<p><img alt="Clinical &amp; Surgery Dashboard" src="./assets/phase1_clinical.png" /></p>
+<h3>Step-by-Step: Managing the OPD Queue</h3>
+<ol>
+<li>In the sidebar under <strong>CLINICAL</strong>, click on <strong>Care Hub</strong> or <strong>Nursing &gt; Out Patient</strong>.</li>
+<li><strong>View Queue</strong>: The dashboard will display all patients who have checked in for their appointments today, separated into OPD (Outpatient) and IPD (Inpatient).</li>
+<li><strong>Open EMR</strong>: Click on a patient's row to open their <strong>Electronic Medical Record</strong>.</li>
+</ol>
+<h3>Step-by-Step: Writing Clinical Notes &amp; Prescribing</h3>
+<ol>
+<li>Inside the patient's EMR, navigate to the <strong>Clinical Notes</strong> tab.</li>
+<li>Enter the patient's <strong>Chief Complaints</strong>, <strong>History of Present Illness (HPI)</strong>, and physical examination findings.</li>
+<li><strong>Order Investigations</strong>: Click the 'Orders' section to request Lab Tests or Radiology scans. These requests are sent digitally to the respective departments immediately.</li>
+<li><strong>Prescribe Medications</strong>: Search for drugs from the formulary, specify dosage and frequency. Once saved, the prescription is instantly available at the Pharmacy Dispensary.</li>
+</ol>
+<hr />
+<h2>4. Diagnostics Module (Laboratory)</h2>
+<p>The <strong>Diagnostics</strong> group handles all Laboratory Information Systems (LIS) and Radiology workflows.</p>
+<p><img alt="Laboratory Dashboard" src="./assets/phase1_laboratory.png" /></p>
+<h3>Step-by-Step: Processing Lab Orders</h3>
+<ol>
+<li>In the sidebar under <strong>DIAGNOSTICS</strong>, click on <strong>Laboratory</strong>.</li>
+<li><strong>Requisition List</strong>: The main dashboard displays all pending test orders placed by doctors.</li>
+<li><strong>Sample Collection</strong>: Select an order to mark the sample as "Collected". The system will generate unique barcode labels for the test tubes.</li>
+<li><strong>Enter Results</strong>: Once the analyzer completes the test, navigate to the "Add Result" screen to input the values. (If your hospital uses machine interfacing, values will auto-populate).</li>
+<li><strong>Verify &amp; Sign</strong>: A pathologist or senior technician must review the results and click <strong>Sign Report</strong>. Once signed, the report becomes visible in the Doctor's EMR and on the Patient Portal.</li>
+</ol>
+<hr />
+<h2>5. Pharmacy Module (Dispensary Sales)</h2>
+<p>The <strong>Pharmacy &amp; Supply</strong> group manages drug dispensing, stock inventory, and procurement.</p>
+<p><img alt="Pharmacy Dispensary" src="./assets/phase1_dispensary.png" /></p>
+<h3>Step-by-Step: Dispensing Prescribed Medications</h3>
+<ol>
+<li>In the sidebar under <strong>PHARMACY &amp; SUPPLY</strong>, click on <strong>Dispensary</strong>. </li>
+<li>Ensure you have activated your shift counter (e.g., "Morning Counter").</li>
+<li><strong>Load Prescription</strong>: In the "Search Patient" bar, scan the patient's hospital card or type their UHID. The system will automatically pull up the doctor's electronic prescription.</li>
+<li><strong>Verify Stock &amp; Batch</strong>: The items will populate in the grid. Select the specific batch/expiry for each drug. The system will calculate the total cost.</li>
+<li><strong>Payment &amp; Print</strong>: Select the Payment Option (Cash, Card, etc.), collect the amount, and click <strong>Print Invoice</strong>.</li>
+<li><strong>Dispense</strong>: Hand the printed invoice and the medications to the patient. Inventory stock is automatically deducted upon sale.</li>
+</ol>
+<hr />
+<h2>6. Finance Module (Billing)</h2>
+<p>The <strong>Finance</strong> group handles out-patient invoicing, in-patient discharge billing, and insurance claims.</p>
+<p><img alt="Finance Billing" src="./assets/phase1_billing.png" /></p>
+<h3>Step-by-Step: Outpatient (OPD) Billing</h3>
+<ol>
+<li>In the sidebar under <strong>FINANCE</strong>, click on <strong>Billing</strong>.</li>
+<li>Use the <strong>Search OPD Patients</strong> input box to find the patient.</li>
+<li><strong>Review Charges</strong>: The billing screen will load all pending charges accrued by the patient (e.g., Consultation fees, individual lab tests, procedures).</li>
+<li><strong>Apply Discounts</strong>: If applicable, select a discount scheme or enter a manual discount amount (requires authorization).</li>
+<li><strong>Settle Bill</strong>: Choose the Tender type, collect the cash/card payment, and print the receipt.</li>
+</ol>
+<h3>Step-by-Step: Inpatient (IPD) Billing &amp; Discharge</h3>
+<ol>
+<li>In the <strong>FINANCE &gt; Billing</strong> menu, select the <strong>IPBilling</strong> sub-module or use the <strong>Search IPD Patients</strong> box.</li>
+<li><strong>Aggregate Charges</strong>: The IPD billing module aggregates all charges accrued during the patient's entire stay (Bed charges, daily doctor visits, nursing procedures, OT charges, medications).</li>
+<li><strong>Provisional Bill</strong>: Generate a provisional bill to show the patient's family their current running total.</li>
+<li><strong>Final Discharge Bill</strong>: Once the doctor marks the patient "Ready for Discharge", generate the final bill. </li>
+<li><strong>Clearance</strong>: After the final payment is settled, the system will mark the patient as eligible to physically leave the ward, notifying the nursing station.</li>
+</ol></body></html>

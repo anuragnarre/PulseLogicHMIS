@@ -1,0 +1,19 @@
+<!--<table style="margin-top:10px">
+    <tr>
+
+        <td>
+            <a [routerLink]="'VoucherCreate'" class="link3" [routerLinkActive]="'link3-active'">New Voucher</a>
+        </td>
+
+    </tr>
+</table>-->
+<div class="sub-navtab">
+    <ul class="nav nav-tabs" *ngIf="validRoutes != undefined">
+        <li *ngFor="let route of validRoutes">
+            <a routerLink="{{route.RouterLink}}" [routerLinkActive]="'a-tab-active'"><i class="{{route.Css}}"></i> {{route.DisplayName}}</a>
+        </li>
+    </ul>
+</div>
+<router-outlet>
+
+</router-outlet>
