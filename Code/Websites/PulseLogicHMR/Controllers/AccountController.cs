@@ -204,8 +204,7 @@ namespace PulseLogicHMR.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        //[AuditApi(EventTypeName = "Login",
-        //IncludeHeaders = true, IncludeResponseHeaders = true, IncludeResponseBody = true, IncludeRequestBody = true, IncludeModelState = true)]
+        [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("login")]  // S6 FIX: Brute-force protection
         public IActionResult Login(LoginViewModel model, string returnUrl = null)
         {
             if (ModelState.IsValid)
@@ -289,11 +288,10 @@ namespace PulseLogicHMR.Controllers
             return View(model);
         }
 
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //[AuditApi(EventTypeName = "Logout",
-        //IncludeHeaders = true, IncludeResponseHeaders = true, IncludeResponseBody = true, IncludeRequestBody = true, IncludeModelState = true)]
+        // S9 FIX: Logout must be POST + CSRF-protected (was GET — allowed CSRF logout attacks).
+        // The Angular client's logout button must be changed to POST to /Account/Logout.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Logout(string returnUrl = null)
         {
             //HttpContext.Session.Set<RbacUser>("currentuser", null);   
@@ -344,15 +342,32 @@ namespace PulseLogicHMR.Controllers
             return View();
         }
 
+        // SEC-03 FIX: ChangePassword now requires an active session (authenticated user).
+        // Previously this endpoint had no auth guard — any HTTP caller could attempt password changes.
+        // OPT-06 FIX: Use [FromBody] model binding instead of raw stream reading so that
+        // model validation and request-size limits work correctly.
         [HttpPost]
-        public IActionResult ChangePassword()
+        [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("login")]  // same brute-force throttle as login
+        public IActionResult ChangePassword([FromBody] ChangePasswordViewModel chmodel)
         {
-            //RbacUser validUser = RBAC.GetUser(chmodel.UserName, chmodel.Password);
-            //string str = Request.Form.Keys.First<string>();
-            Stream req = Request.Body;
-            req.Seek(0, System.IO.SeekOrigin.Begin);
-            string str = new StreamReader(req).ReadToEnd();
-            ChangePasswordViewModel chmodel = JsonConvert.DeserializeObject<ChangePasswordViewModel>(str);
+            // SEC-03: Require active session — return 401 if caller is not logged in.
+            RbacUser currentSessionUser = HttpContext.Session.Get<RbacUser>("currentuser");
+            if (currentSessionUser == null || currentSessionUser.UserId == 0)
+            {
+                responseData.Status = "Failed";
+                responseData.ErrorMessage = "Session expired. Please log in again.";
+                return Unauthorized(PulseLogicJSONConvert.SerializeObject(responseData, true));
+            }
+
+            if (chmodel == null || string.IsNullOrWhiteSpace(chmodel.UserName)
+                || string.IsNullOrWhiteSpace(chmodel.Password)
+                || string.IsNullOrWhiteSpace(chmodel.ConfirmPassword))
+            {
+                responseData.Status = "Failed";
+                responseData.ErrorMessage = "Invalid request.";
+                return BadRequest(PulseLogicJSONConvert.SerializeObject(responseData, true));
+            }
+
             RbacUser updatepass = RBAC.UpdateDefaultPasswordOfUser(chmodel.UserName, chmodel.Password, chmodel.ConfirmPassword);
 
             if (updatepass != null)
@@ -360,27 +375,19 @@ namespace PulseLogicHMR.Controllers
                 updatepass.NeedsPasswordUpdate = false;
 
                 //Update property for Current Session as well. 
-                RbacUser currentUser = HttpContext.Session.Get<RbacUser>("currentuser");
-                currentUser.NeedsPasswordUpdate = false;
-                HttpContext.Session.Set<RbacUser>("currentuser", currentUser);
+                currentSessionUser.NeedsPasswordUpdate = false;
+                HttpContext.Session.Set<RbacUser>("currentuser", currentSessionUser);
 
-                //RemoveRememberMeCookie();
-                //RemoveSessionValues();
                 responseData.Status = "OK";
                 responseData.Results = null; ////Assigning Result to NULL because we Don't have to Show Password of User in Client side (i.e Client Debugging Side)
-                var s = Json(PulseLogicJSONConvert.SerializeObject(responseData, true));
-
-                return s;
+                return Json(PulseLogicJSONConvert.SerializeObject(responseData, true));
             }
             else
             {
                 responseData.Status = "Failed";
                 responseData.ErrorMessage = "Current Password is Wrong";
-                var s = Json(PulseLogicJSONConvert.SerializeObject(responseData, true));
-
-                return s;
+                return Json(PulseLogicJSONConvert.SerializeObject(responseData, true));
             }
-
         }
 
         [HttpGet]
@@ -531,9 +538,13 @@ namespace PulseLogicHMR.Controllers
             sysDbContext.Entry(authModel).Property(x => x.HashedToken).IsModified = true;
 
             Response.Cookies.Delete("uData");
+            // S16 FIX: Re-add cookie with full security attributes (was missing HttpOnly, Secure, SameSite).
             Response.Cookies.Append("uData", GuidString, new Microsoft.AspNetCore.Http.CookieOptions
             {
-                Expires = authModel.Expires
+                Expires  = authModel.Expires,
+                HttpOnly = true,
+                Secure   = true,
+                SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict
             });
 
             sysDbContext.SaveChanges();

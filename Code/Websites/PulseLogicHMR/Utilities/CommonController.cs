@@ -129,17 +129,18 @@ public class CommonController : Controller
         return Ok(PulseLogicJSONConvert.SerializeObject(responseData, true));
     }
 
-    protected async Task<ActionResult> InvokeHttpPostFunctionAsync<T>(Func<T> functionName, string customErrorMsg = null)
+    protected Task<ActionResult> InvokeHttpPostFunctionAsync<T>(Func<T> functionName, string customErrorMsg = null)
     {
-        return await Task.Run(() =>
-        {
-            PulseLogicHTTPResponse<T> responseData = new PulseLogicHTTPResponse<T>();
-            T result = functionName.Invoke();
-            responseData.Status = ENUM_PulseLogic_HTTP_ResponseStatus.OK;
-            responseData.Results = result;
-            return Ok(PulseLogicJSONConvert.SerializeObject(responseData, true));
-        });
-
+        // OPT-04 FIX: Removed Task.Run() wrapper around synchronous (blocking) EF calls.
+        // Task.Run(sync work) is the async-over-sync antipattern — it burns a thread-pool thread
+        // for the entire blocking DB call duration without any scalability benefit.
+        // The underlying Func<T> is synchronous, so we invoke it directly and wrap the
+        // already-complete result in Task.FromResult, matching the behaviour of InvokeHttpPostFunction.
+        PulseLogicHTTPResponse<T> responseData = new PulseLogicHTTPResponse<T>();
+        T result = functionName.Invoke();
+        responseData.Status = ENUM_PulseLogic_HTTP_ResponseStatus.OK;
+        responseData.Results = result;
+        return Task.FromResult<ActionResult>(Ok(PulseLogicJSONConvert.SerializeObject(responseData, true)));
     }
 
     protected ActionResult InvokeHttpPostFunctionSingleTransactionScope<T>(Func<T> functionName, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transactionScope)
@@ -179,25 +180,22 @@ public class CommonController : Controller
     }
 
 
-    protected async Task<ActionResult> InvokeHttpPutFunctionAsync<T>(Func<T> functionName, string customErrorMsg = null)
+    protected Task<ActionResult> InvokeHttpPutFunctionAsync<T>(Func<T> functionName, string customErrorMsg = null)
     {
-        return await Task.Run(() =>
+        // OPT-04 FIX: Same as InvokeHttpPostFunctionAsync — removed Task.Run(sync) antipattern.
+        PulseLogicHTTPResponse<T> responseData = new PulseLogicHTTPResponse<T>();
+        try
         {
-            PulseLogicHTTPResponse<T> responseData = new PulseLogicHTTPResponse<T>();
-            try
-            {
-                T result = functionName.Invoke();
-                responseData.Status = ENUM_PulseLogic_HTTP_ResponseStatus.OK;
-                responseData.Results = result;
-            }
-            catch (Exception ex)
-            {
-                responseData.Status = ENUM_PulseLogic_HTTP_ResponseStatus.Failed;
-                responseData.ErrorMessage = "An internal server error occurred while processing your request. Please contact support.";
-            }
-            return Ok(responseData);
-        });
-
+            T result = functionName.Invoke();
+            responseData.Status = ENUM_PulseLogic_HTTP_ResponseStatus.OK;
+            responseData.Results = result;
+        }
+        catch (Exception ex)
+        {
+            responseData.Status = ENUM_PulseLogic_HTTP_ResponseStatus.Failed;
+            responseData.ErrorMessage = "An internal server error occurred while processing your request. Please contact support.";
+        }
+        return Task.FromResult<ActionResult>(Ok(responseData));
     }
 
     protected ActionResult InvokeHttpPutFunctionSingleTransactionScope<T>(Func<T> functionName, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transactionScope)

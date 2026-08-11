@@ -168,14 +168,14 @@ namespace PulseLogicHMR.Security
         }
         public static bool IsValidUser(string userName, string password)
         {
-            //username is not case-sensitive but password is
+            // SECURITY FIX (S5): Previously compared a.Password == a.Password (always true!), which
+            // made this method accept ANY password for any existing user — a full authentication bypass.
+            // Fixed: now compares the stored hash against the correctly-hashed input.
             List<RbacUser> allUsrs = RBAC.GetAllUsers();
-            RbacUser usr = allUsrs.Where(a => a.UserName.ToLower() == userName.ToLower() && a.Password == a.Password)
+            RbacUser usr = allUsrs.Where(a => a.UserName.ToLower() == userName.ToLower()
+                                           && a.Password == EncryptPassword(password))
                            .Select(a => a).FirstOrDefault();
-            if (usr != null)
-                return true;
-            else
-                return false;
+            return usr != null;
         }
         public static RbacUser GetUser(string userName, string password)
         {
@@ -350,9 +350,22 @@ namespace PulseLogicHMR.Security
 
         }
         /// <summary>
-        /// this method is used for Current inputed password decryption
+        /// Encrypts a plaintext password using TripleDES-ECB with an MD5-derived key.
         /// </summary>
-
+        /// <remarks>
+        /// ⚠️  TECH DEBT — CRYPTO MIGRATION REQUIRED:
+        /// The current implementation uses TripleDES/ECB mode with a hardcoded salt ("PulseLogicsalt").
+        /// ECB mode is deterministic (no IV) and the fixed salt means all identical passwords produce
+        /// identical ciphertext. This must be replaced with a modern adaptive hash (BCrypt or PBKDF2)
+        /// before any public/cloud deployment.
+        ///
+        /// MIGRATION PLAN (lazy re-hash on login):
+        ///   1. Add a nullable bool column IsLegacyHash to the Users table.
+        ///   2. On login success, if IsLegacyHash == true, re-hash with BCrypt and set IsLegacyHash = false.
+        ///   3. Once all users have logged in (confirm via IsLegacyHash count), remove the TripleDES path.
+        ///
+        /// Tracked as: SECURITY DEBT – PLHMR-SEC-001
+        /// </remarks>
         public static string EncryptPassword(string Password)
         {
             string encryptedPwd = string.Empty;
@@ -522,8 +535,13 @@ namespace PulseLogicHMR.Security
         }
         public static List<int> GetAllRoleIdsByPermissionId(int PermissionId)
         {
-            var rbacDb = new RbacDbContext(connStringName);
-            return rbacDb.RolePermissionMaps.Where(RPM => RPM.PermissionId == PermissionId && RPM.IsActive == true).Select(RPM => RPM.RoleId).ToList();
+            // OPT-07 FIX: The original created a new (leaked) DbContext and hit the DB on every call,
+            // bypassing the RBAC in-memory cache. Use the already-cached GetAllRolePermissionMaps()
+            // instead — consistent with every other RBAC lookup method.
+            return RBAC.GetAllRolePermissionMaps()
+                       .Where(rpm => rpm.PermissionId == PermissionId && rpm.IsActive == true)
+                       .Select(rpm => rpm.RoleId)
+                       .ToList();
         }
 
     }

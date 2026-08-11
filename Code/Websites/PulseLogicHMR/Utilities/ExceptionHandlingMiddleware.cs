@@ -36,25 +36,38 @@ namespace PulseLogicHMR.Utilities
             {
                 await _next(context);
             }
+            catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
+            {
+                // Client disconnected before the response completed. Not a server error — do not log at Error level.
+                _logger.LogInformation("[{CorrelationId}] Request cancelled by client (499).",
+                    context.TraceIdentifier);
+                context.Response.StatusCode = 499; // Client Closed Request (nginx convention)
+                // Response body may already be partially written; don't attempt to write.
+            }
+            catch (UnauthorizedAccessException uaEx)
+            {
+                // 401 — authenticated but not authorised for a resource.
+                await HandleExceptionAsync(context, uaEx, System.Net.HttpStatusCode.Unauthorized, "Access denied.");
+            }
             catch (KeyNotFoundException knfEx)
             {
                 // 404-class errors (entity not found): safe to surface the message.
-                await HandleExceptionAsync(context, knfEx, HttpStatusCode.NotFound, knfEx.Message);
+                await HandleExceptionAsync(context, knfEx, System.Net.HttpStatusCode.NotFound, knfEx.Message);
             }
             catch (ArgumentException argEx)
             {
                 // 400-class errors (bad input): safe to surface the message.
-                await HandleExceptionAsync(context, argEx, HttpStatusCode.BadRequest, argEx.Message);
+                await HandleExceptionAsync(context, argEx, System.Net.HttpStatusCode.BadRequest, argEx.Message);
             }
             catch (InvalidOperationException invEx)
             {
                 // 422-class business rule violations: surface message only.
-                await HandleExceptionAsync(context, invEx, (HttpStatusCode)422, invEx.Message);
+                await HandleExceptionAsync(context, invEx, (System.Net.HttpStatusCode)422, invEx.Message);
             }
             catch (Exception ex)
             {
                 // 500 — SECURITY FIX: log full details internally, NEVER send stack trace to client.
-                await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError,
+                await HandleExceptionAsync(context, ex, System.Net.HttpStatusCode.InternalServerError,
                     "An unexpected server error occurred. Please contact support.");
             }
         }

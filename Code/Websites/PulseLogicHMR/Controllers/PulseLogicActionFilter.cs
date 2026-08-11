@@ -18,6 +18,11 @@ using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System.Security.Claims;
 using System.Threading;
 using PulseLogicHMR.Enums;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using PulseLogicHMR.Core.Configuration;
 
 namespace PulseLogicHMR.Controllers
 {
@@ -95,11 +100,17 @@ namespace PulseLogicHMR.Controllers
                         context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Account" }, { "action", "PageNotFound" } });
                     }
                 }
+                else
+                {
+                    // B2 BUG FIX: If currentUser is null (session expired or never set),
+                    // redirect to Login instead of silently allowing access.
+                    context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Account" }, { "action", "Login" } });
+                }
             }
             catch (Exception ex)
             {
                 //Write exception handling logic here
-                throw ;
+                throw;
             }
 
 
@@ -144,26 +155,70 @@ namespace PulseLogicHMR.Controllers
                         string bodyData = ReadBodyAsString(context.HttpContext.Request);
                         var obj = JObject.Parse(bodyData);
                         RbacUser currUser = PulseLogicJSONConvert.DeserializeObject<RbacUser>(obj["currentuser"].ToString());
-                        var flag = RBAC.IsValidUser(currUser.UserName, currUser.Password);
-                        if (flag == false)
+                        // S18 SECURITY FIX: Was calling RBAC.IsValidUser() which had a bug making it ALWAYS return true.
+                        // Fixed: use RBAC.GetUser() which correctly verifies the hashed password.
+                        var validatedUser = RBAC.GetUser(currUser.UserName, currUser.Password);
+                        if (validatedUser == null)
                         {
                             context.Result = new JsonResult(new PulseLogicHTTPResponse<object> { Status = "Failed", ErrorMessage = "Unauthorized Access", Results = "" });
                         }
                     }
                     else
                     {
-                        //Checking user is logged in or not
-                        //RbacUser currentUser = context.HttpContext.Session.Get<RbacUser>("currentuser"); // We will use token to get currentUser here in this filter, do not use Session.
+                        // SEC-02 FIX: Use ValidateToken() — NOT ReadJwtToken() — so the signature,
+                        // issuer, audience, and expiry are all cryptographically verified.
+                        // ReadJwtToken() only parses the token without any signature check.
                         RbacUser currentUser = null;
                         string tokenFromHeader = context.HttpContext.Request.Headers["Authorization"];
-                        if(tokenFromHeader != null)
+                        if (!string.IsNullOrWhiteSpace(tokenFromHeader))
                         {
-                            var tokenWithoutBearer = tokenFromHeader.Split(' ')[1];
-                            var handler = new JwtSecurityTokenHandler();
-                            var jwtSecurityToken = handler.ReadJwtToken(tokenWithoutBearer);
-                            var userClaim = jwtSecurityToken.Claims.Where(claim => claim.Type == ENUM_ClaimTypes.currentUser).FirstOrDefault()?.Value; // Here currentUser is the claimType while generating the token., Krishna, 13thJan'23
-                            var loggedInUserDetail = PulseLogicJSONConvert.DeserializeObject<RbacUser>(userClaim);
-                            currentUser = loggedInUserDetail;
+                            try
+                            {
+                                var parts = tokenFromHeader.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                if (parts.Length == 2 && parts[0].Equals("Bearer", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    string tokenWithoutBearer = parts[1];
+
+                                    // Resolve JWT settings from DI — same env-var-first logic as ConfigureServices.
+                                    var config = context.HttpContext.RequestServices
+                                                        .GetService<IOptions<MyConfiguration>>();
+                                    var jwtConfig = config.Value.JwtTokenConfig;
+                                    string jwtKey = Environment.GetEnvironmentVariable("ASPNETCORE_JWT_KEY");
+                                    if (string.IsNullOrWhiteSpace(jwtKey))
+                                        jwtKey = jwtConfig.JwtKey;
+
+                                    var validationParams = new TokenValidationParameters
+                                    {
+                                        ValidateIssuerSigningKey = true,
+                                        IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                                        ValidateIssuer           = true,
+                                        ValidIssuer              = jwtConfig.JwtIssuer,
+                                        ValidateAudience         = true,
+                                        ValidAudience            = jwtConfig.JwtAudience,
+                                        ValidateLifetime         = true,
+                                        ClockSkew                = TimeSpan.FromSeconds(30)
+                                    };
+
+                                    var handler = new JwtSecurityTokenHandler();
+                                    ClaimsPrincipal principal = handler.ValidateToken(
+                                        tokenWithoutBearer, validationParams, out SecurityToken validatedToken);
+
+                                    var userClaim = principal.Claims
+                                        .FirstOrDefault(c => c.Type == ENUM_ClaimTypes.currentUser)?.Value;
+                                    if (!string.IsNullOrEmpty(userClaim))
+                                        currentUser = PulseLogicJSONConvert.DeserializeObject<RbacUser>(userClaim);
+                                }
+                            }
+                            catch (SecurityTokenException)
+                            {
+                                // Token is forged, expired, or tampered — treat as unauthenticated.
+                                currentUser = null;
+                            }
+                            catch (Exception)
+                            {
+                                // Any other parse error — treat as unauthenticated.
+                                currentUser = null;
+                            }
                         }
 
                         if (currentUser == null)

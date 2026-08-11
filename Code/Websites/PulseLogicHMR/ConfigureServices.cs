@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -72,26 +74,53 @@ namespace PulseLogicHMR
 
 
             //Add JWT
+            // S1 SECURITY FIX: Read JWT secret from environment variable first; fall back to config only for dev.
+            // In production, set environment variable: ASPNETCORE_JWT_KEY=<256-bit-random-key>
+            string jwtKey = Environment.GetEnvironmentVariable("ASPNETCORE_JWT_KEY");
+            bool usingEnvKey = !string.IsNullOrWhiteSpace(jwtKey);
+            if (!usingEnvKey)
+            {
+                // Fallback to config — log a warning so this is never silently used in production.
+                jwtKey = Configuration["JwtTokenConfig:JwtKey"];
+                // We cannot use ILogger here (outside DI), so we write directly.
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("[SECURITY WARNING] ASPNETCORE_JWT_KEY environment variable is not set. " +
+                                  "Falling back to appsettings.json JwtKey. DO NOT use the appsettings key in production.");
+                Console.ResetColor();
+            }
+
+            string jwtIssuer   = Configuration["JwtTokenConfig:JwtIssuer"];
+            string jwtAudience = Configuration["JwtTokenConfig:JwtAudience"];
+
+            // S4 FIX: Determine if we are in a development environment to relax some checks.
+            bool isDev = string.Equals(Configuration["environment:isdevelopment"], "true",
+                                       StringComparison.OrdinalIgnoreCase);
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme             = JwtBearerDefaults.AuthenticationScheme;
             })
             // Adding Jwt Bearer
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
+                // S11 FIX: Require HTTPS metadata in production; allow HTTP only in dev.
+                options.RequireHttpsMetadata = !isDev;
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     // The signing key must match!
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtTokenConfig:JwtKey"])),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidAudience = Configuration["JwtTokenConfig:JwtAudience"],
-                    ValidIssuer = Configuration["JwtTokenConfig:JwtIssuer"]
+                    IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                    // S4 FIX: Enable issuer and audience validation (were false — accepted ANY JWT).
+                    ValidateIssuer   = true,
+                    ValidateAudience = true,
+                    ValidAudience    = jwtAudience,
+                    ValidIssuer      = jwtIssuer,
+                    // Ensure tokens are not accepted after expiry
+                    ValidateLifetime       = true,
+                    ClockSkew              = TimeSpan.FromSeconds(30)
                 };
             });
             return services;

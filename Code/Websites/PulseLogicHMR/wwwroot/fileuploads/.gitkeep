@@ -1,0 +1,4 @@
+# This file ensures the fileuploads directory is tracked in git (as an empty directory).
+# The actual uploaded files are EXCLUDED by .gitignore to prevent patient data (PHI) from being committed.
+# SECURITY NOTE (PLHMR-SEC-012): This directory is currently inside wwwroot and is web-accessible.
+# TODO: Move fileuploads/ outside wwwroot and serve files via an authenticated ASP.NET Core endpoint.

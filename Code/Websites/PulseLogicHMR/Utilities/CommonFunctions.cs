@@ -55,26 +55,38 @@ namespace PulseLogicHMR.Utilities
 
         public static int GetCoreParameterIntValue(CoreDbContext coreDbContext, string groupName, string paramterName)
         {
-            var paraValue = coreDbContext.Parameters.Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName).FirstOrDefault().ParameterValue;
+            // B3 BUG FIX: FirstOrDefault() returns null if parameter not found; .ParameterValue then throws NullReferenceException.
+            var param = coreDbContext.Parameters.Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName).FirstOrDefault();
+            string paraValue = param?.ParameterValue;
             return (paraValue == null) ? 0 : Convert.ToInt32(paraValue);
         }
 
         public static string GetCoreParameterStringValue(CoreDbContext coreDbContext, string groupName, string paramterName)
         {
-            var paraValue = coreDbContext.Parameters.Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName).FirstOrDefault().ParameterValue;
+            // B3 BUG FIX: null-safe access
+            var param = coreDbContext.Parameters.Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName).FirstOrDefault();
+            string paraValue = param?.ParameterValue;
             return (paraValue == null) ? "" : paraValue;
         }
 
         public static bool GetCoreParameterBoolValue(CoreDbContext coreDbContext, string groupName, string paramterName)
         {
-            var paraValue = coreDbContext.Parameters.Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName).FirstOrDefault().ParameterValue;
+            // B3 BUG FIX: null-safe access
+            var param = coreDbContext.Parameters.Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName).FirstOrDefault();
+            string paraValue = param?.ParameterValue;
             return (paraValue == null) ? false : Convert.ToBoolean(paraValue);
         }
 
         [Obsolete("")]
         public static bool GetCoreParameterBoolValue(CoreDbContext coreDbContext, string groupName, string paramterName, string keyName)
         {
-            var paraValue = coreDbContext.Parameters.Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName).FirstOrDefault().ParameterValue;
+            // OPT-08 FIX: Original called .ParameterValue directly on FirstOrDefault() which
+            // returns null when the parameter doesn't exist, causing NullReferenceException.
+            // Fixed to use null-safe access, matching the pattern of the sibling overload above.
+            var paraValue = coreDbContext.Parameters
+                .Where(a => a.ParameterGroupName == groupName && a.ParameterName == paramterName)
+                .FirstOrDefault()?.ParameterValue;
+            if (paraValue == null) return false;
             var data = PulseLogicJSONConvert.DeserializeObject<JObject>(paraValue);
             return (data == null) ? false : ((data[keyName].Value<string>()) == null) ? false : Convert.ToBoolean(data[keyName].Value<string>());
         }

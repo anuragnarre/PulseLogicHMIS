@@ -54,6 +54,8 @@ export class GlobalSearchComponent implements OnInit {
         },
         err => {
           this.isLoading = false;
+          // Show a user-visible message and log for diagnostics
+          this.msgBox.showMessage('error', ['Search failed. Please try again or contact support.']);
           console.error("Search error", err);
           this.cdr.detectChanges();
         }

@@ -53,6 +53,7 @@ import { LoaderComponent } from "./shared/pulselogic-loader-intercepter/pulselog
 import { NavigationService } from "./shared/navigation-service";
 import { ActivateBillingCounterGuardService } from "./utilities/shared/activate-billing-counter-guard-service";
 import { ActivateBillingCounterService } from "./utilities/shared/activate-billing-counter.service";
+import { TelemedicineComponent } from "./telemedicine/telemedicine.component";
 
 @NgModule({
   providers: [
@@ -106,7 +107,8 @@ import { ActivateBillingCounterService } from "./utilities/shared/activate-billi
     UnAuthorizedAccessComponent,
     LoaderComponent,
     ActivateInventoryComponent,
-    DynamicReportComponent
+    DynamicReportComponent,
+    TelemedicineComponent
   ],
   bootstrap: [AppComponent],
 })

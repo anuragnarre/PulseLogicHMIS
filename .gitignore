@@ -27,4 +27,35 @@ install_git_and_push.py
 .cursor/
 *.msi
 *.zip
-*.bak
+*.bak
+
+# ─── SECURITY: Patient file uploads (PHI) must never be committed ─────────────
+/Code/Websites/PulseLogicHMR/wwwroot/fileuploads/**
+!/Code/Websites/PulseLogicHMR/wwwroot/fileuploads/.gitkeep
+
+# ─── Runtime log files ─────────────────────────────────────────────────────────
+/Code/Websites/PulseLogicHMR/logs/
+logs/
+*.log
+
+# ─── Build outputs ─────────────────────────────────────────────────────────────
+/Code/Websites/PulseLogicHMR/bin/
+/Code/Websites/PulseLogicHMR/obj/
+/Code/Websites/PulseLogicHMR/publish/
+/Code/Websites/PulseLogicHMR/backup/
+
+# ─── Angular build output (generated, not source) ──────────────────────────────
+/Code/Websites/PulseLogicHMR/wwwroot/PulseLogicApp/dist/
+
+# ─── Secret/config files that must not be version-controlled ───────────────────
+# (appsettings.json is already listed above; Production is excluded here too)
+# appsettings.Production.json contains prod DB credentials \u2014 DO NOT commit
+# /Code/Websites/PulseLogicHMR/appsettings.Production.json
+# Uncomment the line above when Production DB credentials are added to the file.
+
+# ─── VS IDE files ───────────────────────────────────────────────────────────────
+*.user
+*.vspscc
+*.suo
+.vs/
+

@@ -475,7 +475,7 @@ export class AppComponent {
         }
       },
         err => {
-          alert('failed to get the data.. please check log for details.');
+          this.msgBoxServ.showMessage('error', ['Failed to load user information. Please refresh or contact support.']);
           this.logError(err.ErrorMessage);
         });
   }
@@ -596,12 +596,12 @@ export class AppComponent {
         }
       },
         err => {
-          alert('failed to get navigation menu data.. please check log for details.');
+          this.msgBoxServ.showMessage('error', ['Failed to load navigation menu. Please refresh or contact support.']);
           this.logError(err.ErrorMessage);
         });
   }
   logError(err: any) {
-    console.log(err);
+    console.error(err);
   }
 
 
@@ -644,7 +644,7 @@ export class AppComponent {
     else {
       // Session expired or server error — redirect to Login for clean re-authentication
       window.location.href = '/Account/Login';
-      alert(res.ErrorMessage);
+      this.msgBoxServ.showMessage('error', [res.ErrorMessage || 'Session error. Redirecting to login.']);
     }
   }
 
@@ -694,8 +694,25 @@ export class AppComponent {
     localStorage.removeItem('selectedLabCategory');
     //when logged out from one tab, add a key : logout-event to local storage, which will be continuously listened by other windows.
     localStorage.setItem('logout-event', 'logout' + Math.random());
-    //after setting localstorage, redirect to Logout page.
-    window.location.href = '/Account/Logout';
+
+    // S9 FIX: Logout now requires HTTP POST + CSRF token (was GET — anyone could log the user out via a link/img).
+    // We submit a hidden form programmatically so the browser sends the ASP.NET anti-forgery token.
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/Account/Logout';
+
+    // Inject the anti-forgery token from the hidden input rendered by the MVC layout.
+    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]') as HTMLInputElement;
+    if (tokenInput) {
+      const hiddenToken = document.createElement('input');
+      hiddenToken.type = 'hidden';
+      hiddenToken.name = '__RequestVerificationToken';
+      hiddenToken.value = tokenInput.value;
+      form.appendChild(hiddenToken);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
 
   }
 
@@ -769,7 +786,7 @@ export class AppComponent {
         }
       },
         err => {
-          alert('failed to get user permissions.. please check log for details.');
+          this.msgBoxServ.showMessage('error', ['Failed to load hospital configuration. Please contact support.']);
           this.logError(err.ErrorMessage);
         });
   }

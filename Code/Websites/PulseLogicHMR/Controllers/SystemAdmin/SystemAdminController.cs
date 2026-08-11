@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -814,26 +815,45 @@ namespace PulseLogicHMR.Controllers
         {
             try
             {
+                // SEC-01 FIX: Whitelist DatabaseName against the known application databases.
+                // The client sends this value in the JSON body — never concatenate it raw into SQL.
+                var allowedDatabases = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    { "DEV_PulseLogicHMR_INT", "PulseLogicAdmin", "PulseLogic_PACS" };
+                if (!allowedDatabases.Contains(dbBackupLogDataFromClient.DatabaseName))
+                    throw new ArgumentException($"Database name '{dbBackupLogDataFromClient.DatabaseName}' is not an allowed restore target.");
+
+                // SEC-01 FIX: Validate that the resolved backup file path stays inside the
+                // configured backup folder (path-traversal guard).
+                string backupFilePath = dbBackupLogDataFromClient.FolderPath + dbBackupLogDataFromClient.FileName;
+                string configuredBackupFolder = CheckBackupFolderPathValue();
+                string resolvedBackup = Path.GetFullPath(backupFilePath);
+                string resolvedRoot   = Path.GetFullPath(configuredBackupFolder);
+                if (!resolvedBackup.StartsWith(resolvedRoot, StringComparison.OrdinalIgnoreCase))
+                    throw new ArgumentException("Backup file path is outside the configured backup directory.");
+
+                // Safe escaped DB name (already whitelisted above, but brackets prevent any residual issues).
+                string safeDbName = dbBackupLogDataFromClient.DatabaseName;
+
                 using (SqlConnection conAdmin = new SqlConnection(connStringAdmin))
                 {
                     conAdmin.Open();
                     using (SqlConnection conPulseLogicHMRLive = new SqlConnection(connString))
                     {
-                        string backupFilePath = dbBackupLogDataFromClient.FolderPath + dbBackupLogDataFromClient.FileName;
                         conPulseLogicHMRLive.Open();
 
-                        //set db single user mode
-                        string sqlSetSingleUserModeQuery = string.Format("ALTER DATABASE [" + dbBackupLogDataFromClient.DatabaseName + "] SET SINGLE_USER WITH ROLLBACK IMMEDIATE");
+                        //set db single user mode — DatabaseName is whitelisted above, brackets are sufficient escaping
+                        string sqlSetSingleUserModeQuery = $"ALTER DATABASE [{safeDbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE";
                         SqlCommand sqlCmdSingleUserMode = new SqlCommand(sqlSetSingleUserModeQuery, conPulseLogicHMRLive);
                         sqlCmdSingleUserMode.ExecuteNonQuery();
 
-                        //Restore Database
-                        string sqlRestoreDBQuery = "USE MASTER RESTORE DATABASE [" + dbBackupLogDataFromClient.DatabaseName + "] FROM DISK='" + backupFilePath + "'WITH REPLACE;";
+                        // Backup file path passed as a SqlParameter to prevent injection.
+                        string sqlRestoreDBQuery = $"USE MASTER RESTORE DATABASE [{safeDbName}] FROM DISK=@BackupPath WITH REPLACE;";
                         SqlCommand sqlCmdRestoreDB = new SqlCommand(sqlRestoreDBQuery, conPulseLogicHMRLive);
+                        sqlCmdRestoreDB.Parameters.Add("@BackupPath", SqlDbType.NVarChar).Value = resolvedBackup;
                         sqlCmdRestoreDB.ExecuteNonQuery();
 
                         //set db multi user mode
-                        string sqlSetMultiUserModeQuery = string.Format("ALTER DATABASE [" + dbBackupLogDataFromClient.DatabaseName + "] SET MULTI_USER");
+                        string sqlSetMultiUserModeQuery = $"ALTER DATABASE [{safeDbName}] SET MULTI_USER";
                         SqlCommand sqlCmdMultiUserMode = new SqlCommand(sqlSetMultiUserModeQuery, conPulseLogicHMRLive);
                         sqlCmdMultiUserMode.ExecuteNonQuery();
 
@@ -939,6 +959,15 @@ namespace PulseLogicHMR.Controllers
             }
         }
         #endregion
+
+        // Helper: returns the configured backup folder path (used by RestoreDatabase for path validation).
+        private string CheckBackupFolderPathValue()
+        {
+            SystemAdminDbContext systemAdminDbContext = new SystemAdminDbContext(connStringAdmin);
+            return (from parameters in systemAdminDbContext.AdminParameters
+                    where parameters.ParameterName == "DbBackupFolderPath"
+                    select parameters.ParameterValue).SingleOrDefault() ?? string.Empty;
+        }
         #region Export Database to CSV / XML /pdf file format
         private Boolean ExportDatabaseToCSVOrXMLOrPDF(string connString, string ExportType, string exportedFilePath)
         {
@@ -1012,7 +1041,13 @@ namespace PulseLogicHMR.Controllers
                     foreach (DataRow row in TableNameList.Rows)
                     {
                         var tname = row["name"].ToString();//getting table name
-                        SqlDataAdapter da = new SqlDataAdapter("select *from  " + tname, con);
+
+                        // SEC-07 FIX: Table names come from sys.tables (not user input), but validate
+                        // against a safe identifier pattern to prevent any residual injection risk.
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(tname, @"^[A-Za-z0-9_]+$"))
+                            continue; // skip any table whose name contains unusual characters
+
+                        SqlDataAdapter da = new SqlDataAdapter("select * from [" + tname + "]", con);
                         DataTable dt = new DataTable();
                         da.Fill(dt);
 

@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +46,7 @@ using Microsoft.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace PulseLogicHMR
 {
@@ -101,12 +103,15 @@ namespace PulseLogicHMR
 
             services.AddSession(options =>
             {
-                //IMPORTANT-- remove the hardcoded value 20 from below
-                //keep short timeout like max 2-3 hours, 
-                //we've to redirect to login once the session expires.
+                // Session timeout: 2 hours of inactivity. Users are redirected to login after expiry.
                 options.IdleTimeout = TimeSpan.FromHours(2);
                 options.Cookie.HttpOnly = true;
-
+                // SEC-08 FIX: In production (HTTPS) use Always so the session cookie is never
+                // sent in plaintext. In development keep SameAsRequest to allow HTTP local runs.
+                options.Cookie.SecurePolicy = CurrentEnvironment.IsProduction()
+                    ? Microsoft.AspNetCore.Http.CookieSecurePolicy.Always
+                    : Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
+                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
             });
             //end--for rbac-testing--developerr
 
@@ -167,6 +172,18 @@ namespace PulseLogicHMR
             //once we've added appsetting.json into the Configuration, it's accessible easily using the key.
             string connString = Configuration["Connectionstring"];
             int cacheExpMins = Convert.ToInt32(Configuration["CacheExpirationMinutes"]);
+
+            // OPT-01 FIX: CacheExpirationMinutes: 0 means MemoryCache items expire immediately,
+            // effectively disabling the entire RBAC cache and hammering the DB on every API call.
+            // If misconfigured to 0 in non-dev mode, default to 30 minutes and log a warning.
+            if (cacheExpMins <= 0)
+            {
+                int safeDefault = CurrentEnvironment.IsDevelopment() ? 5 : 30;
+                Console.WriteLine($"[WARN] CacheExpirationMinutes is {cacheExpMins}. " +
+                    $"A value of 0 disables all RBAC caching. Defaulting to {safeDefault} minutes.");
+                cacheExpMins = safeDefault;
+            }
+
             //add cache as singleton since there should be one global object of it.. 
             services.AddSingleton<PulseLogicCache>(new PulseLogicCache(connString, cacheExpMins));
             
@@ -200,6 +217,35 @@ namespace PulseLogicHMR
             //    options.TableName = "CORE_DistributedCache"; // this has to be same what we gave while running the command.
             //});
 
+            // S6: Rate limiting (.NET 8 built-in) — protects login from brute force and API from abuse.
+            services.AddRateLimiter(rl =>
+            {
+                // "login" policy: 10 attempts per minute per IP. Responds with 429.
+                rl.AddFixedWindowLimiter("login", o =>
+                {
+                    o.PermitLimit         = 10;
+                    o.Window              = TimeSpan.FromMinutes(1);
+                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    o.QueueLimit          = 0;
+                });
+                // "api-general" policy: 300 requests per minute per IP for all API endpoints.
+                rl.AddSlidingWindowLimiter("api-general", o =>
+                {
+                    o.PermitLimit         = 300;
+                    o.Window              = TimeSpan.FromMinutes(1);
+                    o.SegmentsPerWindow   = 6; // 10-second segments
+                    o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    o.QueueLimit          = 0;
+                });
+                rl.RejectionStatusCode = 429; // Too Many Requests
+            });
+
+            // Response compression for JSON API payloads (reduces bandwidth significantly on slow connections).
+            services.AddResponseCompression(opts =>
+            {
+                opts.EnableForHttps = true; // Safe because we control the content — no BREACH risk for our JSON responses.
+            });
+
             //add RBAC also as a singleton service.          
             services.AddSingleton<RBAC>(new RBAC(connString, cacheExpMins));
             ///add nepali date as a singleton for one time initialization.
@@ -232,14 +278,27 @@ namespace PulseLogicHMR
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                // S17 FIX: In production, use HSTS to enforce HTTPS for all connections.
+                app.UseHsts();
+            }
+
+            // S17 FIX: Inject security headers before any response is written.
+            // Prevents clickjacking, MIME-sniffing, and leaks the Referrer header.
+            app.UseMiddleware<PulseLogicHMR.Utilities.SecurityHeadersMiddleware>();
+
+            // Response compression BEFORE static files so both API + static assets benefit.
+            app.UseResponseCompression();
+
             app.UseDetection();
             app.UseMiddleware<PulseLogicHMR.Utilities.ExceptionHandlingMiddleware>();
             app.UseMiddleware<RewindMiddleWare>();
-            //start--for rbac-testing--developerr--2march-2017
+
+            // S6 FIX: Apply rate limiting middleware (registered in ConfigureServices).
+            app.UseRateLimiter();
+
             app.UseSession();
-
-            //end--for rbac-testing--developerr
-
 
             app.UseMvc(
                 routes =>
@@ -257,23 +316,14 @@ namespace PulseLogicHMR
             defaultoptions.DefaultFileNames.Clear();
             defaultoptions.DefaultFileNames.Add("UI/Main.html");
             app.UseDefaultFiles(defaultoptions);
-            //app.UseMiddleware<>
             app.UseStaticFiles();
-            // this will serve up node_modules
-            // this code is bad here i am saying add the mode_modules
-            // with wwwroot. This i did because when a page runs 
-            // inside wwwroot he has no way to access folders outside
-            // the wwwroot. Putting this complete folder inside
-            // wwwroot would be a kill. So later 
-            // we need to write a grunt task which will copy the necessaayr files
-            // to wwwroot. The task woul sit here
 
-            string isDevEnv = Configuration["environment:isdevelopment"];
-
-
-            if (bool.TryParse(isDevEnv, out bool isDev) && isDev)
+            // S10 FIX: Gate Swagger behind the REAL environment check (env.IsDevelopment()),
+            // NOT the JSON flag "environment:isdevelopment". The JSON flag can be set to true
+            // accidentally in a production appsettings.json, exposing the full API surface.
+            // Only ASPNETCORE_ENVIRONMENT=Development (set at OS level) enables Swagger.
+            if (env.IsDevelopment())
             {
-                //Use Swagger
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {

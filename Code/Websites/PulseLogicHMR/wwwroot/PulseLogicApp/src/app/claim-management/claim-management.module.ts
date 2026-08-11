@@ -39,6 +39,7 @@ import { MedicalClaimFormPrintComponent } from './shared/medical-claim-form-prin
 import { SsfClaimSelectionGuardService } from './shared/ssf-claim-selection-guard';
 import { SSFClaimComponent } from './ssf-claim/ssf-claim.component';
 import { SsfDlService } from './ssf-claim/ssf-dl.services';
+import { TpaDashboardComponent } from './tpa-dashboard/tpa-dashboard.component';
 
 
 @NgModule({
@@ -89,7 +90,8 @@ import { SsfDlService } from './ssf-claim/ssf-dl.services';
     EchsMrpDrugCertificatePrintComponent,
     MedicalClaimFormPrintComponent,
     ViewPaymentComponent,
-    SSFClaimComponent
+    SSFClaimComponent,
+    TpaDashboardComponent
   ],
   bootstrap: []
 })

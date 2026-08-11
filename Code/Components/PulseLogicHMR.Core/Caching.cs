@@ -152,7 +152,10 @@ namespace PulseLogicHMR.Core.Caching
 
         private static object GetICD10Data(CoreDbContext coreDbContext)
         {
-            object returnValue = coreDbContext.ICD10Codes.Where(icd => icd.Active == true).ToList<ICD10CodeModel>();
+            // OPT-02 FIX: The original code queried the DB before checking the cache, making
+            // the null-check unreachable. Cache was never written — all calls hit the DB.
+            // Fixed to follow the same check-then-populate pattern as every other Get*Data method.
+            object returnValue = Get("master-icd10");
             if (returnValue == null)
             {
                 returnValue = coreDbContext.ICD10Codes.Where(icd => icd.Active == true).ToList<ICD10CodeModel>();
