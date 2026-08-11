@@ -77,7 +77,7 @@ namespace PulseLogicHMR.Utilities
             return (paraValue == null) ? false : Convert.ToBoolean(paraValue);
         }
 
-        [Obsolete("")]
+        [Obsolete("Use GetCoreParameterValueByKeyName_Boolean instead.")]
         public static bool GetCoreParameterBoolValue(CoreDbContext coreDbContext, string groupName, string paramterName, string keyName)
         {
             // OPT-08 FIX: Original called .ParameterValue directly on FirstOrDefault() which
@@ -88,7 +88,9 @@ namespace PulseLogicHMR.Utilities
                 .FirstOrDefault()?.ParameterValue;
             if (paraValue == null) return false;
             var data = PulseLogicJSONConvert.DeserializeObject<JObject>(paraValue);
-            return (data == null) ? false : ((data[keyName].Value<string>()) == null) ? false : Convert.ToBoolean(data[keyName].Value<string>());
+            if (data == null) return false;
+            string keyValue = data[keyName]?.Value<string>();
+            return string.IsNullOrEmpty(keyValue) ? false : Convert.ToBoolean(keyValue);
         }
 
 
@@ -106,7 +108,7 @@ namespace PulseLogicHMR.Utilities
                 var data = PulseLogicJSONConvert.DeserializeObject<JObject>(paramValueStr);
                 if (data != null)
                 {
-                    return data[keyNameOfJsonObj].Value<string>();
+                    return data[keyNameOfJsonObj]?.Value<string>();
                 }
             }
 
@@ -128,7 +130,7 @@ namespace PulseLogicHMR.Utilities
                 JObject paramvalueJson = PulseLogicJSONConvert.DeserializeObject<JObject>(paramValueStr);
                 if (paramvalueJson != null)
                 {
-                    string strValueOfKey = paramvalueJson[keyNameOfJsonObj].Value<string>();
+                    string strValueOfKey = paramvalueJson[keyNameOfJsonObj]?.Value<string>();
                     if (!string.IsNullOrEmpty(strValueOfKey))
                     {
                         retValue = Convert.ToBoolean(strValueOfKey);
@@ -154,7 +156,7 @@ namespace PulseLogicHMR.Utilities
                 JObject paramvalueJson = PulseLogicJSONConvert.DeserializeObject<JObject>(paramValueStr);
                 if (paramvalueJson != null)
                 {
-                    string strValueOfKey = paramvalueJson[keyNameOfJsonObj].Value<string>();
+                    string strValueOfKey = paramvalueJson[keyNameOfJsonObj]?.Value<string>();
                     if (!string.IsNullOrEmpty(strValueOfKey))
                     {
                         retValue = Convert.ToInt32(strValueOfKey);
@@ -165,28 +167,7 @@ namespace PulseLogicHMR.Utilities
             return retValue;
         }
 
-        //inprogress..
-        public static int GetCoreParameterValueByKeyName_IntArray(CoreDbContext coreDbContext, string paramGroup, string paramName, string keyNameOfJsonObj)
-        {
-            int retValue = 0;//default is zero
-            //we have to consider condition like parameter not found, parametervalue not found, KeyNotFound.. etc.. 
-            ParameterModel param = coreDbContext.Parameters.Where(a => a.ParameterGroupName == paramGroup && a.ParameterName == paramName).FirstOrDefault();
-            if (param != null)
-            {
-                string paramValueStr = param.ParameterValue;
-                JObject paramvalueJson = PulseLogicJSONConvert.DeserializeObject<JObject>(paramValueStr);
-                if (paramvalueJson != null)
-                {
-                    string strValueOfKey = paramvalueJson[keyNameOfJsonObj].Value<string>();
-                    if (!string.IsNullOrEmpty(strValueOfKey))
-                    {
-                        retValue = Convert.ToInt32(strValueOfKey);
-                    }
-                }
-            }
 
-            return retValue;
-        }
 
 
     }

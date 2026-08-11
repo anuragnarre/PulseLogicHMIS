@@ -83,7 +83,8 @@ namespace PulseLogicHMR.Controllers
             string msgDigest = ComputeSha256Hash(GuidString);
 
 
-            CoreDbContext coreDbContext = new CoreDbContext(connString);
+
+            using CoreDbContext coreDbContext = new CoreDbContext(connString);
 
             ParameterModel licenseParam = coreDbContext.Parameters.Where(p => p.ParameterGroupName == "TenantMgnt" && p.ParameterName == "SoftwareLicense")
                         .FirstOrDefault();
@@ -148,7 +149,7 @@ namespace PulseLogicHMR.Controllers
 
             if (!string.IsNullOrEmpty(Request.Cookies["uRef"]))
             {
-                SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
+                using SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
 
                 var selector = Convert.ToInt64(Request.Cookies["uRef"]);
                 var validatorWithSalt = Request.Cookies["uData"] + Request.Cookies["uRef"];
@@ -210,7 +211,7 @@ namespace PulseLogicHMR.Controllers
             if (ModelState.IsValid)
             {
 
-                SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
+                using SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
 
                 RbacUser validUser = RBAC.GetUser(model.UserName, model.Password);
 
@@ -296,7 +297,7 @@ namespace PulseLogicHMR.Controllers
         {
             //HttpContext.Session.Set<RbacUser>("currentuser", null);   
             //Remove all sessin variable values
-            SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
+            using SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
             RbacUser currentUser = HttpContext.Session.Get<RbacUser>("currentuser");
             LoginInformationModel LoginInfo = new LoginInformationModel();
 
@@ -434,7 +435,7 @@ namespace PulseLogicHMR.Controllers
         {
             try
             {
-                SystemAdminDbContext sysDbContext = new SystemAdminDbContext(connStringAdmin);
+                using SystemAdminDbContext sysDbContext = new SystemAdminDbContext(connStringAdmin);
 
                 CookieAuthInfoModel authModel = new CookieAuthInfoModel();
 
@@ -513,7 +514,7 @@ namespace PulseLogicHMR.Controllers
         #region Update cookie
         public void UpdateRememberMeCookie(long selector)
         {
-            SystemAdminDbContext sysDbContext = new SystemAdminDbContext(connStringAdmin);
+            using SystemAdminDbContext sysDbContext = new SystemAdminDbContext(connStringAdmin);
 
             CookieAuthInfoModel authModel = (from sysAuthInfo in sysDbContext.CookieInformation
                                              where sysAuthInfo.Selector == selector
@@ -579,7 +580,7 @@ namespace PulseLogicHMR.Controllers
         public IActionResult LoginToPulseLogicHMR([FromBody] LoginDto loginDto)
         {
 
-                SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
+                using SystemAdminDbContext adminDbContext = new SystemAdminDbContext(connStringAdmin);
 
                 RbacUser validUser = RBAC.GetUser(loginDto.UserName, loginDto.Password);
 
@@ -644,7 +645,13 @@ namespace PulseLogicHMR.Controllers
         //Krishna, 13thJan'23 This method is responsible to generate the JWT Token keeping currentUser as its Claim
         private JwtSecurityToken GenerateJwtToken(RbacUser currentUser)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey));
+            // Use the same env-var-first logic as ConfigureServices.cs and PulseLogicDataFilter
+            // to ensure tokens are signed with the same key used for validation.
+            string signingKey = Environment.GetEnvironmentVariable("ASPNETCORE_JWT_KEY");
+            if (string.IsNullOrWhiteSpace(signingKey))
+                signingKey = JwtKey;
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

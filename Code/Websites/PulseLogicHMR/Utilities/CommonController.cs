@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 [PulseLogicDataFilter()]
 [Route("api/[controller]")]
 [Route("api/v1/[controller]")]
+[Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("api-general")]  // PLHMR-PERF-001 FIX: Global API rate limiting
 public class CommonController : Controller
 {
     ///protected readonly string config = null;
@@ -77,7 +78,7 @@ public class CommonController : Controller
         /* EMPI: 16Characters
           1 -3: district  4-9 : DOB(DDMMYY)  10-12: Name Initials(FML) - X if no middle name 13-16 : Random Number
           for eg: Name=Khadka Prasad Oli, District=Kailali, DOB=01-Dec-1990, EMPI= KAI011290KPO8972int districtId = obj.District;*/
-        MasterDbContext mstDB = new MasterDbContext(connString);
+        using MasterDbContext mstDB = new MasterDbContext(connString);
 
 
         string CountrySubDivisionName = (from d in mstDB.CountrySubDivision

@@ -44,7 +44,7 @@ namespace PulseLogicHMR.Utilities
             fileStorageLocation = storageLocation;
         }
 
-        public static PulseLogicHTTPResponse<object> Upload(IFormFileCollection files, string localFolder)
+        public static async Task<PulseLogicHTTPResponse<object>> Upload(IFormFileCollection files, string localFolder)
         {
             PulseLogicHTTPResponse<object> responseData = new PulseLogicHTTPResponse<object>();
 
@@ -97,19 +97,12 @@ namespace PulseLogicHMR.Utilities
 
                     string destinationPath = Path.Combine(resolvedTarget, safeFileName);
 
-                    using (Stream stream = file.OpenReadStream())
+                    // PERF FIX: Stream directly to disk instead of buffering the entire file in memory.
+                    // Previously: BinaryReader → byte[] → MemoryStream → FileStream (~100MB for a 50MB file).
+                    // Now: direct stream copy using a small kernel buffer (~80KB).
+                    using (var fileStream = new FileStream(destinationPath, FileMode.Create))
                     {
-                        using (var binaryReader = new BinaryReader(stream))
-                        {
-                            byte[] fileBytes = binaryReader.ReadBytes((int)file.Length);
-                            MemoryStream ms = new MemoryStream(fileBytes);
-
-                            // Write to disk using a FileStream.
-                            using (FileStream fs = new FileStream(destinationPath, FileMode.Create))
-                            {
-                                ms.WriteTo(fs);
-                            }
-                        }
+                        await file.CopyToAsync(fileStream);
                     }
                 }
 
@@ -120,11 +113,13 @@ namespace PulseLogicHMR.Utilities
             catch (Exception ex)
             {
                 // S8 FIX: Log full details server-side only. NEVER return ex.Message / ex.ToString() to client.
-                // The calling controller's exception handler (ExceptionHandlingMiddleware) will log the full exception.
-                // Re-throw so it is captured by the global middleware with correlation ID.
+                // Re-throw so ExceptionHandlingMiddleware can log with correlation ID.
+                // The safe client message below won't be seen because the middleware replaces the response,
+                // but we set it for defence-in-depth if the middleware is ever bypassed.
                 responseData.Status = "Failed";
                 responseData.ErrorMessage = "File upload failed. Please contact support if the problem persists.";
-                // Note: do NOT include ex.Message here \u2014 it can contain internal server paths.
+                // Note: do NOT include ex.Message here — it can contain internal server paths.
+                throw;
             }
             return responseData;
         }

@@ -808,7 +808,7 @@ namespace PulseLogicHMR.Controllers
             }
         }
 
-        private object PostReport(RbacUser currentUser)
+        private async Task<object> PostReport(RbacUser currentUser)
         {
             var files = this.ReadFiles();
             var localFolder = Request.Form["localFolder"];
@@ -821,7 +821,7 @@ namespace PulseLogicHMR.Controllers
             {
                 if (files.Count != 0)
                 {
-                    imgReport = UploadReportFile(imgReport, files, localFolder);
+                    imgReport = await UploadReportFile(imgReport, files, localFolder);
                 }
 
                 imgReport.CreatedBy = currentUser.EmployeeId;
@@ -969,7 +969,7 @@ namespace PulseLogicHMR.Controllers
 
 
 
-        private object UpdateImagingReport(RbacUser currentUser)
+        private async Task<object> UpdateImagingReport(RbacUser currentUser)
         {
             var enableProviderEditInBillTxnItem = Convert.ToBoolean(Request.Form["enableProviderEditInBillTxnItem"]);
             var files = Request.Form.Files;
@@ -987,7 +987,7 @@ namespace PulseLogicHMR.Controllers
 
                     if (files.Count != 0)
                     {
-                        imgReport = UploadReportFile(imgReport, files, localFolder);
+                        imgReport = await UploadReportFile(imgReport, files, localFolder);
                         dbImgReport.ImageName = imgReport.ImageName;
                         dbImgReport.ImageFullPath = imgReport.ImageFullPath;
                     }
@@ -2823,9 +2823,9 @@ namespace PulseLogicHMR.Controllers
 
 
         //uploads Imaging Report File and returns Imaging Report Object after updating ImageName and ImageFullPath
-        private ImagingReportModel UploadReportFile(ImagingReportModel imgReport, IFormFileCollection files, string localFolder)
+        private async Task<ImagingReportModel> UploadReportFile(ImagingReportModel imgReport, IFormFileCollection files, string localFolder)
         {
-            PulseLogicHTTPResponse<object> uploadResponse = FileUploader.Upload(files, localFolder);
+            PulseLogicHTTPResponse<object> uploadResponse = await FileUploader.Upload(files, localFolder);
             string filePath = null;
             if (uploadResponse.Status == "OK")
             {

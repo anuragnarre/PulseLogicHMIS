@@ -326,7 +326,7 @@ namespace PulseLogicHMR.Security
         {
 
 
-            RbacDbContext rbacDbcontxt = new RbacDbContext(connStringName);
+            using RbacDbContext rbacDbcontxt = new RbacDbContext(connStringName);
             List<RbacUser> alluser = RBAC.GetAllUsers();
             RbacUser usr = alluser.Where(a => a.UserName.ToLower() == userName.ToLower() && a.Password == EncryptPassword(password))
                           .Select(a => a).FirstOrDefault();

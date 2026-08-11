@@ -277,6 +277,9 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
+                // Previously swallowed silently — caller then does JObject.Parse(null) which throws
+                // an unhelpful ArgumentNullException. Log the real cause for debugging.
+                System.Diagnostics.Debug.WriteLine($"[PulseLogicDataFilter] ReadBodyAsString failed: {ex.Message}");
                 strResult = null;
             }
             return strResult;

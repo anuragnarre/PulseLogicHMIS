@@ -80,12 +80,25 @@ namespace PulseLogicHMR
             bool usingEnvKey = !string.IsNullOrWhiteSpace(jwtKey);
             if (!usingEnvKey)
             {
-                // Fallback to config — log a warning so this is never silently used in production.
+                // Determine if we are in a development environment.
+                bool isDevEnv = string.Equals(Configuration["environment:isdevelopment"], "true",
+                                              StringComparison.OrdinalIgnoreCase);
+
+                if (!isDevEnv)
+                {
+                    // SECURITY: In production, refuse to start with a config-file key.
+                    // The appsettings key is visible in source control and must never be used in production.
+                    throw new InvalidOperationException(
+                        "[FATAL] ASPNETCORE_JWT_KEY environment variable is not set. " +
+                        "The application cannot start in a non-development environment without a secure JWT key. " +
+                        "Set the environment variable and restart.");
+                }
+
+                // Fallback to config — acceptable only in development.
                 jwtKey = Configuration["JwtTokenConfig:JwtKey"];
-                // We cannot use ILogger here (outside DI), so we write directly.
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("[SECURITY WARNING] ASPNETCORE_JWT_KEY environment variable is not set. " +
-                                  "Falling back to appsettings.json JwtKey. DO NOT use the appsettings key in production.");
+                                  "Falling back to appsettings.json JwtKey. This is acceptable ONLY in development.");
                 Console.ResetColor();
             }
 
