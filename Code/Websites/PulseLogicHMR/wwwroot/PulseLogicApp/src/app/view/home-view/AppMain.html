@@ -1,2097 +1,272 @@
-<!-- PulseLogicHMR — Apple HIG Premium Redesign v3.0 -->
-
-<div class="pl-root" [attr.data-theme]="currentTheme" [attr.data-collapsed]="sidebarCollapsed ? '1' : '0'">
+<!-- PulseLogicHMR — Stitch Modern Redesign -->
+<div class="modern-app-layout" [attr.data-theme]="currentTheme">
 
   <!-- ╔══════════════════════════════════════════════════════╗
-       ║  SIDEBAR                                             ║
+       ║  HEADER                                              ║
        ╚══════════════════════════════════════════════════════╝ -->
-  <aside class="pl-sidebar" *ngIf="navService.showSideNav" [class.collapsed]="sidebarCollapsed">
+  <header class="modern-header" *ngIf="navService.showTopNav">
+    <div class="modern-header-logo">
+      <img src="/themes/theme-default/images/light_logo_plain.png" alt="PulseLogic" />
+      <span class="logo-text">PulseLogic</span>
+    </div>
 
-    <!-- Brand -->
-    <div class="pl-brand">
-      <div class="pl-brand-mark">
-        <img src="/themes/theme-default/images/light_logo_plain.png" alt="PulseLogic" class="pl-brand-logo" />
+    <div class="modern-header-search">
+      <div class="search-container" *ngIf="PatService.globalPatient.PatientCode == null">
+        <i class="fa fa-search search-icon"></i>
+        <pulselogic-global-search></pulselogic-global-search>
       </div>
-      <div class="pl-brand-text">
-        <span class="pl-brand-name">PulseLogic</span>
-        <span class="pl-brand-sub">Hospital Management</span>
+      <div class="patient-info-header" *ngIf="PatService.globalPatient.PatientCode != null">
+        <i class="fa fa-user" style="margin-right: 8px;"></i>
+        {{ PatService.globalPatient.ShortName }}
+        <span style="opacity: 0.8; margin-left: 8px; font-size: 0.8em;">
+          HN: {{ PatService.globalPatient.PatientCode }}
+        </span>
       </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="pl-nav" role="navigation" aria-label="Primary navigation">
+    <div class="modern-header-actions">
+      <!-- Theme toggle -->
+      <button class="btn-modern btn-modern-secondary" style="padding: 6px 12px;" (click)="setTheme(currentTheme === 'dark' ? 'light' : 'dark')" title="Switch theme">
+        <i class="fa" [class.fa-moon-o]="currentTheme !== 'dark'" [class.fa-sun-o]="currentTheme === 'dark'"></i>
+      </button>
 
-      <!-- GROUP: OVERVIEW -->
-      <div class="pl-nav-section">
+      <span class="modern-badge badge-info" *ngIf="coreService.appVersionNum" style="background: rgba(0,122,255,0.1); color: #007aff; padding: 4px 8px; border-radius: 999px;">
+        {{ coreService.appVersionNum }}
+      </span>
+
+      <!-- Notifications -->
+      <notification-icon></notification-icon>
+
+      <!-- Hospital name chip -->
+      <span class="modern-badge badge-warning" *ngIf="hospitalName" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; padding: 4px 8px; border-radius: 999px; margin-left: 8px;">
+        {{ hospitalName }}
+      </span>
+
+      <!-- User Menu -->
+      <div class="user-profile-menu" style="display: flex; align-items: center; gap: 8px; margin-left: 12px; cursor: pointer;" (click)="LogoutFromAplication()" title="Click to Sign Out">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden;">
+          <span *ngIf="currentUsr.Profile.ImageLocation==''">{{ currentUsr.UserName?.charAt(0)?.toUpperCase() }}</span>
+          <img *ngIf="currentUsr.Profile.ImageLocation!=''" [src]="employeeService.ProfilePicSrcPath" alt="avatar" style="width: 100%; height: 100%; object-fit: cover;" />
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">{{ currentUsr.UserName }}</span>
+          <span style="font-size: 11px; color: var(--text-tertiary);">Sign Out</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ╔══════════════════════════════════════════════════════╗
+       ║  BODY (Sidebar + Main Content)                       ║
+       ╚══════════════════════════════════════════════════════╝ -->
+  <div class="modern-body">
+
+    <aside class="modern-sidebar" *ngIf="navService.showSideNav">
+      <ul class="modern-sidebar-menu">
+
+        <!-- OVERVIEW -->
         <ng-container *ngFor="let route of validRoutes">
-          <ng-container *ngIf="isOverviewGroup(route)">
-            <div class="pl-nav-item-wrap">
-              <a class="pl-nav-item"
-                 [routerLink]="route.RouterLink"
-                 routerLinkActive="pl-nav-active"
-                 [title]="route.DisplayName">
-                <span class="pl-nav-icon">
-                  <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                </span>
-                <span class="pl-nav-label">{{ route.DisplayName }}</span>
+          <li *ngIf="isOverviewGroup(route)">
+            <a [routerLink]="route.RouterLink" routerLinkActive="active" [title]="route.DisplayName">
+              <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+              <span>{{ route.DisplayName }}</span>
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- PATIENTS -->
+        <ng-container *ngIf="hasGroupItems('patients')">
+          <li style="padding: 12px 16px 4px; font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Patients</li>
+          <ng-container *ngFor="let route of validRoutes">
+            <li *ngIf="isPatientsGroup(route)">
+              <a [routerLink]="route.RouterLink" routerLinkActive="active" (click)="toggleRoute(route)" [class.active]="route.isExpanded" [title]="getModuleDisplayName(route.DisplayName)">
+                <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+                <span style="flex: 1;">{{ getModuleDisplayName(route.DisplayName) }}</span>
+                <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0" style="font-size: 10px; margin-left: auto; margin-right: 0;"></i>
               </a>
-            </div>
+              <ul class="sub-menu" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded" style="display: block;">
+                <ng-container *ngFor="let child of route.ChildRoutes">
+                  <li *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false">
+                    <a routerLink="{{ child.UrlFullPath }}" routerLinkActive="active">
+                      {{ child.DisplayName }}
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
           </ng-container>
         </ng-container>
-      </div>
 
-      <!-- GROUP: PATIENTS -->
-      <ng-container *ngIf="hasGroupItems('patients')">
-        <div class="pl-nav-group-label">Patients</div>
-        <div class="pl-nav-section">
+        <!-- CLINICAL -->
+        <ng-container *ngIf="hasGroupItems('clinical')">
+          <li style="padding: 12px 16px 4px; font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Clinical</li>
           <ng-container *ngFor="let route of validRoutes">
-            <ng-container *ngIf="isPatientsGroup(route)">
-              <div class="pl-nav-item-wrap">
-                <a class="pl-nav-item"
-                   [routerLink]="route.RouterLink"
-                   routerLinkActive="pl-nav-active"
-                   (click)="toggleRoute(route)"
-                   [title]="getModuleDisplayName(route.DisplayName)">
-                  <span class="pl-nav-icon">
-                    <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                  </span>
-                  <span class="pl-nav-label">{{ getModuleDisplayName(route.DisplayName) }}</span>
-                  <span class="pl-nav-chevron" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0">
-                    <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded"></i>
-                  </span>
-                </a>
-                <div class="pl-subnav" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded">
-                  <ng-container *ngFor="let child of route.ChildRoutes">
-                    <a *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false"
-                       class="pl-subnav-item"
-                       routerLink="{{ child.UrlFullPath }}"
-                       routerLinkActive="pl-subnav-active">
-                      {{ child.DisplayName }}
-                    </a>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </div>
-      </ng-container>
-
-      <!-- GROUP: CLINICAL -->
-      <ng-container *ngIf="hasGroupItems('clinical')">
-        <div class="pl-nav-group-label">Clinical</div>
-        <div class="pl-nav-section">
-          <ng-container *ngFor="let route of validRoutes">
-            <ng-container *ngIf="isClinicalGroup(route)">
-              <div class="pl-nav-item-wrap">
-                <a class="pl-nav-item"
-                   [routerLink]="route.RouterLink"
-                   routerLinkActive="pl-nav-active"
-                   (click)="toggleRoute(route)"
-                   [title]="getModuleDisplayName(route.DisplayName)">
-                  <span class="pl-nav-icon">
-                    <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                  </span>
-                  <span class="pl-nav-label">{{ getModuleDisplayName(route.DisplayName) }}</span>
-                  <span class="pl-nav-chevron" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0">
-                    <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded"></i>
-                  </span>
-                </a>
-                <div class="pl-subnav" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded">
-                  <ng-container *ngFor="let child of route.ChildRoutes">
-                    <a *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false"
-                       class="pl-subnav-item"
-                       routerLink="{{ child.UrlFullPath }}"
-                       routerLinkActive="pl-subnav-active">
-                      {{ child.DisplayName }}
-                    </a>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </div>
-      </ng-container>
-
-      <!-- GROUP: DIAGNOSTICS -->
-      <ng-container *ngIf="hasGroupItems('diagnostics')">
-        <div class="pl-nav-group-label">Diagnostics</div>
-        <div class="pl-nav-section">
-          <ng-container *ngFor="let route of validRoutes">
-            <ng-container *ngIf="isDiagnosticsGroup(route)">
-              <div class="pl-nav-item-wrap">
-                <a class="pl-nav-item"
-                   [routerLink]="route.RouterLink"
-                   routerLinkActive="pl-nav-active"
-                   (click)="toggleRoute(route)"
-                   [title]="getModuleDisplayName(route.DisplayName)">
-                  <span class="pl-nav-icon">
-                    <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                  </span>
-                  <span class="pl-nav-label">{{ getModuleDisplayName(route.DisplayName) }}</span>
-                  <span class="pl-nav-chevron" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0">
-                    <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded"></i>
-                  </span>
-                </a>
-                <div class="pl-subnav" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded">
-                  <ng-container *ngFor="let child of route.ChildRoutes">
-                    <a *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false"
-                       class="pl-subnav-item"
-                       routerLink="{{ child.UrlFullPath }}"
-                       routerLinkActive="pl-subnav-active">
-                      {{ child.DisplayName }}
-                    </a>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </div>
-      </ng-container>
-
-      <!-- GROUP: FINANCE -->
-      <ng-container *ngIf="hasGroupItems('finance')">
-        <div class="pl-nav-group-label">Finance</div>
-        <div class="pl-nav-section">
-          <ng-container *ngFor="let route of validRoutes">
-            <ng-container *ngIf="isFinanceGroup(route)">
-              <div class="pl-nav-item-wrap">
-                <a class="pl-nav-item"
-                   [routerLink]="route.RouterLink"
-                   routerLinkActive="pl-nav-active"
-                   (click)="toggleRoute(route)"
-                   [title]="getModuleDisplayName(route.DisplayName)">
-                  <span class="pl-nav-icon">
-                    <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                  </span>
-                  <span class="pl-nav-label">{{ getModuleDisplayName(route.DisplayName) }}</span>
-                  <span class="pl-nav-chevron" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0">
-                    <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded"></i>
-                  </span>
-                </a>
-                <div class="pl-subnav" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded">
-                  <ng-container *ngFor="let child of route.ChildRoutes">
-                    <a *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false"
-                       class="pl-subnav-item"
-                       routerLink="{{ child.UrlFullPath }}"
-                       routerLinkActive="pl-subnav-active">
-                      {{ child.DisplayName }}
-                    </a>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </div>
-      </ng-container>
-
-      <!-- GROUP: PHARMACY & SUPPLY -->
-      <ng-container *ngIf="hasGroupItems('supply')">
-        <div class="pl-nav-group-label">Pharmacy & Supply</div>
-        <div class="pl-nav-section">
-          <ng-container *ngFor="let route of validRoutes">
-            <ng-container *ngIf="isSupplyGroup(route)">
-              <div class="pl-nav-item-wrap">
-                <a class="pl-nav-item"
-                   [routerLink]="route.RouterLink"
-                   routerLinkActive="pl-nav-active"
-                   (click)="toggleRoute(route)"
-                   [title]="getModuleDisplayName(route.DisplayName)">
-                  <span class="pl-nav-icon">
-                    <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                  </span>
-                  <span class="pl-nav-label">{{ getModuleDisplayName(route.DisplayName) }}</span>
-                  <span class="pl-nav-chevron" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0">
-                    <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded"></i>
-                  </span>
-                </a>
-                <div class="pl-subnav" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded">
-                  <ng-container *ngFor="let child of route.ChildRoutes">
-                    <a *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false"
-                       class="pl-subnav-item"
-                       routerLink="{{ child.UrlFullPath }}"
-                       routerLinkActive="pl-subnav-active">
-                      {{ child.DisplayName }}
-                    </a>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </div>
-      </ng-container>
-
-      <!-- GROUP: PEOPLE -->
-      <ng-container *ngIf="hasGroupItems('people')">
-        <div class="pl-nav-group-label">People</div>
-        <div class="pl-nav-section">
-          <ng-container *ngFor="let route of validRoutes">
-            <ng-container *ngIf="isPeopleGroup(route)">
-              <div class="pl-nav-item-wrap">
-                <a class="pl-nav-item"
-                   [routerLink]="route.RouterLink"
-                   routerLinkActive="pl-nav-active"
-                   (click)="toggleRoute(route)"
-                   [title]="getModuleDisplayName(route.DisplayName)">
-                  <span class="pl-nav-icon">
-                    <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                  </span>
-                  <span class="pl-nav-label">{{ getModuleDisplayName(route.DisplayName) }}</span>
-                  <span class="pl-nav-chevron" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0">
-                    <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded"></i>
-                  </span>
-                </a>
-                <div class="pl-subnav" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded">
-                  <ng-container *ngFor="let child of route.ChildRoutes">
-                    <a *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false"
-                       class="pl-subnav-item"
-                       routerLink="{{ child.UrlFullPath }}"
-                       routerLinkActive="pl-subnav-active">
-                      {{ child.DisplayName }}
-                    </a>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </div>
-      </ng-container>
-
-      <!-- GROUP: ADMINISTRATION (bottom-pinned) -->
-      <div class="pl-nav-spacer"></div>
-      <div class="pl-nav-divider"></div>
-      <div class="pl-nav-group-label pl-nav-group-label--admin">Administration</div>
-      <div class="pl-nav-section">
-        <ng-container *ngFor="let route of validRoutes">
-          <ng-container *ngIf="isAdminGroup(route)">
-            <div class="pl-nav-item-wrap">
-              <a class="pl-nav-item"
-                 [routerLink]="route.RouterLink"
-                 routerLinkActive="pl-nav-active"
-                 (click)="toggleRoute(route)"
-                 [title]="getModuleDisplayName(route.DisplayName)">
-                <span class="pl-nav-icon">
-                  <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
-                </span>
-                <span class="pl-nav-label">{{ getModuleDisplayName(route.DisplayName) }}</span>
-                <span class="pl-nav-chevron" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0">
-                  <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded"></i>
-                </span>
+            <li *ngIf="isClinicalGroup(route)">
+              <a [routerLink]="route.RouterLink" routerLinkActive="active" (click)="toggleRoute(route)" [class.active]="route.isExpanded" [title]="getModuleDisplayName(route.DisplayName)">
+                <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+                <span style="flex: 1;">{{ getModuleDisplayName(route.DisplayName) }}</span>
+                <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0" style="font-size: 10px; margin-left: auto; margin-right: 0;"></i>
               </a>
-              <div class="pl-subnav" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded">
+              <ul class="sub-menu" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded" style="display: block;">
                 <ng-container *ngFor="let child of route.ChildRoutes">
-                  <a *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false"
-                     class="pl-subnav-item"
-                     routerLink="{{ child.UrlFullPath }}"
-                     routerLinkActive="pl-subnav-active">
+                  <li *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false">
+                    <a routerLink="{{ child.UrlFullPath }}" routerLinkActive="active">
+                      {{ child.DisplayName }}
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+
+        <!-- DIAGNOSTICS -->
+        <ng-container *ngIf="hasGroupItems('diagnostics')">
+          <li style="padding: 12px 16px 4px; font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Diagnostics</li>
+          <ng-container *ngFor="let route of validRoutes">
+            <li *ngIf="isDiagnosticsGroup(route)">
+              <a [routerLink]="route.RouterLink" routerLinkActive="active" (click)="toggleRoute(route)" [class.active]="route.isExpanded" [title]="getModuleDisplayName(route.DisplayName)">
+                <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+                <span style="flex: 1;">{{ getModuleDisplayName(route.DisplayName) }}</span>
+                <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0" style="font-size: 10px; margin-left: auto; margin-right: 0;"></i>
+              </a>
+              <ul class="sub-menu" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded" style="display: block;">
+                <ng-container *ngFor="let child of route.ChildRoutes">
+                  <li *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false">
+                    <a routerLink="{{ child.UrlFullPath }}" routerLinkActive="active">
+                      {{ child.DisplayName }}
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+
+        <!-- FINANCE -->
+        <ng-container *ngIf="hasGroupItems('finance')">
+          <li style="padding: 12px 16px 4px; font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Finance</li>
+          <ng-container *ngFor="let route of validRoutes">
+            <li *ngIf="isFinanceGroup(route)">
+              <a [routerLink]="route.RouterLink" routerLinkActive="active" (click)="toggleRoute(route)" [class.active]="route.isExpanded" [title]="getModuleDisplayName(route.DisplayName)">
+                <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+                <span style="flex: 1;">{{ getModuleDisplayName(route.DisplayName) }}</span>
+                <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0" style="font-size: 10px; margin-left: auto; margin-right: 0;"></i>
+              </a>
+              <ul class="sub-menu" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded" style="display: block;">
+                <ng-container *ngFor="let child of route.ChildRoutes">
+                  <li *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false">
+                    <a routerLink="{{ child.UrlFullPath }}" routerLinkActive="active">
+                      {{ child.DisplayName }}
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+
+        <!-- PHARMACY & SUPPLY -->
+        <ng-container *ngIf="hasGroupItems('supply')">
+          <li style="padding: 12px 16px 4px; font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Pharmacy & Supply</li>
+          <ng-container *ngFor="let route of validRoutes">
+            <li *ngIf="isSupplyGroup(route)">
+              <a [routerLink]="route.RouterLink" routerLinkActive="active" (click)="toggleRoute(route)" [class.active]="route.isExpanded" [title]="getModuleDisplayName(route.DisplayName)">
+                <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+                <span style="flex: 1;">{{ getModuleDisplayName(route.DisplayName) }}</span>
+                <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0" style="font-size: 10px; margin-left: auto; margin-right: 0;"></i>
+              </a>
+              <ul class="sub-menu" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded" style="display: block;">
+                <ng-container *ngFor="let child of route.ChildRoutes">
+                  <li *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false">
+                    <a routerLink="{{ child.UrlFullPath }}" routerLinkActive="active">
+                      {{ child.DisplayName }}
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+
+        <!-- PEOPLE -->
+        <ng-container *ngIf="hasGroupItems('people')">
+          <li style="padding: 12px 16px 4px; font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">People</li>
+          <ng-container *ngFor="let route of validRoutes">
+            <li *ngIf="isPeopleGroup(route)">
+              <a [routerLink]="route.RouterLink" routerLinkActive="active" (click)="toggleRoute(route)" [class.active]="route.isExpanded" [title]="getModuleDisplayName(route.DisplayName)">
+                <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+                <span style="flex: 1;">{{ getModuleDisplayName(route.DisplayName) }}</span>
+                <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0" style="font-size: 10px; margin-left: auto; margin-right: 0;"></i>
+              </a>
+              <ul class="sub-menu" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded" style="display: block;">
+                <ng-container *ngFor="let child of route.ChildRoutes">
+                  <li *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false">
+                    <a routerLink="{{ child.UrlFullPath }}" routerLinkActive="active">
+                      {{ child.DisplayName }}
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+
+        <!-- ADMINISTRATION -->
+        <li style="margin-top: auto;"></li>
+        <li style="padding: 12px 16px 4px; font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Administration</li>
+        <ng-container *ngFor="let route of validRoutes">
+          <li *ngIf="isAdminGroup(route)">
+            <a [routerLink]="route.RouterLink" routerLinkActive="active" (click)="toggleRoute(route)" [class.active]="route.isExpanded" [title]="getModuleDisplayName(route.DisplayName)">
+              <i [class]="getNavIcon(route.Css, route.DisplayName)"></i>
+              <span style="flex: 1;">{{ getModuleDisplayName(route.DisplayName) }}</span>
+              <i class="fa" [class.fa-chevron-down]="route.isExpanded" [class.fa-chevron-right]="!route.isExpanded" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0" style="font-size: 10px; margin-left: auto; margin-right: 0;"></i>
+            </a>
+            <ul class="sub-menu" *ngIf="route.ChildRoutes != null && route.ChildRoutesDefaultShowCount > 0 && route.isExpanded" style="display: block;">
+              <ng-container *ngFor="let child of route.ChildRoutes">
+                <li *ngIf="child != null && child.DisplayName.length > 0 && child.DefaultShow != false">
+                  <a routerLink="{{ child.UrlFullPath }}" routerLinkActive="active">
                     {{ child.DisplayName }}
                   </a>
-                </ng-container>
-              </div>
-            </div>
-          </ng-container>
+                </li>
+              </ng-container>
+            </ul>
+          </li>
         </ng-container>
-      </div>
 
-    </nav>
+      </ul>
+    </aside>
 
-    <!-- Sidebar footer: collapse toggle -->
-    <div class="pl-sidebar-foot">
-      <button class="pl-collapse-btn" (click)="toggleSidebar()" [title]="sidebarCollapsed ? 'Expand' : 'Collapse'">
-        <i class="fa" [class.fa-chevron-left]="!sidebarCollapsed" [class.fa-chevron-right]="sidebarCollapsed"></i>
-        <span class="pl-nav-label">Collapse</span>
-      </button>
-    </div>
-
-  </aside>
-
-  <!-- ╔══════════════════════════════════════════════════════╗
-       ║  MAIN PANEL: Topbar + Content                        ║
-       ╚══════════════════════════════════════════════════════╝ -->
-  <div class="pl-panel">
-
-    <!-- TOP BAR -->
-    <header class="pl-topbar" *ngIf="navService.showTopNav">
-
-      <!-- Left: hamburger toggle -->
-      <button class="pl-topbar-hamburger" (click)="toggleSidebar()" title="Toggle sidebar">
-        <span class="pl-hamburger-line"></span>
-        <span class="pl-hamburger-line"></span>
-        <span class="pl-hamburger-line"></span>
-      </button>
-
-      <!-- Center: Spotlight Search -->
-      <div class="pl-spotlight-wrap">
-
-        <!-- Patient context chip — shown when a patient is selected -->
-        <div class="pl-patient-chip" *ngIf="PatService.globalPatient.PatientCode != null">
-          <div class="pl-patient-chip-avatar">
-            <i class="fa fa-user"></i>
-          </div>
-          <div class="pl-patient-chip-info">
-            <span class="pl-patient-chip-name">{{ PatService.globalPatient.ShortName }}</span>
-            <span class="pl-patient-chip-meta">
-              HN: {{ PatService.globalPatient.PatientCode }}
-              <span *ngIf="PatService.globalPatient.DateOfBirth != null">
-                &nbsp;·&nbsp;{{ PatService.globalPatient.DateOfBirth | PulseLogicDateTime:'age' }} / {{ PatService.globalPatient.Gender }}
-              </span>
-              <span class="pl-patient-chip-member"
-                    *ngIf="PatService.globalPatient.MembershipTypeId != null && ('MembershipTypeDiscount' | booleanParameter : 'Billing')">
-                <i class="fa fa-star"></i> {{ PatService.globalPatient.MembershipTypeName }}
-              </span>
-            </span>
-          </div>
-          <div class="pl-patient-chip-badge" *ngIf="PatService.globalPatient.MembershipTypeId != null">
-            <i class="fa fa-star"></i>
-          </div>
-        </div>
-
-        <!-- Spotlight Search bar — shown when no patient context -->
-        <div class="pl-spotlight" *ngIf="PatService.globalPatient.PatientCode == null">
-          <pulselogic-global-search class="pl-spotlight-input-wrap"></pulselogic-global-search>
-        </div>
-
-      </div>
-
-      <!-- Hospital name chip — absolutely centered -->
-      <div class="pl-hospital-name-abs" *ngIf="hospitalName">
-        <span class="pl-hospital-chip">{{ hospitalName }}</span>
-      </div>
-
-      <!-- Right: Actions cluster -->
-      <div class="pl-topbar-actions">
-
-        <!-- Theme toggle -->
-        <div class="pl-theme-toggle" title="Switch theme">
-          <button class="pl-theme-dot pl-theme-light" (click)="setTheme('light')" title="Light mode"></button>
-          <button class="pl-theme-dot pl-theme-dark"  (click)="setTheme('dark')"  title="Dark mode"></button>
-        </div>
-
-        <!-- Version badge -->
-        <span class="pl-version-badge" *ngIf="coreService.appVersionNum">{{ coreService.appVersionNum }}</span>
-
-        <!-- Notifications -->
-        <div class="pl-topbar-action-btn">
-          <notification-icon></notification-icon>
-        </div>
-
-        <!-- User Manual -->
-        <a class="pl-topbar-action-btn pl-icon-btn" title="User Manual" href="/PulseLogicManual/index.html" target="_blank">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M6 5h4M6 8h4M6 11h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </a>
-
-        <!-- Keyboard Shortcuts -->
-        <button class="pl-topbar-action-btn pl-icon-btn" title="Keyboard Shortcuts" (click)="showShortcutsModal = true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="1.5" y="4" width="13" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M4 7h1M7 7h2M11 7h1M5 10h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
-
-        <!-- Help dropdown -->
-        <div class="pl-topbar-dd">
-          <button class="pl-topbar-action-btn pl-icon-btn" id="pl-help-btn" title="Help">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M6 6a2 2 0 0 1 4 0c0 1.5-2 2-2 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <circle cx="8" cy="12" r="0.75" fill="currentColor"/>
-            </svg>
-          </button>
-          <div class="pl-dd-panel" id="pl-help-panel">
-            <div class="pl-dd-header">Help & Resources</div>
-            <a class="pl-dd-item" href="/PulseLogicManual/index.html" target="_blank" style="text-decoration: none;">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              User Manual
-            </a>
-          </div>
-        </div>
-
-        <!-- User menu -->
-        <div class="pl-topbar-dd pl-user-dd">
-          <button class="pl-user-btn" id="pl-user-btn" title="Account">
-            <div class="pl-user-avatar" *ngIf="currentUsr.Profile.ImageLocation==''">
-              <span class="pl-user-avatar-initials">{{ currentUsr.UserName?.charAt(0)?.toUpperCase() }}</span>
-            </div>
-            <img class="pl-user-avatar pl-user-avatar-img"
-                 *ngIf="currentUsr.Profile.ImageLocation!=''"
-                 [src]="employeeService.ProfilePicSrcPath" alt="avatar" />
-            <span class="pl-user-name">{{ currentUsr.UserName }}</span>
-            <svg class="pl-user-caret" width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-
-          <div class="pl-dd-panel pl-user-panel" id="pl-user-panel">
-            <!-- User head -->
-            <div class="pl-user-panel-head">
-              <div class="pl-user-panel-avatar" *ngIf="currentUsr.Profile.ImageLocation==''">
-                <span class="pl-user-avatar-initials pl-user-avatar-initials--lg">{{ currentUsr.UserName?.charAt(0)?.toUpperCase() }}</span>
-              </div>
-              <img class="pl-user-panel-avatar pl-user-avatar-img-lg"
-                   *ngIf="currentUsr.Profile.ImageLocation!=''"
-                   [src]="employeeService.ProfilePicSrcPath" alt="avatar" />
-              <div class="pl-user-panel-info">
-                <div class="pl-user-panel-name">{{ currentUsr.UserName }}</div>
-                <div class="pl-user-panel-role">HMIS User</div>
-              </div>
-            </div>
-            <div class="pl-dd-divider"></div>
-            <a routerLink="Employee/ProfileMain" class="pl-dd-item">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="5" r="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4 10c0-1.657 1.343-3 3-3s3 1.343 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-              My Profile
-            </a>
-            <button class="pl-dd-item" (click)="openShowDatePreference()" *ngIf="!EnableEnglishCalendarOnly">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M1 6h12" stroke="currentColor" stroke-width="1.4"/><path d="M4 1v2M10 1v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-              Date Format: <b>{{ defaultCal }}</b>
-            </button>
-            <div class="pl-dd-divider"></div>
-            <button class="pl-dd-item pl-dd-item--danger" (click)="LogoutFromAplication()">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10 10l3-3-3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 7H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-              Sign Out
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </header>
-
-    <!-- CONTENT AREA -->
-    <main class="pl-main" [class.no-sidebar]="!navService.showSideNav">
-      <!-- <pulselogic-loader [loadingScreen]="loadingScreen"></pulselogic-loader> -->
+    <main class="modern-main-content">
       <pulselogic-msgbox></pulselogic-msgbox>
-
-      <!-- Route loading overlay -->
-      <!-- <div *ngIf="coreService.loading" class="pl-loader-overlay">
-        <div class="pl-loader-spinner"></div>
-      </div> -->
-
-      <div class="pl-content">
+      <div class="modern-router-wrapper">
         <router-outlet (activate)="onActivate($event)"></router-outlet>
       </div>
     </main>
 
   </div>
-
 </div>
 
-
-<!-- ┌──────────────────────────────────────────────────────────────┐ -->
-<!-- │  MODALS                                                      │ -->
-<!-- └──────────────────────────────────────────────────────────────┘ -->
-
-<!-- Shortcuts Modal -->
-<div class="pl-modal-backdrop" *ngIf="showShortcutsModal" (click)="showShortcutsModal = false">
-  <div class="pl-modal" (click)="$event.stopPropagation()">
-    <div class="pl-modal-header">
-      <span class="pl-modal-title">Keyboard Shortcuts</span>
-      <button class="pl-modal-close" (click)="showShortcutsModal = false">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="pl-modal-body">
-      <p class="pl-modal-desc">Configure personal shortcuts for quick navigation. Use combinations like <kbd>alt+p</kbd> or <kbd>ctrl+shift+a</kbd>.</p>
-      <div class="pl-shortcut-list">
-        <div *ngFor="let s of customShortcuts; let i = index" class="pl-shortcut-row">
-          <input type="text" [(ngModel)]="s.combo" placeholder="e.g. alt+p" class="pl-shortcut-input pl-shortcut-combo">
-          <input type="text" [(ngModel)]="s.route" placeholder="/Patient/Register" class="pl-shortcut-input pl-shortcut-route">
-          <button (click)="removeShortcut(i)" class="pl-shortcut-remove" title="Remove">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="pl-modal-footer">
-      <button (click)="addShortcut()" class="pl-btn-ghost">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Add
-      </button>
-      <div class="pl-modal-footer-right">
-        <button (click)="showShortcutsModal = false" class="pl-btn-ghost">Cancel</button>
-        <button (click)="saveShortcuts()" class="pl-btn-primary">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Date Preference Modal -->
-<div class="pl-modal-backdrop" *ngIf="showDatePopup" (click)="Close()">
-  <div class="pl-modal" (click)="$event.stopPropagation()">
-    <div class="pl-modal-header">
-      <span class="pl-modal-title">Calendar Preference</span>
-      <button class="pl-modal-close" (click)="Close()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="pl-modal-body">
-      <p class="pl-modal-desc">Select your preferred calendar system for date display throughout the application.</p>
-      <div class="pl-radio-group">
-        <label class="pl-radio-card">
+<!-- Date Preference Modal (kept for functional correctness) -->
+<div class="pl-modal-backdrop" *ngIf="showDatePopup" (click)="Close()" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+  <div class="pl-card" (click)="$event.stopPropagation()" style="width: 400px; max-width: 90vw; margin: 0;">
+    <div class="pl-card-title">Calendar Preference</div>
+    <div class="pl-card-body" style="padding: 0;">
+      <p style="color: var(--text-secondary); margin-bottom: 16px;">Select your preferred calendar system for date display throughout the application.</p>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 12px; border: 1px solid var(--border-light); border-radius: 8px;">
           <input id="AD" name="dateMode" type="checkbox" (click)="ChangeDatePreference($event)" [(ngModel)]="empPre.en" />
-          <span class="pl-radio-card-inner">
-            <span class="pl-radio-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M3 9a6 6 0 0 1 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="9" cy="9" rx="3" ry="8" stroke="currentColor" stroke-width="1.5"/><path d="M1 9h16" stroke="currentColor" stroke-width="1.5"/></svg>
-            </span>
-            <span class="pl-radio-label">
-              <span class="pl-radio-title">English (AD)</span>
-              <span class="pl-radio-sub">Gregorian Calendar</span>
-            </span>
-          </span>
+          <span style="font-weight: 500; color: var(--text-primary);">English (AD)</span>
         </label>
-        <label class="pl-radio-card">
+        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 12px; border: 1px solid var(--border-light); border-radius: 8px;">
           <input id="BS" name="dateMode" type="checkbox" (click)="ChangeDatePreference($event)" [(ngModel)]="empPre.np" />
-          <span class="pl-radio-card-inner">
-            <span class="pl-radio-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 14l5-11 5 11H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 10h6" stroke="currentColor" stroke-width="1.5"/></svg>
-            </span>
-            <span class="pl-radio-label">
-              <span class="pl-radio-title">Nepali (BS)</span>
-              <span class="pl-radio-sub">Bikram Sambat Calendar</span>
-            </span>
-          </span>
+          <span style="font-weight: 500; color: var(--text-primary);">Nepali (BS)</span>
         </label>
       </div>
-    </div>
-    <div class="pl-modal-footer">
-      <div></div>
-      <div class="pl-modal-footer-right">
-        <button class="pl-btn-ghost" (click)="Close()">Cancel</button>
-        <button class="pl-btn-primary" (click)="SaveEmpPref()">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Save Preference
-        </button>
+      <div style="display: flex; justify-content: flex-end; gap: 12px;">
+        <button class="btn-modern btn-modern-secondary" (click)="Close()">Cancel</button>
+        <button class="btn-modern btn-modern-primary" (click)="SaveEmpPref()">Save Preference</button>
       </div>
     </div>
   </div>
 </div>
-
-
-<!-- ┌──────────────────────────────────────────────────────────────┐ -->
-<!-- │  APPLE HIG DESIGN SYSTEM                                    │ -->
-<!-- └──────────────────────────────────────────────────────────────┘ -->
-<style>
-
-/* ── GOOGLE FONTS ───────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-/* ── DESIGN TOKENS — LIGHT MODE ─────────────────────────────────────────── */
-:root,
-:root[data-theme="light"] {
-  /* Backgrounds */
-  --bg:               #F5F5F7;       /* System off-white */
-  --surface:          #FFFFFF;       /* Card / panel */
-  --surface-2:        #F2F2F7;       /* Secondary surface */
-  --surface-3:        #E8E8ED;       /* Tertiary */
-
-  /* Sidebar */
-  --sidebar-bg:       #1C1C1E;       /* Deep space gray */
-  --sidebar-hover:    rgba(255,255,255,0.06);
-  --sidebar-text:     #8E8E93;
-  --sidebar-text-hi:  #FFFFFF;
-  --sidebar-active-c: #007AFF;
-  --sidebar-border:   rgba(255,255,255,0.05);
-  --sidebar-label:    rgba(255,255,255,0.28);
-
-  /* Topbar */
-  --topbar-bg:        rgba(245,245,247,0.88);
-  --topbar-border:    rgba(0,0,0,0.08);
-  --topbar-text:      #1D1D1F;
-
-  /* Accent — macOS Blue, the ONE accent */
-  --accent:           #007AFF;
-  --accent-hover:     #0071E3;
-  --accent-pressed:   #0066CC;
-  --accent-soft:      rgba(0,122,255,0.10);
-  --accent-softer:    rgba(0,122,255,0.06);
-
-  /* Text */
-  --text-1:           #1D1D1F;       /* Primary */
-  --text-2:           #6E6E73;       /* Secondary */
-  --text-3:           #AEAEB2;       /* Tertiary / placeholder */
-
-  /* Borders */
-  --border:           rgba(0,0,0,0.08);
-  --border-strong:    rgba(0,0,0,0.14);
-  --border-focus:     #007AFF;
-
-  /* Shadows */
-  --shadow-xs:        0 1px 2px rgba(0,0,0,0.04);
-  --shadow-sm:        0 2px 8px rgba(0,0,0,0.05), 0 0 0 0.5px rgba(0,0,0,0.04);
-  --shadow-md:        0 4px 16px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.04);
-  --shadow-lg:        0 12px 40px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.06);
-  --shadow-xl:        0 24px 80px rgba(0,0,0,0.18), 0 0 0 0.5px rgba(0,0,0,0.06);
-
-  /* Semantic */
-  --danger:           #FF3B30;
-  --danger-soft:      rgba(255,59,48,0.08);
-  --success:          #34C759;
-  --success-soft:     rgba(52,199,89,0.10);
-  --warning:          #FF9500;
-  --warning-soft:     rgba(255,149,0,0.10);
-
-  /* Forms */
-  --input-bg:         #FFFFFF;
-  --input-border:     rgba(0,0,0,0.12);
-
-  /* Radii */
-  --r-xs:   4px;
-  --r-sm:   8px;
-  --r-md:   12px;
-  --r-lg:   16px;
-  --r-xl:   20px;
-  --r-2xl:  24px;
-  --r-pill: 999px;
-
-  /* Spacing */
-  --topbar-h:   56px;
-  --sidebar-w:  240px;
-  --sidebar-wc: 62px;
-
-  /* Ease */
-  --ease:       cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* ── DARK MODE ──────────────────────────────────────────────────────────── */
-:root[data-theme="dark"],
-.pl-root[data-theme="dark"] {
-  --bg:               #000000;
-  --surface:          #1C1C1E;
-  --surface-2:        #2C2C2E;
-  --surface-3:        #3A3A3C;
-
-  --sidebar-bg:       #000000;
-  --sidebar-hover:    rgba(255,255,255,0.06);
-  --sidebar-text:     #8E8E93;
-  --sidebar-text-hi:  #FFFFFF;
-  --sidebar-active-c: #0A84FF;
-  --sidebar-border:   rgba(255,255,255,0.05);
-  --sidebar-label:    rgba(255,255,255,0.22);
-
-  --topbar-bg:        rgba(28,28,30,0.88);
-  --topbar-border:    rgba(255,255,255,0.08);
-  --topbar-text:      #FFFFFF;
-
-  --accent:           #0A84FF;
-  --accent-hover:     #409CFF;
-  --accent-pressed:   #007AFF;
-  --accent-soft:      rgba(10,132,255,0.14);
-  --accent-softer:    rgba(10,132,255,0.07);
-
-  --text-1:           #FFFFFF;
-  --text-2:           rgba(235,235,245,0.6);
-  --text-3:           rgba(235,235,245,0.3);
-
-  --border:           rgba(255,255,255,0.08);
-  --border-strong:    rgba(255,255,255,0.14);
-  --border-focus:     #0A84FF;
-
-  --shadow-xs:        0 1px 2px rgba(0,0,0,0.3);
-  --shadow-sm:        0 2px 8px rgba(0,0,0,0.4);
-  --shadow-md:        0 4px 16px rgba(0,0,0,0.5);
-  --shadow-lg:        0 12px 40px rgba(0,0,0,0.6);
-  --shadow-xl:        0 24px 80px rgba(0,0,0,0.7);
-
-  --danger:           #FF453A;
-  --danger-soft:      rgba(255,69,58,0.12);
-  --success:          #30D158;
-  --success-soft:     rgba(48,209,88,0.12);
-  --warning:          #FF9F0A;
-  --warning-soft:     rgba(255,159,10,0.12);
-
-  --input-bg:         #2C2C2E;
-  --input-border:     rgba(255,255,255,0.10);
-}
-
-
-/* ── GLOBAL RESET & BASE ────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body, html {
-  background: var(--bg) !important;
-  color: var(--text-1);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Smooth theme transitions */
-.pl-root, .pl-root * {
-  transition: background-color 200ms var(--ease),
-              color 200ms var(--ease),
-              border-color 200ms var(--ease),
-              box-shadow 200ms var(--ease);
-}
-.pl-root [class*="fa-spin"],
-.pl-root .pl-loader-spinner,
-.pl-root .pl-hamburger-line { transition: none !important; }
-
-
-/* ── ROOT SHELL ─────────────────────────────────────────────────────────── */
-.pl-root {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text-1);
-}
-
-
-/* ══════════════════════════════════════════════════════════════════════════
-   SIDEBAR
-   ══════════════════════════════════════════════════════════════════════════ */
-.pl-sidebar {
-  width: var(--sidebar-w);
-  min-width: var(--sidebar-w);
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  background: var(--sidebar-bg);
-  border-right: 0.5px solid var(--sidebar-border);
-  overflow: hidden;
-  transition: width 280ms var(--ease), min-width 280ms var(--ease);
-  position: relative;
-  z-index: 100;
-}
-.pl-sidebar.collapsed {
-  width: var(--sidebar-wc);
-  min-width: var(--sidebar-wc);
-}
-
-/* Brand */
-.pl-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 16px;
-  height: 64px;
-  min-height: 64px;
-  border-bottom: 0.5px solid var(--sidebar-border);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.pl-brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.pl-brand-logo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: brightness(1.2);
-}
-.pl-brand-text {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.pl-brand-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: #FFFFFF;
-  letter-spacing: -0.3px;
-  white-space: nowrap;
-  display: block;
-}
-.pl-brand-sub {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--sidebar-label);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  display: block;
-}
-.pl-sidebar.collapsed .pl-brand-text { display: none; }
-
-/* Nav area */
-.pl-nav {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 12px 0 0;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.06) transparent;
-}
-.pl-nav::-webkit-scrollbar { width: 3px; }
-.pl-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
-
-/* Group label */
-.pl-nav-group-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--sidebar-label);
-  padding: 12px 18px 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  user-select: none;
-}
-.pl-sidebar.collapsed .pl-nav-group-label { opacity: 0; height: 0; padding: 0; overflow: hidden; }
-.pl-nav-group-label--admin { padding-top: 8px; }
-
-.pl-nav-section { padding: 0; }
-
-.pl-nav-spacer {
-  flex: 1;
-  min-height: 12px;
-}
-
-.pl-nav-divider {
-  height: 0.5px;
-  background: var(--sidebar-border);
-  margin: 4px 12px;
-  flex-shrink: 0;
-}
-
-/* Nav item */
-.pl-nav-item-wrap { position: relative; }
-
-.pl-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px;
-  height: 36px;
-  color: var(--sidebar-text);
-  text-decoration: none !important;
-  font-size: 13.5px;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  cursor: pointer;
-  border-radius: 10px;
-  margin: 1px 8px;
-  position: relative;
-  transition: background 150ms var(--ease), color 150ms var(--ease);
-}
-.pl-nav-item:hover {
-  background: var(--sidebar-hover);
-  color: var(--sidebar-text-hi);
-}
-.pl-nav-active {
-  background: rgba(0,122,255,0.12) !important;
-  color: var(--sidebar-active-c) !important;
-}
-[data-theme="dark"] .pl-nav-active {
-  background: rgba(10,132,255,0.14) !important;
-  color: var(--sidebar-active-c) !important;
-}
-
-.pl-nav-icon {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 13px;
-  opacity: 0.75;
-  border-radius: 7px;
-}
-.pl-nav-active .pl-nav-icon {
-  opacity: 1;
-  color: var(--sidebar-active-c);
-}
-
-.pl-nav-label {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pl-sidebar.collapsed .pl-nav-label { display: none; }
-
-.pl-nav-chevron {
-  font-size: 10px;
-  opacity: 0.45;
-  flex-shrink: 0;
-  transition: transform 250ms var(--ease);
-}
-.pl-sidebar.collapsed .pl-nav-chevron { display: none; }
-
-/* Sub nav */
-.pl-subnav {
-  padding: 2px 0 4px;
-  overflow: hidden;
-}
-.pl-sidebar.collapsed .pl-subnav { display: none; }
-
-.pl-subnav-item {
-  display: block;
-  padding: 7px 12px 7px 50px;
-  font-size: 12.5px;
-  font-weight: 400;
-  color: var(--sidebar-text);
-  text-decoration: none !important;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-radius: 8px;
-  margin: 1px 8px;
-  transition: background 120ms, color 120ms;
-  position: relative;
-}
-.pl-subnav-item::before {
-  content: '';
-  position: absolute;
-  left: 34px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.25;
-}
-.pl-subnav-item:hover {
-  background: var(--sidebar-hover);
-  color: var(--sidebar-text-hi);
-}
-.pl-subnav-active {
-  color: var(--sidebar-active-c) !important;
-  background: rgba(0,122,255,0.10) !important;
-  font-weight: 500;
-}
-.pl-subnav-active::before { opacity: 1; }
-
-/* Sidebar footer */
-.pl-sidebar-foot {
-  border-top: 0.5px solid var(--sidebar-border);
-  padding: 8px;
-  flex-shrink: 0;
-}
-.pl-collapse-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 8px 12px;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: var(--sidebar-text);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  transition: background 150ms, color 150ms;
-  font-family: inherit;
-}
-.pl-collapse-btn:hover { background: var(--sidebar-hover); color: var(--sidebar-text-hi); }
-.pl-sidebar.collapsed .pl-collapse-btn .pl-nav-label { display: none; }
-
-
-/* ══════════════════════════════════════════════════════════════════════════
-   TOPBAR
-   ══════════════════════════════════════════════════════════════════════════ */
-.pl-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-width: 0;
-}
-
-.pl-topbar {
-  height: var(--topbar-h);
-  min-height: var(--topbar-h);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 20px;
-  background: var(--topbar-bg);
-  border-bottom: 0.5px solid var(--topbar-border);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  flex-shrink: 0;
-  z-index: 90;
-  position: sticky;
-  top: 0;
-}
-
-/* Hamburger */
-.pl-topbar-hamburger {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px 6px;
-  border-radius: 8px;
-  flex-shrink: 0;
-  transition: background 150ms;
-}
-.pl-topbar-hamburger:hover { background: var(--accent-soft); }
-.pl-hamburger-line {
-  width: 18px;
-  height: 1.5px;
-  background: var(--topbar-text);
-  border-radius: 2px;
-  opacity: 0.7;
-  display: block;
-}
-
-/* Spotlight wrap */
-.pl-spotlight-wrap {
-  flex: 1;
-  display: flex;
-  justify-content: flex-start;
-  max-width: 260px;
-  min-width: 0;
-}
-
-/* Patient chip */
-.pl-patient-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px 5px 6px;
-  background: var(--accent-soft);
-  border: 0.5px solid rgba(0,122,255,0.2);
-  border-radius: var(--r-pill);
-  max-width: 480px;
-  overflow: hidden;
-}
-.pl-patient-chip-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  flex-shrink: 0;
-}
-.pl-patient-chip-info { overflow: hidden; min-width: 0; }
-.pl-patient-chip-name {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pl-patient-chip-meta {
-  display: block;
-  font-size: 11px;
-  color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pl-patient-chip-member {
-  color: var(--accent);
-  margin-left: 6px;
-}
-.pl-patient-chip-badge {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--warning-soft);
-  color: var(--warning);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  flex-shrink: 0;
-}
-
-/* Spotlight bar */
-.pl-spotlight {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 42px;
-  background: rgba(142,142,147,0.12);
-  border-radius: var(--r-pill);
-  border: 1px solid transparent;
-  padding: 0 14px 0 12px;
-  transition: background 150ms, border-color 150ms, box-shadow 150ms;
-  overflow: hidden;
-}
-.pl-spotlight:focus-within {
-  background: var(--surface);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
-}
-.pl-spotlight-icon {
-  color: var(--text-3);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  margin-right: 8px;
-}
-.pl-spotlight-input-wrap {
-  flex: 1;
-  min-width: 0;
-}
-.pl-spotlight-input-wrap input,
-.pl-spotlight-input-wrap .global-search-input {
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  padding: 0 0 0 28px !important;
-  width: 100% !important;
-  font-size: 13.5px !important;
-  color: var(--text-1) !important;
-  font-family: inherit !important;
-  height: 100% !important;
-}
-
-/* ── Global Search Dropdown ─────────────────────── */
-.pl-spotlight-input-wrap .search-dropdown,
-.global-search-wrapper .search-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  min-width: 340px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-  z-index: 9999;
-  overflow: hidden;
-  animation: dropdown-fade-in 0.15s ease;
-}
-@keyframes dropdown-fade-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.search-dropdown .dropdown-header {
-  padding: 10px 14px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-3, #94a3b8);
-  border-bottom: 1px solid var(--border, #f1f5f9);
-}
-.search-dropdown .dropdown-body {
-  max-height: 360px;
-  overflow-y: auto;
-}
-.search-dropdown .search-result-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  cursor: pointer;
-  transition: background 120ms;
-}
-.search-dropdown .search-result-item:hover {
-  background: var(--surface-2, #f8fafc);
-}
-.search-dropdown .result-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-  background: var(--accent-soft, #e8edff);
-  color: var(--accent, #4361ee);
-}
-.search-dropdown .result-icon.bg-primary { background: #dbeafe; color: #2563eb; }
-.search-dropdown .result-icon.bg-warning { background: #fef3c7; color: #d97706; }
-.search-dropdown .result-content {
-  flex: 1;
-  min-width: 0;
-}
-.search-dropdown .result-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--text-1, #1e293b);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.search-dropdown .result-subtitle {
-  font-size: 11.5px;
-  color: var(--text-3, #94a3b8);
-  margin-top: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.search-dropdown .badge {
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 20px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-.search-dropdown .badge-success { background: #d1fae5; color: #059669; }
-.search-dropdown .badge-info    { background: #dbeafe; color: #2563eb; }
-.search-dropdown .dropdown-footer {
-  padding: 8px 14px;
-  border-top: 1px solid var(--border, #f1f5f9);
-  font-size: 11px;
-  color: var(--text-3, #94a3b8);
-  text-align: center;
-}
-
-/* Hospital name — absolutely centered */
-.pl-hospital-name-abs {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 1;
-}
-.pl-hospital-chip {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-2);
-  background: var(--surface-2);
-  border: 0.5px solid var(--border);
-  padding: 4px 12px;
-  border-radius: var(--r-pill);
-  white-space: nowrap;
-}
-
-/* Right actions cluster */
-.pl-topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  margin-left: auto;
-}
-
-/* Theme toggle */
-.pl-theme-toggle {
-  display: flex;
-  gap: 3px;
-  align-items: center;
-  background: var(--surface-2);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-pill);
-  padding: 4px 8px;
-  margin-right: 4px;
-}
-.pl-theme-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1.5px solid transparent;
-  cursor: pointer;
-  padding: 0;
-  transition: transform 200ms var(--ease-spring), box-shadow 200ms;
-}
-.pl-theme-dot:hover { transform: scale(1.3); box-shadow: 0 0 0 2px var(--accent-soft); }
-.pl-theme-light { background: #F5F5F7; border-color: #D1D1D6; }
-.pl-theme-dark  { background: #1C1C1E; border-color: #636366; }
-
-/* Version badge */
-.pl-version-badge {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--text-3);
-  background: var(--surface-2);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-pill);
-  padding: 3px 8px;
-  white-space: nowrap;
-  margin-right: 2px;
-}
-
-/* Action button */
-.pl-topbar-action-btn {
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: background 150ms, color 150ms;
-}
-.pl-icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-.pl-topbar-action-btn:hover,
-.pl-icon-btn:hover { background: var(--accent-soft); color: var(--accent); }
-
-/* Dropdown */
-.pl-topbar-dd { position: relative; }
-.pl-dd-panel {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  min-width: 200px;
-  background: var(--surface, #ffffff);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.10);
-  padding: 6px;
-  display: none;
-  z-index: 9000;
-}
-.pl-topbar-dd:hover .pl-dd-panel,
-.pl-topbar-dd:focus-within .pl-dd-panel { display: block; }
-
-.pl-dd-header {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-3);
-  padding: 6px 10px 4px;
-  border-bottom: 0.5px solid var(--border);
-  margin-bottom: 4px;
-}
-
-.pl-dd-item {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 8px 10px;
-  width: 100%;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-1);
-  font-size: 13px;
-  font-weight: 400;
-  text-align: left;
-  text-decoration: none !important;
-  border-radius: 8px;
-  transition: background 100ms;
-  font-family: inherit;
-}
-.pl-dd-item:hover { background: var(--accent-softer); color: var(--accent); }
-.pl-dd-item svg { flex-shrink: 0; color: var(--text-3); }
-.pl-dd-item:hover svg { color: var(--accent); }
-
-.pl-dd-divider { height: 0.5px; background: var(--border); margin: 4px 0; }
-
-.pl-dd-item--danger { color: var(--danger) !important; }
-.pl-dd-item--danger:hover { background: var(--danger-soft) !important; color: var(--danger) !important; }
-.pl-dd-item--danger svg { color: var(--danger) !important; }
-
-/* User button */
-.pl-user-dd { margin-left: 4px; }
-.pl-user-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 10px 4px 4px;
-  background: var(--surface-2);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-pill);
-  cursor: pointer;
-  color: var(--text-1);
-  font-size: 13px;
-  font-weight: 500;
-  transition: background 150ms, border-color 150ms;
-  font-family: inherit;
-}
-.pl-user-btn:hover { background: var(--accent-soft); border-color: rgba(0,122,255,0.2); }
-
-.pl-user-avatar {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.pl-user-avatar-initials {
-  font-size: 11px;
-  font-weight: 700;
-  color: #FFFFFF;
-  line-height: 1;
-}
-.pl-user-avatar-initials--lg { font-size: 18px; }
-.pl-user-avatar-img { object-fit: cover; }
-
-.pl-user-name {
-  max-width: 110px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--topbar-text);
-}
-.pl-user-caret { color: var(--text-3); flex-shrink: 0; }
-
-/* User panel */
-.pl-user-panel { min-width: 220px; }
-.pl-user-panel-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-bottom: 0.5px solid var(--border);
-  margin-bottom: 4px;
-}
-.pl-user-panel-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.pl-user-avatar-img-lg { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-.pl-user-panel-info { min-width: 0; }
-.pl-user-panel-name { font-size: 14px; font-weight: 600; color: var(--text-1); }
-.pl-user-panel-role { font-size: 11px; color: var(--text-3); margin-top: 1px; }
-
-
-/* ══════════════════════════════════════════════════════════════════════════
-   MAIN CONTENT AREA
-   ══════════════════════════════════════════════════════════════════════════ */
-.pl-main {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: var(--bg);
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-  position: relative;
-}
-.pl-main::-webkit-scrollbar { width: 5px; }
-.pl-main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-.pl-content {
-  padding: 28px 32px;
-  min-height: 100%;
-}
-
-/* Loader overlay */
-.pl-loader-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.2);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-}
-.pl-loader-spinner {
-  width: 32px;
-  height: 32px;
-  border: 2.5px solid rgba(0,122,255,0.2);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: pl-spin 0.7s linear infinite;
-}
-@keyframes pl-spin { to { transform: rotate(360deg); } }
-
-
-/* ══════════════════════════════════════════════════════════════════════════
-   MODAL SYSTEM
-   ══════════════════════════════════════════════════════════════════════════ */
-.pl-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9000;
-}
-
-.pl-modal {
-  background: var(--surface);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-xl);
-  min-width: 360px;
-  max-width: 460px;
-  width: 92vw;
-  box-shadow: var(--shadow-xl);
-  overflow: hidden;
-}
-
-.pl-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 20px;
-  border-bottom: 0.5px solid var(--border);
-}
-.pl-modal-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-1);
-  letter-spacing: -0.2px;
-}
-.pl-modal-close {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface-2);
-  border: 0.5px solid var(--border);
-  border-radius: 50%;
-  cursor: pointer;
-  color: var(--text-2);
-  transition: background 150ms;
-}
-.pl-modal-close:hover { background: var(--surface-3); color: var(--text-1); }
-
-.pl-modal-body {
-  padding: 20px;
-}
-.pl-modal-desc {
-  font-size: 13px;
-  color: var(--text-2);
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-
-.pl-modal-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-top: 0.5px solid var(--border);
-  background: var(--surface-2);
-}
-.pl-modal-footer-right {
-  display: flex;
-  gap: 8px;
-}
-
-/* Buttons */
-.pl-btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 14px;
-  height: 34px;
-  background: transparent;
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-pill);
-  color: var(--text-2);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 150ms, color 150ms;
-  font-family: inherit;
-}
-.pl-btn-ghost:hover { background: var(--surface-3); color: var(--text-1); }
-
-.pl-btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 16px;
-  height: 34px;
-  background: var(--accent);
-  border: none;
-  border-radius: var(--r-pill);
-  color: #FFFFFF;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 150ms, transform 100ms;
-  font-family: inherit;
-}
-.pl-btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-.pl-btn-primary:active { transform: translateY(0); }
-
-/* Shortcut list */
-.pl-shortcut-list { display: flex; flex-direction: column; gap: 8px; }
-.pl-shortcut-row { display: flex; gap: 8px; align-items: center; }
-.pl-shortcut-input {
-  padding: 7px 10px;
-  border-radius: 8px;
-  border: 0.5px solid var(--input-border);
-  background: var(--input-bg);
-  color: var(--text-1);
-  font-size: 12.5px;
-  font-family: inherit;
-}
-.pl-shortcut-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.pl-shortcut-combo { width: 110px; text-align: center; }
-.pl-shortcut-route { flex: 1; }
-.pl-shortcut-remove {
-  width: 28px;
-  height: 28px;
-  background: none;
-  border: 0.5px solid var(--border);
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--danger);
-  flex-shrink: 0;
-  transition: background 150ms;
-}
-.pl-shortcut-remove:hover { background: var(--danger-soft); }
-
-/* Radio group */
-.pl-radio-group { display: flex; flex-direction: column; gap: 8px; }
-.pl-radio-card { display: flex; cursor: pointer; }
-.pl-radio-card input { display: none; }
-.pl-radio-card-inner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 14px 16px;
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-md);
-  color: var(--text-1);
-  font-size: 13px;
-  transition: border-color 150ms, background 150ms;
-}
-.pl-radio-card:hover .pl-radio-card-inner {
-  border-color: var(--accent);
-  background: var(--accent-softer);
-}
-.pl-radio-card input:checked + .pl-radio-card-inner {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
-.pl-radio-icon { color: var(--text-2); flex-shrink: 0; display: flex; }
-.pl-radio-card input:checked + .pl-radio-card-inner .pl-radio-icon { color: var(--accent); }
-.pl-radio-label { display: flex; flex-direction: column; gap: 2px; }
-.pl-radio-title { font-size: 14px; font-weight: 600; color: var(--text-1); }
-.pl-radio-sub { font-size: 11px; color: var(--text-3); }
-kbd {
-  font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: var(--surface-2);
-  border: 0.5px solid var(--border-strong);
-  color: var(--text-1);
-}
-
-
-/* ══════════════════════════════════════════════════════════════════════════
-   LEGACY CONTENT OVERRIDES
-   (Strip Bootstrap/Metronic chrome, apply Apple tokens to inner pages)
-   ══════════════════════════════════════════════════════════════════════════ */
-
-/* Strip legacy wrappers */
-.page-container, .page-wrapper, .page-content-wrapper, .page-content {
-  background: transparent !important;
-  background-image: none !important;
-}
-
-/* Page bar / breadcrumbs */
-.page-bar, .pl-content .page-bar {
-  display: flex !important;
-  align-items: center !important;
-  flex-wrap: wrap !important;
-  gap: 4px !important;
-  background: var(--surface) !important;
-  background-image: none !important;
-  border: 0.5px solid var(--border) !important;
-  border-radius: var(--r-md) !important;
-  padding: 8px 16px !important;
-  margin-bottom: 20px !important;
-  box-shadow: var(--shadow-xs) !important;
-}
-ul.page-breadcrumb, ol.page-breadcrumb {
-  list-style: none !important;
-  list-style-type: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  flex-wrap: wrap !important;
-}
-ul.page-breadcrumb > li, ol.page-breadcrumb > li {
-  display: inline-flex !important;
-  align-items: center !important;
-  list-style: none !important;
-  list-style-type: none !important;
-  padding: 0 !important;
-}
-ul.page-breadcrumb > li::marker { display: none !important; content: none !important; }
-ul.page-breadcrumb > li + li::before {
-  content: '/';
-  margin: 0 8px;
-  color: var(--text-3);
-  font-size: 12px;
-}
-ul.page-breadcrumb > li > a {
-  color: var(--accent) !important;
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none !important;
-  padding: 2px 6px;
-  border-radius: 6px;
-  transition: background 120ms;
-}
-ul.page-breadcrumb > li > a:hover { background: var(--accent-soft); }
-ul.page-breadcrumb > li:last-child > a,
-ul.page-breadcrumb > li:last-child > span {
-  color: var(--text-1) !important;
-  font-weight: 600;
-  background: var(--surface-2);
-  padding: 2px 8px;
-  border-radius: 6px;
-}
-
-/* Portlets / cards */
-.pl-content .portlet,
-.portlet {
-  background: var(--surface) !important;
-  border: 0.5px solid var(--border) !important;
-  border-radius: var(--r-lg) !important;
-  box-shadow: var(--shadow-sm) !important;
-  margin-bottom: 20px !important;
-}
-.pl-content .portlet-title, .portlet-title {
-  background: var(--surface-2) !important;
-  border-bottom: 0.5px solid var(--border) !important;
-  border-radius: var(--r-lg) var(--r-lg) 0 0 !important;
-  padding: 14px 20px !important;
-}
-.pl-content .portlet-title .caption, .portlet-title .caption {
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text-1) !important;
-}
-.pl-content .portlet-body, .portlet-body {
-  background: var(--surface) !important;
-  color: var(--text-1) !important;
-  padding: 18px 20px !important;
-  border-radius: 0 0 var(--r-lg) var(--r-lg) !important;
-}
-
-/* Tables */
-.pl-content .table, .pl-content table { width: 100%; border-collapse: collapse; background: var(--surface) !important; color: var(--text-1) !important; }
-.pl-content .table th, .pl-content table th {
-  background: var(--surface-2) !important;
-  color: var(--text-2) !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.04em !important;
-  padding: 10px 12px !important;
-  border-bottom: 0.5px solid var(--border-strong) !important;
-  white-space: nowrap;
-}
-.pl-content .table td, .pl-content table td {
-  padding: 10px 12px !important;
-  color: var(--text-1) !important;
-  border-bottom: 0.5px solid var(--border) !important;
-  background: transparent !important;
-  font-size: 14.5px !important;
-}
-.pl-content .table th:last-child, 
-.pl-content .table td:last-child {
-  width: 1%;
-  white-space: nowrap;
-}
-.pl-content .table tbody tr:hover > td { background: var(--accent-softer) !important; }
-.pl-content .table tbody tr.row-selected > td,
-.pl-content table tbody tr.active > td {
-  background: var(--accent-soft) !important;
-}
-
-/* Forms */
-.pl-content input,
-.pl-content input[type="text"], .pl-content input[type="number"],
-.pl-content input[type="email"], .pl-content input[type="password"],
-.pl-content input[type="date"], .pl-content input[type="search"],
-.pl-content select, .pl-content textarea, .pl-content .form-control {
-  background: var(--input-bg) !important;
-  color: var(--text-1) !important;
-  border: 0.5px solid var(--input-border) !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-  font-size: 13.5px !important;
-  font-family: inherit !important;
-  transition: border-color 150ms, box-shadow 150ms !important;
-}
-.pl-content input:focus, .pl-content select:focus,
-.pl-content textarea:focus, .pl-content .form-control:focus {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px var(--accent-soft) !important;
-  outline: none !important;
-}
-.pl-content input::placeholder, .pl-content textarea::placeholder { color: var(--text-3) !important; opacity: 1; }
-.pl-content label, .pl-content .control-label {
-  color: var(--text-1) !important;
-  font-size: 12.5px !important;
-  font-weight: 500 !important;
-}
-
-/* Buttons */
-.pl-content .btn-primary, .pl-content .btn-info {
-  background: var(--accent) !important;
-  border-color: var(--accent) !important;
-  color: #FFFFFF !important;
-  border-radius: var(--r-pill) !important;
-  font-weight: 600 !important;
-  font-size: 13px !important;
-  transition: background 150ms, transform 100ms !important;
-}
-.pl-content .btn-primary:hover, .pl-content .btn-info:hover {
-  background: var(--accent-hover) !important;
-  border-color: var(--accent-hover) !important;
-  transform: translateY(-1px) !important;
-}
-.pl-content .btn-success { background: var(--success) !important; border-color: var(--success) !important; color: #fff !important; border-radius: var(--r-pill) !important; font-weight: 600 !important; }
-.pl-content .btn-danger  { background: var(--danger) !important;  border-color: var(--danger) !important;  color: #fff !important; border-radius: var(--r-pill) !important; font-weight: 600 !important; }
-.pl-content .btn-warning { background: var(--warning) !important; border-color: var(--warning) !important; color: #fff !important; border-radius: var(--r-pill) !important; font-weight: 600 !important; }
-.pl-content .btn-default, .pl-content .btn-secondary {
-  background: var(--surface-2) !important;
-  color: var(--text-1) !important;
-  border: 0.5px solid var(--border-strong) !important;
-  border-radius: var(--r-pill) !important;
-  font-weight: 500 !important;
-}
-.pl-content .btn-default:hover { background: var(--accent-soft) !important; color: var(--accent) !important; border-color: transparent !important; }
-
-/* Panels */
-.pl-content .panel, .pl-content .panel-default {
-  background: var(--surface) !important;
-  border: 0.5px solid var(--border) !important;
-  border-radius: var(--r-lg) !important;
-  box-shadow: var(--shadow-sm) !important;
-}
-.pl-content .panel-heading {
-  background: var(--surface-2) !important;
-  border-bottom: 0.5px solid var(--border) !important;
-  color: var(--text-1) !important;
-  border-radius: var(--r-lg) var(--r-lg) 0 0 !important;
-}
-.pl-content .panel-title, .pl-content .panel-body { color: var(--text-1) !important; }
-
-/* Nav tabs → Apple segmented style */
-.pl-content .nav-tabs { border-bottom: none !important; display: flex; gap: 2px; background: var(--surface-2); border-radius: var(--r-pill); padding: 3px; width: fit-content; }
-.pl-content .nav-tabs > li > a {
-  color: var(--text-2) !important;
-  border: none !important;
-  background: transparent !important;
-  border-radius: var(--r-pill) !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  padding: 6px 14px !important;
-  white-space: nowrap;
-}
-.pl-content .nav-tabs > li.active > a {
-  color: var(--text-1) !important;
-  background: var(--surface) !important;
-  box-shadow: var(--shadow-xs) !important;
-}
-.pl-content .nav-tabs > li > a:hover { color: var(--text-1) !important; background: var(--surface) !important; }
-.pl-content .tab-content {
-  background: var(--surface) !important;
-  color: var(--text-1) !important;
-  border: none !important;
-  border-radius: var(--r-lg) !important;
-  padding: 20px !important;
-  margin-top: 12px !important;
-  box-shadow: var(--shadow-sm) !important;
-}
-
-/* Text */
-.pl-content h1, .pl-content h2, .pl-content h3,
-.pl-content h4, .pl-content h5, .pl-content h6 { color: var(--text-1) !important; }
-.pl-content p, .pl-content span, .pl-content small, .pl-content li { color: var(--text-1) !important; }
-.pl-content .text-muted { color: var(--text-2) !important; }
-.pl-content .caption { color: var(--text-1) !important; font-weight: 600; }
-
-/* Badges */
-.pl-content .badge, .pl-content .label { border-radius: var(--r-pill) !important; font-weight: 600; font-size: 11px; }
-.pl-content .badge-success { background: var(--success) !important; }
-.pl-content .badge-danger  { background: var(--danger) !important; }
-.pl-content .badge-warning { background: var(--warning) !important; }
-.pl-content .badge-info    { background: var(--accent) !important; }
-
-/* Dropdowns */
-.pl-content .dropdown-menu, .pl-content ul.dropdown-menu {
-  background: var(--surface) !important;
-  border: 0.5px solid var(--border) !important;
-  box-shadow: var(--shadow-xl) !important;
-  border-radius: var(--r-lg) !important;
-  padding: 6px !important;
-}
-.pl-content .dropdown-menu > li > a {
-  color: var(--text-1) !important;
-  font-size: 13px;
-  padding: 8px 12px !important;
-  border-radius: 8px !important;
-}
-.pl-content .dropdown-menu > li > a:hover { background: var(--accent-softer) !important; color: var(--accent) !important; }
-
-/* Input group */
-.pl-content .input-group-addon {
-  background: var(--surface-2) !important;
-  color: var(--text-1) !important;
-  border-color: var(--input-border) !important;
-}
-
-/* Modelbox / modal inner */
-.pl-content .modelbox-div {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--text-1) !important;
-  border-radius: var(--r-lg) !important;
-}
-
-/* Scrollbars */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
-
-
-/* ── MODERN PAGE TABS (legacy module horizontal nav) ───────────────────── */
-/* This overrides the old .modern-page-tabs class used in module main HTMLs */
-.modern-page-tabs {
-  position: sticky;
-  top: var(--topbar-h);
-  z-index: 80;
-  background: var(--surface) !important;
-  border-bottom: 0.5px solid var(--border);
-  padding: 0 32px;
-  box-shadow: var(--shadow-xs);
-}
-.modern-page-tabs ul {
-  display: flex !important;
-  align-items: center !important;
-  list-style: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  gap: 0 !important;
-  overflow-x: auto;
-  scrollbar-width: none;
-  height: 46px;
-}
-.modern-page-tabs ul::-webkit-scrollbar { display: none; }
-.modern-page-tabs li { list-style: none !important; flex-shrink: 0; }
-.modern-page-tabs li a {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  padding: 0 16px !important;
-  height: 46px !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  color: var(--text-2) !important;
-  text-decoration: none !important;
-  border-bottom: 2px solid transparent !important;
-  white-space: nowrap !important;
-  transition: color 150ms, border-color 150ms !important;
-  background: transparent !important;
-  border-radius: 0 !important;
-}
-.modern-page-tabs li a:hover {
-  color: var(--text-1) !important;
-  background: var(--accent-softer) !important;
-}
-.modern-page-tabs li a.link3-active {
-  color: var(--accent) !important;
-  border-bottom-color: var(--accent) !important;
-  font-weight: 600 !important;
-  background: transparent !important;
-}
-.modern-page-tabs li a i { font-size: 13px; }
-
-/* Dropdown in modern-page-tabs */
-.modern-page-tabs .bil-hr-bar > a {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  padding: 0 16px !important;
-  height: 46px !important;
-  color: var(--text-2) !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  cursor: pointer;
-  text-decoration: none !important;
-}
-.modern-page-tabs .bil-hr-dropdown {
-  background: var(--surface) !important;
-  border: 0.5px solid var(--border) !important;
-  box-shadow: var(--shadow-xl) !important;
-  border-radius: var(--r-lg) !important;
-  padding: 6px !important;
-  min-width: 180px !important;
-  top: 100% !important;
-}
-.modern-page-tabs .bil-hr-dropdown li a {
-  height: auto !important;
-  border-bottom: none !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-}
-.modern-page-tabs .close-sec-rt {
-  padding: 0 6px !important;
-  height: auto !important;
-  border-bottom: none !important;
-  color: var(--danger) !important;
-}
-
-
-/* ── FULL-PAGE DARK MODE FIXES ──────────────────────────────────────────── */
-[data-theme="dark"] body,
-[data-theme="dark"] html { background: #000000 !important; }
-[data-theme="dark"] .page-container,
-[data-theme="dark"] .page-content,
-[data-theme="dark"] .page-wrapper,
-[data-theme="dark"] .page-content-wrapper { background: #000000 !important; background-image: none !important; }
-[data-theme="dark"] .portlet, [data-theme="dark"] .portlet-body, [data-theme="dark"] .portlet-title,
-[data-theme="dark"] .panel, [data-theme="dark"] .panel-body, [data-theme="dark"] .panel-heading,
-[data-theme="dark"] .table, [data-theme="dark"] table {
-  background: #1C1C1E !important;
-  color: #FFFFFF !important;
-  border-color: rgba(255,255,255,0.08) !important;
-}
-[data-theme="dark"] label, [data-theme="dark"] .control-label,
-[data-theme="dark"] td, [data-theme="dark"] th,
-[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
-[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 { color: #FFFFFF !important; }
-[data-theme="dark"] span:not([class*="badge"]):not([class*="label"]):not([class*="tag"]):not([class*="pl-"]) { color: #FFFFFF !important; }
-[data-theme="dark"] p { color: rgba(235,235,245,0.85) !important; }
-[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
-[data-theme="dark"] select, [data-theme="dark"] textarea, [data-theme="dark"] .form-control {
-  background: #2C2C2E !important;
-  color: #FFFFFF !important;
-  border-color: rgba(255,255,255,0.10) !important;
-}
-[data-theme="dark"] .modern-page-tabs { background: #1C1C1E !important; border-color: rgba(255,255,255,0.08) !important; }
-
-</style>
