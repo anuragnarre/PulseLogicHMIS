@@ -641,8 +641,8 @@ namespace PulseLogicHMR.Controllers
                     labDbContext.Entry(singleModel).Property(a => a.IsFileUploadedToTeleMedicine).IsModified = true;
                     labDbContext.Entry(singleModel).Property(a => a.UploadedByToTeleMedicine).IsModified = true;
                     labDbContext.Entry(singleModel).Property(a => a.UploadedOnToTeleMedicine).IsModified = true;
-                    labDbContext.SaveChanges();
                 });
+                labDbContext.SaveChanges();
                 responseData.Results = model;
                 responseData.Status = "OK";
                 return Ok(responseData);
