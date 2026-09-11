@@ -23,9 +23,9 @@ namespace PulseLogicHMR.Controllers.Pharmacy.Dashboard
         // GET: api/pharmacyRack
         [HttpGet]
         //[Produces("application/json")]  // this always force to json format
-        public IActionResult GetAll()
+        public IActionResult GetAll(int? skip = null, int? take = null)
         {
-            return Ok(rackService.ListRack());
+            return Ok(rackService.ListRack(skip, take));
         }
 
         // GET api/pharmacyRack/id
