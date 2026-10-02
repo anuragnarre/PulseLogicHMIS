@@ -69,10 +69,11 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
             return result;
         }
 
-        public List<RackViewModel> ListRack()
+        public List<RackViewModel> ListRack(int offset = 0, int limit = 0)
         {
-            //TODO:add server side pagination
-            var query = (from rack in db.PHRMRack
+
+
+            var query = (IQueryable<RackViewModel>)(from rack in db.PHRMRack
                          join parRack in db.PHRMRack on rack.ParentId equals parRack.RackId into parRackTemp
                          from parentRack in parRackTemp.DefaultIfEmpty()
                          select new RackViewModel
@@ -87,8 +88,15 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
                              CreatedBy = rack.CreatedBy,
                              CreatedOn = rack.CreatedOn
 
-                         }).OrderByDescending(r => r.CreatedOn).ToList();
-            return query;
+                         }).OrderByDescending(r => r.CreatedOn);
+
+            if (limit > 0)
+            {
+                query = query.Skip(offset).Take(limit);
+            }
+
+            return query.ToList();
+
         }
 
         public RackViewModel UpdateRack(RackViewModel model)

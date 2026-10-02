@@ -27,6 +27,8 @@ export class PhrmRackComponent {
     public StoreList: Array<Store> = new Array<Store>();
     public selectedStore: Store = new Store();
     public rack: PhrmRackModel = new PhrmRackModel();
+    public offset: number = 0;
+    public limit: number = 100;
     public selIndex: number = null;
     public ParentRackList: Array<PhrmRackModel> = new Array<PhrmRackModel>();
     constructor(public phrmRackService: PhrmRackService, public routeFromService: RouteFromService,
@@ -70,7 +72,7 @@ export class PhrmRackComponent {
 
     getRack(): void {
         try {
-            this.phrmRackService.GetRackList()
+            this.phrmRackService.GetRackList(this.offset, this.limit)
                 .subscribe(res => {
                     this.rackList = res;
                     this.rackListFiltered = this.rackList;
