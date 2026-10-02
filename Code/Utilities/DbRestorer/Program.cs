@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Data.SqlClient;
+using PulseLogicHMR.Security;
 
 namespace DbRestorer
 {
@@ -26,13 +29,25 @@ namespace DbRestorer
                         ExecuteSqlScript(conn, adminSqlPath);
                         Console.WriteLine("Admin DB script execution completed.");
 
-                        string changePasswordPath = Path.Combine(repoRoot, "Database", "ChangeAdminPassword.sql");
-                        if (File.Exists(changePasswordPath))
+                        Console.WriteLine("Updating admin password...");
+                        string newPassword = GenerateRandomPassword(16);
+                        string encryptedPassword = RBAC.EncryptPassword(newPassword);
+
+                        string updateSql = @"
+                            USE [DEV_PulseLogicHMR_INT];
+                            UPDATE [dbo].[RBAC_User]
+                            SET [Password] = @Password,
+                                [NeedsPasswordUpdate] = 1,
+                                [ModifiedOn] = GETDATE()
+                            WHERE [UserName] = 'admin';";
+
+                        using (var cmd = new SqlCommand(updateSql, conn))
                         {
-                            Console.WriteLine("Updating admin password...");
-                            ExecuteSqlScript(conn, changePasswordPath);
-                            Console.WriteLine("Admin password updated (admin / P@ssw0rd!2024).");
+                            cmd.Parameters.AddWithValue("@Password", encryptedPassword);
+                            cmd.ExecuteNonQuery();
                         }
+                        Console.WriteLine($"Admin password updated. Your temporary password is: {newPassword}");
+                        Console.WriteLine("Please login and change it immediately.");
                     }
                     else
                     {
@@ -62,6 +77,21 @@ namespace DbRestorer
             {
                 Console.WriteLine("Fatal Error: " + ex.Message);
             }
+        }
+
+        static string GenerateRandomPassword(int length)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
+            StringBuilder res = new StringBuilder();
+            byte[] uintBuffer = new byte[sizeof(uint)];
+
+            while (length-- > 0)
+            {
+                RandomNumberGenerator.Fill(uintBuffer);
+                uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                res.Append(validChars[(int)(num % (uint)validChars.Length)]);
+            }
+            return res.ToString();
         }
 
         static string FindRepoRoot()
