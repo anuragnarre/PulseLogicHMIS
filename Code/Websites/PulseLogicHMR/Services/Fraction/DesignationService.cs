@@ -19,10 +19,11 @@ namespace PulseLogicHMR.Services
             db = new FractionDbContext(connString);
         }
 
-        public List<DesignationModel> ListDesignation()
+        public List<DesignationModel> ListDesignation(int pageNumber = 1, int pageSize = 10)
         {
-            //todo:add server side pagination
-            var query = db.Designation.ToList();
+            pageNumber = Math.Max(1, pageNumber);
+            int skip = (pageNumber - 1) * pageSize;
+            var query = db.Designation.OrderBy(d => d.DesignationId).Skip(skip).Take(pageSize).ToList();
             return query;
         }
 

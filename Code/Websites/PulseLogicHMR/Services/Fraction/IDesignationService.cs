@@ -10,7 +10,7 @@ namespace PulseLogicHMR.Services
 {
     public interface IDesignationService
     {
-        List<DesignationModel> ListDesignation();
+        List<DesignationModel> ListDesignation(int pageNumber = 1, int pageSize = 10);
         DesignationModel AddDesignation(DesignationModel model);
         DesignationModel UpdateDesignation(DesignationModel model);
         DesignationModel GetDesignation(int id);
