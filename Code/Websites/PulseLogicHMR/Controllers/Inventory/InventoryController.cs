@@ -4116,7 +4116,7 @@ namespace PulseLogicHMR.Controllers
 
                 foreach (var returnedItem in returnItemsToUpdate)
                 {
-                    //TODO: Find stock txns for each dispatched item
+                    // Find stock txns for each returned item
                     var stockTxnList = await inventoryDb.StockTransactions.Where(ST => ST.ReferenceNo == ReturnItemId && receiveTxnTypes.Contains(ST.TransactionType)).ToListAsync();
                     foreach (var stkTxn in stockTxnList)
                     {
@@ -4135,7 +4135,7 @@ namespace PulseLogicHMR.Controllers
                         }
                         await inventoryDb.SaveChangesAsync();
                     }
-                    //TODO: Update the Received Status in Dispatched Items Row in Dispatch Table
+                    // Update the Received Status in the Return Table
                     returnedItem.ReceivedBy = currentUser.EmployeeId;
                     returnedItem.ReceivedByName = inventoryDb.Employees.FirstOrDefault(e => e.EmployeeId == returnedItem.ReceivedBy).FullName;
                     returnedItem.ReceivedOn = DateTime.Now;
