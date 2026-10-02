@@ -1112,7 +1112,8 @@ namespace PulseLogicHMR.Controllers
             }
 
             //TODO: Please recheck the condition for editing date in GR : Sanjit
-            var canUserEditDate = true;
+            bool isItemUsed = _inventoryDbContext.GoodsReceiptItems.Any(gri => gri.GoodsReceiptId == goodsReceiptId && gri.StoreStockId != null && _inventoryDbContext.StoreStocks.Any(stk => stk.StoreStockId == gri.StoreStockId && stk.AvailableQuantity < (gri.ReceivedQuantity + gri.FreeQuantity)));
+            var canUserEditDate = !isItemUsed;
             var goodsreceiptDetails = new { grItems = gritems, grDetails = grdetails, creator = creator, canUserEditDate, verifier = Verifiers };
             return goodsreceiptDetails;
         }

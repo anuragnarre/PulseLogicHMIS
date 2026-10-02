@@ -1513,7 +1513,8 @@ namespace PulseLogicHMR.Controllers
                 Verifiers = verificationService.GetVerificationViewModel(grdetails.VerificationId.Value).OrderBy(x => x.CurrentVerificationLevel).ToList();
             }
             //TODO: Sanjit: Please review the criteria to edit date later
-            var canUserEditDate = false;
+            bool isItemUsed = inventoryDb.GoodsReceiptItems.Any(gri => gri.GoodsReceiptId == GoodsReceiptId && gri.StoreStockId != null && inventoryDb.StoreStocks.Any(stk => stk.StoreStockId == gri.StoreStockId && stk.AvailableQuantity < (gri.ReceivedQuantity + gri.FreeQuantity)));
+            var canUserEditDate = !isItemUsed;
             var goodsreceiptDetails = new GetProcurementGRViewVm { grItems = gritems, grDetails = grdetails, creator = creator, canUserEditDate = canUserEditDate, verifier = Verifiers };
             return goodsreceiptDetails;
 
