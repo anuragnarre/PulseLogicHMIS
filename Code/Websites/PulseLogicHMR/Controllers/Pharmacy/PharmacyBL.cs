@@ -86,17 +86,16 @@ namespace PulseLogicHMR.Controllers
                     phrmdbcontext.PHRMGoodsReceipt.Add(goodsReceiptData);
                     phrmdbcontext.SaveChanges();
 
-                    var mainStoreObj = phrmdbcontext.PHRMStore.Where(s => s.Category == ENUM_StoreCategory.Store && s.SubCategory == ENUM_StoreSubCategory.Pharmacy).FirstOrDefault();
+                    var mainStoreObj = phrmdbcontext.PHRMStore.Where(s => s.StoreId == goodsReceiptData.StoreId).FirstOrDefault();
 
                     if (mainStoreObj == null)
                     {
-                        throw new Exception("Main Store not found");
+                        throw new Exception("Store not found");
                     }
                     // Add gr items along with stock
                     goodsReceiptItemData.ForEach(gri =>
                     {
-                        // TODO: Make StoreId Dynamic later, also add SubCategory
-                        //var mainStoreId = phrmdbcontext.PHRMStore.Where(a => a.Category == "store" && a.SubCategory == "pharmacy").Select(a => a.StoreId).FirstOrDefault();
+
 
                         // Add to stock master
                         var newStockMaster = new PHRMStockMaster(
