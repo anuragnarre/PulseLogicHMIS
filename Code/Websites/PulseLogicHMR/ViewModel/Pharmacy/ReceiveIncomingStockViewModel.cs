@@ -31,34 +31,57 @@ namespace PulseLogicHMR.ViewModel.Pharmacy
 
                     IReadOnlyList<string> IncomingTxns = new List<string>() { ENUM_PHRM_StockTransactionType.TransferItem, ENUM_PHRM_StockTransactionType.DispatchedItem };
 
+                    var dispatchItemIds = dispatchItemsToUpdate.Select(di => di.DispatchItemsId).ToList();
+
+                    // Pre-fetch all related stock transactions
+                    var allStockTxns = await db.StockTransactions
+                        .Where(ST => dispatchItemIds.Contains(ST.ReferenceNo) && IncomingTxns.Contains(ST.TransactionType) && ST.IsActive == true)
+                        .ToListAsync();
+
+                    // Note: StoreStockId is nullable int in model but we only want non-nulls or can cast.
+                    var storeStockIds = allStockTxns.Select(st => st.StoreStockId).Distinct().ToList();
+
+                    // Pre-fetch all related store stocks
+                    // s.StoreStockId is int? in the model, so we need to handle it or cast it
+                    var allStoreStocks = await db.StoreStocks
+                        .Where(s => s.StoreStockId.HasValue && storeStockIds.Contains(s.StoreStockId.Value) && s.IsActive == true)
+                        .ToDictionaryAsync(s => s.StoreStockId.Value);
+
+                    var stockTxnsByDispatchItemId = allStockTxns
+                        .GroupBy(st => st.ReferenceNo)
+                        .ToDictionary(g => g.Key, g => g.ToList());
+
                     foreach (var dispatchedItem in dispatchItemsToUpdate)
                     {
-                        // Find stock txns for each dispatched item to get the stock id.
-                        IReadOnlyList<PHRMStockTransactionModel> StockTxns = await db.StockTransactions.Where(ST => ST.ReferenceNo == dispatchedItem.DispatchItemsId && IncomingTxns.Contains(ST.TransactionType) && ST.IsActive == true).ToListAsync();
-                        foreach (var stockTxn in StockTxns)
+                        if (stockTxnsByDispatchItemId.TryGetValue(dispatchedItem.DispatchItemsId, out var StockTxns))
                         {
-                            // Find stock id and update the stock quantity
-                            var stock = await db.StoreStocks.FirstOrDefaultAsync(s => s.StoreStockId == stockTxn.StoreStockId && s.IsActive == true);
-                            if (stock.StoreId == dispatchedItem.SourceStoreId)
+                            foreach (var stockTxn in StockTxns)
                             {
-                                // Decrease Unconfirmed Qty out
-                                stock.DecreaseUnconfirmedQty(0, stockTxn.OutQty);
+                                if (allStoreStocks.TryGetValue(stockTxn.StoreStockId, out var stock))
+                                {
+                                    if (stock.StoreId == dispatchedItem.SourceStoreId)
+                                    {
+                                        // Decrease Unconfirmed Qty out
+                                        stock.DecreaseUnconfirmedQty(0, stockTxn.OutQty);
+                                    }
+                                    else
+                                    {
+                                        // Decrease UnconfirmedQtyIn
+                                        stock.DecreaseUnconfirmedQty(stockTxn.InQty, 0);
+                                        // Increate Available Qty
+                                        stock.UpdateAvailableQuantity(stock.AvailableQuantity + stockTxn.InQty);
+                                    }
+                                }
                             }
-                            else
-                            {
-                                // Decrease UnconfirmedQtyIn
-                                stock.DecreaseUnconfirmedQty(stockTxn.InQty, 0);
-                                // Increate Available Qty
-                                stock.UpdateAvailableQuantity(stock.AvailableQuantity + stockTxn.InQty);
-                            }
-                            await db.SaveChangesAsync();
                         }
+
                         // Update the Received Status in Dispatched Items Row in Dispatch Table
                         dispatchedItem.ReceivedById = currentUser.EmployeeId;
                         dispatchedItem.ReceivedOn = currentDate;
                         dispatchedItem.ReceivedRemarks = ReceivingRemarks;
-                        await db.SaveChangesAsync();
                     }
+
+                    await db.SaveChangesAsync();
                     dbResource.Commit();
                 }
                 catch (Exception)
