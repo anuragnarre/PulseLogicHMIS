@@ -19,10 +19,10 @@ namespace PulseLogicHMR.Services
             db = new InventoryDbContext(connString);
         }
 
-        public List<InventoryCompanyModel> ListCompany()
+        public List<InventoryCompanyModel> ListCompany(int skip = 0, int limit = 100)
         {
             //todo:add server side pagination
-            var query = db.InventoryCompany.ToList();
+            var query = db.InventoryCompany.OrderBy(c => c.CompanyId).Skip(skip).Take(limit).ToList();
             return query;
         }
 

@@ -10,7 +10,7 @@ namespace PulseLogicHMR.Services
 {
     public interface IInventoryCompanyService
     {
-        List<InventoryCompanyModel> ListCompany();
+        List<InventoryCompanyModel> ListCompany(int skip = 0, int limit = 100);
         InventoryCompanyModel AddCompany(InventoryCompanyModel model);
         InventoryCompanyModel UpdateCompany(InventoryCompanyModel model);
         InventoryCompanyModel GetCompany(int id);
