@@ -50,21 +50,39 @@ namespace PulseLogicHMR.ViewModel.FixedAsset
                                                       ReceivedQuantity=RI.ReceivedQuantity,
                                                       RequisitionItemStatus=RI.RequisitionItemStatus
                                                   }).ToListAsync();
+
+            var itemIds = requisition.RequisitionItems.Select(i => i.ItemId).ToList();
+            var availableStocks = await (from S in db.FixedAssetStock
+                                         where itemIds.Contains(S.ItemId) && S.IsActive == true
+                                               && S.StoreId == reqStoreId && S.SubStoreId == null
+                                         select new
+                                         {
+                                             S.ItemId,
+                                             Stock = new AvailableStockDto
+                                             {
+                                                 BatchNo = S.BatchNo,
+                                                 FixedAssetStockId = S.FixedAssetStockId,
+                                                 Price = S.ItemRate,
+                                                 VATAmount = S.VATAmount,
+                                                 BarCodeNumber = S.BarCodeNumber
+                                             }
+                                         }).ToListAsync();
+
+            var stockLookup = availableStocks.GroupBy(s => s.ItemId)
+                                            .ToDictionary(g => g.Key, g => g.Select(x => x.Stock).ToList());
+
             //for each item, find the stock and find out available stock and prefil dispatching item with first-expiry-first-out logic
             foreach (var item in requisition.RequisitionItems)
             {
-                //find the available stock
-                item.AvailableStockList = await (from S in db.FixedAssetStock.Where(s => s.ItemId == item.ItemId  == true && s.IsActive==true 
-                                                 && s.StoreId==reqStoreId && s.SubStoreId==null 
-                                                 )                                              
-                                                 select new AvailableStockDto
-                                                 {
-                                                     BatchNo = S.BatchNo,
-                                                     FixedAssetStockId=S.FixedAssetStockId,
-                                                     Price=S.ItemRate,
-                                                     VATAmount=S.VATAmount,
-                                                     BarCodeNumber=S.BarCodeNumber
-                                                 }).ToListAsync();
+                if (item.ItemId.HasValue && stockLookup.TryGetValue(item.ItemId.Value, out var stocks))
+                {
+                    item.AvailableStockList = stocks;
+                }
+                else
+                {
+                    item.AvailableStockList = new List<AvailableStockDto>();
+                }
+
                 //if no stock found, then dispatch should not be allowed, set the flag here and disable in client side.
                 if (item.AvailableStockList?.Count() == 0)
                     item.IsDispatchForbidden = true;
