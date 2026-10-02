@@ -13,6 +13,7 @@ namespace PulseLogicHMR.ServerModel
         [Key]
         public int DispatchItemsId { get; set; }
         public int? DispatchId { get; set; }
+        public int? FiscalYearId { get; set; }
         public int SourceStoreId { get; set; }
         public int TargetStoreId { get; set; }
         public int ItemId { get; set; }

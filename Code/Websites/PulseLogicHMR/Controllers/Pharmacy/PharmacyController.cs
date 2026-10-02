@@ -5250,6 +5250,7 @@ namespace PulseLogicHMR.Controllers
 
                     //asigining the value to POFromClient with POitems= null
                     requisition = RequisitionFromClient;
+                    requisition.FiscalYearId = PharmacyBL.GetFiscalYear(phrmdbcontext).FiscalYearId;
                     requisition.CreatedOn = DateTime.Now;
                     if (requisition.RequisitionDate == null)
                     {

@@ -235,6 +235,7 @@ namespace PulseLogicHMR.ViewModel.Pharmacy
 
         private static async Task SaveDispatchItems(PharmacyDbContext db, IList<PostStoreDispatchViewModel> dispatchItems, RbacUser currentUser, int? dispatchId, DateTime currentDate, int mainStoreId, List<PHRMDispatchItemsModel> dispatchItemList)
         {
+            var currentFiscalYearId = db.PharmacyFiscalYears.Where(fsc => fsc.StartDate <= currentDate && fsc.EndDate >= currentDate).FirstOrDefault().FiscalYearId;
             foreach (var dispatchItem in dispatchItems)
             {
                 var newDispatchItem = new PHRMDispatchItemsModel()
@@ -252,6 +253,7 @@ namespace PulseLogicHMR.ViewModel.Pharmacy
                     ReceivedBy = dispatchItem.ReceivedBy,
                     RequisitionId = dispatchItem.RequisitionId,
                     RequisitionItemId = dispatchItem.RequisitionItemId,
+                    FiscalYearId = currentFiscalYearId,
                     CostPrice = (decimal)dispatchItem.CostPrice,
                     SalePrice = (decimal)dispatchItem.SalePrice,
                     PendingQuantity = dispatchItem.PendingQuantity <= 0 ? 0 : dispatchItem.PendingQuantity

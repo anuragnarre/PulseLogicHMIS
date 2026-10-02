@@ -107,6 +107,7 @@ namespace PulseLogicHMR.Services.DispensaryTransfer
                             SourceStoreId = newTransferedStock.SourceStoreId,
                             TargetStoreId = newTransferedStock.TargetStoreId,
                             DispatchId = dispatchId,
+                            FiscalYearId = currentFiscalYearId,
                             CostPrice = newTransferedStock.CostPrice,
                             SalePrice = newTransferedStock.SalePrice,
                             BatchNo = newTransferedStock.BatchNo,
@@ -252,6 +253,7 @@ namespace PulseLogicHMR.Services.DispensaryTransfer
                         var dispatchItem = new PHRMDispatchItemsModel()
                         {
                             DispatchId = newDispatchId,
+                            FiscalYearId = currentFiscalYearId,
                             RequisitionId = newRequisition.RequisitionId,
                             DispatchedDate = currentDate,
                             ItemId = transferStock.ItemId,
