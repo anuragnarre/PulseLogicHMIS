@@ -8,20 +8,17 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-
 namespace PulseLogicHMR.Services.Pharmacy.Rack
 {
     public class RackService : IRackService
     {
         public PharmacyDbContext db;
-
         private readonly string connString = null;
         public RackService(IOptions<MyConfiguration> _config)
         {
             connString = _config.Value.Connectionstring;
             db = new PharmacyDbContext(connString);
         }
-
         public RackViewModel AddRack(PHRMRackModel model)
         {
             db.PHRMRack.Add(model);
@@ -41,15 +38,12 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
             };
             return result;
         }
-
-
         public void DeleteRack(int id)
         {
             var IsExistData = db.PHRMRack.Where(x => x.RackId == id).FirstOrDefault();
             db.PHRMRack.Remove(IsExistData);
             db.SaveChanges();
         }
-
         public RackViewModel GetRack(int id)
         {
             var query = db.PHRMRack.Where(x => x.RackId == id).FirstOrDefault();
@@ -68,10 +62,8 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
             };
             return result;
         }
-
-        public List<RackViewModel> ListRack()
+        public List<RackViewModel> ListRack(int? offset = null, int? limit = null)
         {
-            //TODO:add server side pagination
             var query = (from rack in db.PHRMRack
                          join parRack in db.PHRMRack on rack.ParentId equals parRack.RackId into parRackTemp
                          from parentRack in parRackTemp.DefaultIfEmpty()
@@ -86,11 +78,19 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
                              Description = rack.Description,
                              CreatedBy = rack.CreatedBy,
                              CreatedOn = rack.CreatedOn
+                         }).OrderByDescending(r => r.CreatedOn).AsQueryable();
 
-                         }).OrderByDescending(r => r.CreatedOn).ToList();
-            return query;
+            if (offset.HasValue)
+            {
+                query = query.Skip(offset.Value);
+            }
+            if (limit.HasValue)
+            {
+                query = query.Take(limit.Value);
+            }
+
+            return query.ToList();
         }
-
         public RackViewModel UpdateRack(RackViewModel model)
         {
             var result = new PHRMRackModel()
@@ -107,8 +107,6 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
             db.SaveChanges();
             return model;
         }
-
-
         public List<RackViewModel> GetParentRack()
         {
             var list = (from rack in db.PHRMRack
@@ -125,7 +123,6 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
                         }).ToList();
             return list;
         }
-
         public List<RackViewModel> GetAllRack()
         {
             var list = (from rack in db.PHRMRack
@@ -141,7 +138,6 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
                             CreatedOn = rack.CreatedOn
                         }).ToList();
             return list;
-
         }
         public List<PHRM_MAP_ItemToRack> GetAllRackItem()
         {
@@ -154,11 +150,9 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
                             IsActive = rack.IsActive,
                             CreatedOn = rack.CreatedOn,
                             CreatedBy = rack.CreatedBy
-
                         }).ToList();
             return list;
         }
-
         public string GetDrugList(int rackId, int storeId)
         {
             PulseLogicHTTPResponse<object> responseData = new PulseLogicHTTPResponse<object>();
@@ -175,7 +169,6 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
             responseData.Results = result;
             return PulseLogicJSONConvert.SerializeObject(responseData);
         }
-
         public string GetStoreRackNameByItemId(int itemId)
         {
             var rackId = db.PHRMItemMaster.Where(item => item.ItemId == itemId).Select(item => item.StoreRackId).FirstOrDefault();
@@ -183,4 +176,3 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
         }
     }
 }
-
