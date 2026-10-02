@@ -249,7 +249,7 @@ namespace PulseLogicHMR.Controllers.Pharmacy
 
                             SSF_ClaimBookingService_DTO claimBooking = SSF_ClaimBookingService_DTO.GetMappedToBookClaim(billObj, patientSchemes);
 
-                            Task.Run(() => BillingBL.SyncToSSFServer(claimBooking, "pharmacy", ssfDbContext, patientSchemes, currentUser));
+                            Task.Run(() => BillingBL.SyncToSSFServerAsync(claimBooking, "pharmacy", ssfDbContext, patientSchemes, currentUser));
                         }
                     }
 
