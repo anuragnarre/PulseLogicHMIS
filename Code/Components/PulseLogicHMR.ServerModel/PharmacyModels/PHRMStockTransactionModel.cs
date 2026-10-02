@@ -91,5 +91,10 @@ namespace PulseLogicHMR.ServerModel
         {
             SalePrice = mRP;
         }
+
+        public void UpdateIsActive(bool isActive)
+        {
+            IsActive = isActive;
+        }
     }
 }
