@@ -86,9 +86,6 @@ namespace PulseLogicHMR.Services.Pharmacy.SupplierLedger
                         //find the supplier ledger
                         var entity = db.SupplierLedger.Find(ledger.LedgerId);
 
-                        //TO-DO:If client side balance amount is not equal to server side balance amount
-                        //if (ledger.BalanceAmount != entity.BalanceAmount) throw new Exception($"The amount for this ledger has been modified.");
-
                         //update the Debit and Balance amount 
                         entity.DebitAmount += ledger.PayingAmount;
                         entity.BalanceAmount = entity.CreditAmount - entity.DebitAmount;
@@ -103,7 +100,6 @@ namespace PulseLogicHMR.Services.Pharmacy.SupplierLedger
                             SupplierId = ledger.SupplierId,
                             DebitAmount = ledger.PayingAmount,
                             CreditAmount = 0,
-                            // CreditAmount = ledger.BalanceAmount - ledger.PayingAmount,
                             ReferenceNo = ledger.GoodsReceiptId,
                             TransactionType = ENUM_SupplierLedgerTransaction.MakePayment,
                             IsActive = true,
