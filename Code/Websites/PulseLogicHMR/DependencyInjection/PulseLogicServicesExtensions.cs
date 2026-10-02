@@ -42,6 +42,7 @@ namespace PulseLogicHMR.DependencyInjection
         public static IServiceCollection AddPulseLogicServices(this IServiceCollection services, IConfigurationRoot configuration)
         {
             // Register IMessagingService (Twilio Implementation)
+            services.Configure<PulseLogicHMR.Core.Utilities.Messaging.TwilioSettings>(configuration.GetSection("TwilioSettings"));
             services.AddTransient<PulseLogicHMR.Core.Utilities.Messaging.IMessagingService, PulseLogicHMR.Core.Utilities.Messaging.TwilioMessagingService>();
             
             // Register FHIR Mapping Service
