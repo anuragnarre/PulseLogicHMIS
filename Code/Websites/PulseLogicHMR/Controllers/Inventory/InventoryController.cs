@@ -4106,9 +4106,6 @@ namespace PulseLogicHMR.Controllers
             var responseData = new PulseLogicHTTPResponse<object>();
             try
             {
-                var ReturnItemId = (from ret in inventoryDb.SubstoreReturnItems
-                                    where ret.ReturnId == returnId
-                                    select ret.ReturnItemId).FirstOrDefault();
                 List<ReturnFromSubstore> returnItemsToUpdate = await inventoryDb.SubstoreReturn.Where(itm => itm.ReturnId == returnId).ToListAsync();
                 if (returnItemsToUpdate == null || returnItemsToUpdate.Count == 0) { throw new Exception("Items Not Found."); };
 
@@ -4116,24 +4113,28 @@ namespace PulseLogicHMR.Controllers
 
                 foreach (var returnedItem in returnItemsToUpdate)
                 {
-                    //TODO: Find stock txns for each dispatched item
-                    var stockTxnList = await inventoryDb.StockTransactions.Where(ST => ST.ReferenceNo == ReturnItemId && receiveTxnTypes.Contains(ST.TransactionType)).ToListAsync();
-                    foreach (var stkTxn in stockTxnList)
+                    var returnItemIds = await inventoryDb.SubstoreReturnItems
+                                        .Where(ret => ret.ReturnId == returnedItem.ReturnId)
+                                        .Select(ret => ret.ReturnItemId)
+                                        .ToListAsync();
+
+                    foreach (var returnItemId in returnItemIds)
                     {
-
-                        var stock = await inventoryDb.StoreStocks.FindAsync(stkTxn.StoreStockId);
-                        if (stock.StoreId == returnedItem.SourceStoreId)
+                        var stockTxnList = await inventoryDb.StockTransactions.Where(ST => ST.ReferenceNo == returnItemId && receiveTxnTypes.Contains(ST.TransactionType)).ToListAsync();
+                        foreach (var stkTxn in stockTxnList)
                         {
-                            stock.ConfirmStockDecrease(quantity: stkTxn.OutQty);
+                            var stock = await inventoryDb.StoreStocks.FindAsync(stkTxn.StoreStockId);
+                            if (stock.StoreId == returnedItem.SourceStoreId)
+                            {
+                                stock.ConfirmStockDecrease(quantity: stkTxn.OutQty);
+                            }
+                            else
+                            {
+                                stock.ConfirmStockReceived(stkTxn.InQty);
+                                stock.ConfirmStockDecrease(stkTxn.InQty);
+                            }
+                            await inventoryDb.SaveChangesAsync();
                         }
-                        else
-                        {
-                            stock.ConfirmStockReceived(stkTxn.InQty);
-                            stock.ConfirmStockDecrease(stkTxn.InQty);
-
-
-                        }
-                        await inventoryDb.SaveChangesAsync();
                     }
                     //TODO: Update the Received Status in Dispatched Items Row in Dispatch Table
                     returnedItem.ReceivedBy = currentUser.EmployeeId;
