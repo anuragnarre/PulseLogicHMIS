@@ -17,7 +17,7 @@ namespace PulseLogicHMR.Jobs.IRDNepal
         public static string bilConString = ConfigurationManager.ConnectionStrings["irdNplConnStr"].ConnectionString;
         string maxTxnRecords = ConfigurationManager.AppSettings["maximumTXNRecords"];
 
-        public void SyncSalesToRemoteServer()
+        public async Task SyncSalesToRemoteServer()
         {
             try
             {
@@ -31,19 +31,18 @@ namespace PulseLogicHMR.Jobs.IRDNepal
                 {
                     string url_IRDNepal = ConfigurationManager.AppSettings["url_IRDNepal"];
                     string api_SalesIRDNepal = ConfigurationManager.AppSettings["api_SalesIRDNepal"];
-                    for (int i = 0; i < irdCommonSalesBillItems.Count; i++)
+                    using (var client = new HttpClient())
                     {
-                        IRD_BillViewModel bill = IRD_BillViewModel.GetMappedSalesBillForIRD(irdCommonSalesBillItems[i]);
-                        using (var client = new HttpClient())
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        client.BaseAddress = new Uri(url_IRDNepal);
+                        for (int i = 0; i < irdCommonSalesBillItems.Count; i++)
                         {
-                            client.DefaultRequestHeaders.Accept.Clear();
-                            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                            client.BaseAddress = new Uri(url_IRDNepal);
-                            var response = client.PostAsJsonAsync(api_SalesIRDNepal, bill).Result;
+                            IRD_BillViewModel bill = IRD_BillViewModel.GetMappedSalesBillForIRD(irdCommonSalesBillItems[i]);
+                            var response = await client.PostAsJsonAsync(api_SalesIRDNepal, bill);
                             if (response.IsSuccessStatusCode)
                             {
-                                var message = response.Content.ReadAsStringAsync();
-                                string mstTxt = message.Result;
+                                string mstTxt = await response.Content.ReadAsStringAsync();
                                 if (mstTxt == "200")
                                 {
                                     irdCommonSalesBillItems[i].is_remote_synced = true;
@@ -72,7 +71,7 @@ namespace PulseLogicHMR.Jobs.IRDNepal
             }
         }
 
-        public void SyncSalesReturnToRemoteServer()
+        public async Task SyncSalesReturnToRemoteServer()
         {
             try
             {
@@ -86,19 +85,18 @@ namespace PulseLogicHMR.Jobs.IRDNepal
                 {
                     string url_IRDNepal = ConfigurationManager.AppSettings["url_IRDNepal"];
                     string api_SalesIRDNepal = ConfigurationManager.AppSettings["api_SalesReturnIRDNepal"];
-                    for (int i = 0; i < irdCommonReturnBills.Count; i++)
+                    using (var client = new HttpClient())
                     {
-                        IRD_BillReturnViewModel bill = IRD_BillReturnViewModel.GetMappedSalesReturnBillForIRD(irdCommonReturnBills[i]);
-                        using (var client = new HttpClient())
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        client.BaseAddress = new Uri(url_IRDNepal);
+                        for (int i = 0; i < irdCommonReturnBills.Count; i++)
                         {
-                            client.DefaultRequestHeaders.Accept.Clear();
-                            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                            client.BaseAddress = new Uri(url_IRDNepal);
-                            var response = client.PostAsJsonAsync(api_SalesIRDNepal, bill).Result;
+                            IRD_BillReturnViewModel bill = IRD_BillReturnViewModel.GetMappedSalesReturnBillForIRD(irdCommonReturnBills[i]);
+                            var response = await client.PostAsJsonAsync(api_SalesIRDNepal, bill);
                             if (response.IsSuccessStatusCode)
                             {
-                                var message = response.Content.ReadAsStringAsync();
-                                string mstTxt = message.Result;
+                                string mstTxt = await response.Content.ReadAsStringAsync();
                                 if (mstTxt == "200")
                                 {
                                     irdCommonReturnBills[i].is_remote_synced = true;

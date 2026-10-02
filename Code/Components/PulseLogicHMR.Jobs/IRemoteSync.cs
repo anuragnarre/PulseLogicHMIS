@@ -8,7 +8,7 @@ namespace PulseLogicHMR.Jobs
 {
     interface IRemoteSync
     {                
-        void SyncSalesToRemoteServer();
-        void SyncSalesReturnToRemoteServer();
+        Task SyncSalesToRemoteServer();
+        Task SyncSalesReturnToRemoteServer();
     }
 }
