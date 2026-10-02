@@ -26,13 +26,27 @@ namespace DbRestorer
                         ExecuteSqlScript(conn, adminSqlPath);
                         Console.WriteLine("Admin DB script execution completed.");
 
-                        string changePasswordPath = Path.Combine(repoRoot, "Database", "ChangeAdminPassword.sql");
-                        if (File.Exists(changePasswordPath))
+                        Console.WriteLine("Generating and updating admin password...");
+                        string newPassword = GenerateRandomPassword(16);
+                        string encryptedPassword = EncryptPassword(newPassword);
+
+                        string updateSql = $@"
+UPDATE [dbo].[RBAC_User]
+SET [Password] = @Password,
+    [NeedsPasswordUpdate] = 1,
+    [ModifiedOn] = GETDATE()
+WHERE [UserName] = 'admin';";
+
+                        using (var cmd = new SqlCommand(updateSql, conn))
                         {
-                            Console.WriteLine("Updating admin password...");
-                            ExecuteSqlScript(conn, changePasswordPath);
-                            Console.WriteLine("Admin password updated (admin / P@ssw0rd!2024).");
+                            cmd.Parameters.AddWithValue("@Password", encryptedPassword);
+                            cmd.ExecuteNonQuery();
                         }
+
+                        Console.WriteLine($"Admin password updated.");
+                        Console.WriteLine($"Username: admin");
+                        Console.WriteLine($"Password: {newPassword}");
+                        Console.WriteLine($"Please save this password securely.");
                     }
                     else
                     {
@@ -61,6 +75,41 @@ namespace DbRestorer
             catch (Exception ex)
             {
                 Console.WriteLine("Fatal Error: " + ex.Message);
+            }
+        }
+
+        static string GenerateRandomPassword(int length)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
+            var res = new System.Text.StringBuilder();
+            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+            {
+                byte[] uintBuffer = new byte[sizeof(uint)];
+                while (length-- > 0)
+                {
+                    rng.GetBytes(uintBuffer);
+                    uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                    res.Append(validChars[(int)(num % (uint)validChars.Length)]);
+                }
+            }
+            return res.ToString();
+        }
+
+        static string EncryptPassword(string password)
+        {
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(password);
+            using (var md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] keys = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes("PulseLogicsalt"));
+                using (var tripdes = System.Security.Cryptography.TripleDES.Create())
+                {
+                    tripdes.Key = keys;
+                    tripdes.Mode = System.Security.Cryptography.CipherMode.ECB;
+                    tripdes.Padding = System.Security.Cryptography.PaddingMode.PKCS7;
+                    var transform = tripdes.CreateEncryptor();
+                    byte[] results = transform.TransformFinalBlock(data, 0, data.Length);
+                    return Convert.ToBase64String(results, 0, results.Length);
+                }
             }
         }
 
