@@ -20,9 +20,8 @@ namespace PulseLogicHMR.Services
             db = new FractionDbContext(connString);
         }
 
-        public List<FractionPercentVM> ListFractionApplicableItems()
+        public List<FractionPercentVM> ListFractionApplicableItems(int offset, int limit)
         {
-            //todo:add server side pagination
             //join parRack in db.PHRMRack on rack.ParentId equals parRack.RackId into parRackTemp
             //             from parentRack in parRackTemp.DefaultIfEmpty()
 
@@ -43,7 +42,7 @@ namespace PulseLogicHMR.Services
                                 Description = fractionPercent.Description,
                                 CreatedOn = fractionPercent.CreatedOn,
 
-                            }).OrderByDescending(a => a.CreatedOn).ToList();
+                            }).OrderByDescending(a => a.CreatedOn).Skip(offset).Take(limit).ToList();
             return itemList;
         }
 
