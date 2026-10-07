@@ -3585,17 +3585,22 @@ namespace PulseLogicHMR.Controllers
                         //Add specimen of culture test
                         if (labSpecimenList != null && labSpecimenList.Count > 0)
                         {
-                            int ln = labSpecimenList.Count;
-                            for (int i = 0; i < ln; i++)
+                            var reqIds = labSpecimenList.Where(s => s.RequisitionId != null && s.RequisitionId > 0).Select(s => (long)s.RequisitionId.Value).ToList();
+                            if (reqIds.Count > 0)
                             {
-                                int? requisitId = labSpecimenList[i].RequisitionId;
-                                string specimen = labSpecimenList[i].Specimen;
-                                if (requisitId != null && requisitId > 0)
+                                var reqList = _labDbContext.Requisitions.Where(r => reqIds.Contains(r.RequisitionId)).ToList();
+                                foreach (var s in labSpecimenList)
                                 {
-                                    LabRequisitionModel labReq = _labDbContext.Requisitions.Where(val => val.RequisitionId == requisitId).FirstOrDefault<LabRequisitionModel>();
-                                    labReq.LabTestSpecimen = specimen;
-                                    _labDbContext.SaveChanges();
+                                    if (s.RequisitionId != null && s.RequisitionId > 0)
+                                    {
+                                        var labReq = reqList.FirstOrDefault(r => r.RequisitionId == s.RequisitionId);
+                                        if (labReq != null)
+                                        {
+                                            labReq.LabTestSpecimen = s.Specimen;
+                                        }
+                                    }
                                 }
+                                _labDbContext.SaveChanges();
                             }
                         }
 
@@ -4378,17 +4383,22 @@ namespace PulseLogicHMR.Controllers
                     //Update specimen of culture test
                     if (labSpecimenList != null && labSpecimenList.Count > 0)
                     {
-                        int ln = labSpecimenList.Count;
-                        for (int i = 0; i < ln; i++)
+                        var reqIds = labSpecimenList.Where(s => s.RequisitionId != null && s.RequisitionId > 0).Select(s => (long)s.RequisitionId.Value).ToList();
+                        if (reqIds.Count > 0)
                         {
-                            int? requisitId = labSpecimenList[i].RequisitionId;
-                            string specimen = labSpecimenList[i].Specimen;
-                            if (requisitId != null && requisitId > 0)
+                            var reqList = _labDbContext.Requisitions.Where(r => reqIds.Contains(r.RequisitionId)).ToList();
+                            foreach (var s in labSpecimenList)
                             {
-                                LabRequisitionModel labReq = _labDbContext.Requisitions.Where(val => val.RequisitionId == requisitId).FirstOrDefault<LabRequisitionModel>();
-                                labReq.LabTestSpecimen = specimen;
-                                _labDbContext.SaveChanges();
+                                if (s.RequisitionId != null && s.RequisitionId > 0)
+                                {
+                                    var labReq = reqList.FirstOrDefault(r => r.RequisitionId == s.RequisitionId);
+                                    if (labReq != null)
+                                    {
+                                        labReq.LabTestSpecimen = s.Specimen;
+                                    }
+                                }
                             }
+                            _labDbContext.SaveChanges();
                         }
                     }
                     return new List<LabTestComponentResult>();
@@ -4400,29 +4410,29 @@ namespace PulseLogicHMR.Controllers
 
                     var reportId = compsToInsert[0].LabReportId;
 
+                    var updateIds = compsToUpdate.Select(c => c.TestComponentResultId).ToList();
+                    var existingComps = _labDbContext.LabTestComponentResults
+                                        .Where(a => updateIds.Contains(a.TestComponentResultId))
+                                        .ToList();
                     foreach (var labtestres in compsToUpdate)
                     {
-                        LabTestComponentResult TestComp = _labDbContext.LabTestComponentResults
-                                             .Where(a => a.TestComponentResultId == labtestres.TestComponentResultId)
-                                              .FirstOrDefault<LabTestComponentResult>();
-
-
-                        TestComp.LabReportId = reportId;
-                        TestComp.Value = labtestres.Value;
-                        TestComp.Remarks = labtestres.Remarks;
-                        TestComp.IsAbnormal = labtestres.IsAbnormal;
-                        TestComp.AbnormalType = labtestres.AbnormalType;
-                        TestComp.ModifiedOn = DateTime.Now;
-                        TestComp.ModifiedBy = currentUser.EmployeeId;
-                        _labDbContext.Entry(TestComp).Property(a => a.LabReportId).IsModified = true;
-                        _labDbContext.Entry(TestComp).Property(a => a.Value).IsModified = true;
-                        _labDbContext.Entry(TestComp).Property(a => a.IsAbnormal).IsModified = true;
-                        _labDbContext.Entry(TestComp).Property(a => a.AbnormalType).IsModified = true;
-                        _labDbContext.Entry(TestComp).Property(a => a.ModifiedOn).IsModified = true;
-                        _labDbContext.Entry(TestComp).Property(a => a.ModifiedBy).IsModified = true;
-
-
-                        //labDbContext.Entry(TestComp).State = EntityState.Modified;
+                        var TestComp = existingComps.FirstOrDefault(a => a.TestComponentResultId == labtestres.TestComponentResultId);
+                        if (TestComp != null)
+                        {
+                            TestComp.LabReportId = reportId;
+                            TestComp.Value = labtestres.Value;
+                            TestComp.Remarks = labtestres.Remarks;
+                            TestComp.IsAbnormal = labtestres.IsAbnormal;
+                            TestComp.AbnormalType = labtestres.AbnormalType;
+                            TestComp.ModifiedOn = DateTime.Now;
+                            TestComp.ModifiedBy = currentUser.EmployeeId;
+                            _labDbContext.Entry(TestComp).Property(a => a.LabReportId).IsModified = true;
+                            _labDbContext.Entry(TestComp).Property(a => a.Value).IsModified = true;
+                            _labDbContext.Entry(TestComp).Property(a => a.IsAbnormal).IsModified = true;
+                            _labDbContext.Entry(TestComp).Property(a => a.AbnormalType).IsModified = true;
+                            _labDbContext.Entry(TestComp).Property(a => a.ModifiedOn).IsModified = true;
+                            _labDbContext.Entry(TestComp).Property(a => a.ModifiedBy).IsModified = true;
+                        }
                     }
                     _labDbContext.SaveChanges();
 
