@@ -87,16 +87,6 @@ export class PhrmGRViewNpComponent implements OnInit, OnDestroy {
                   }
             }, 20);
       }
-      //Confirmation for Good Receipt Cancel
-      // cancelGoodsReciept() {
-      //       let printAgain: boolean = true;
-      //       let cancel_msg = "NOTE !!! Do you want to cancel Good Receipt?";
-      //       printAgain = window.confirm(cancel_msg);
-      //       if (printAgain) {
-      //             this.cancelGR();
-      //       }
-      // }
-
       // Confirmation for Good Receipt Cancel
       cancelGoodsReciept() {
             this.showConfirmationPopUp = true;
