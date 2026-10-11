@@ -409,7 +409,7 @@ namespace PulseLogicHMR.Controllers
                 }
                 catch (Exception ex)
                 {
-                    throw ;
+                    throw new Exception("An internal error occurred while processing your request.");
                 }
             
         }
@@ -461,7 +461,7 @@ namespace PulseLogicHMR.Controllers
                     {
                         //Rollback all transaction if exception occured
                         dbContextTransaction.Rollback();
-                        throw ;
+                        throw new Exception("An internal error occurred during the transaction.");
                     }
                 }
         
@@ -520,7 +520,7 @@ namespace PulseLogicHMR.Controllers
                 {
                     //Rollback all transaction if exception occured
                     dbContextTransaction.Rollback();
-                    throw ;
+                    throw new Exception("An internal error occurred during the transaction.");
                 }
             }
         }
@@ -743,7 +743,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -756,7 +756,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -775,7 +775,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -806,7 +806,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -873,8 +873,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
-
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -896,7 +895,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -918,7 +917,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -955,7 +954,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -1009,7 +1008,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
@@ -1115,7 +1114,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                throw new Exception("An internal error occurred while processing your request.");
             }
         }
         #endregion
