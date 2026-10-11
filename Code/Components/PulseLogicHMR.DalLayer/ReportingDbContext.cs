@@ -82,8 +82,6 @@ namespace PulseLogicHMR.DalLayer
                 new SqlParameter("@FromDate", FromDate),
                 new SqlParameter("@ToDate", ToDate)
             };
-            //SqlParameter providerParameter = new SqlParameter();
-            //paramList.Add(providerParameter);
             DataTable billdenomination = DALFunctions.GetDataTableFromStoredProc("SP_Report_Bill_BillDenominationAllList", paramList, this);
             return billdenomination;
         }
@@ -203,8 +201,6 @@ namespace PulseLogicHMR.DalLayer
                 dReport.JsonData = JsonConvert.SerializeObject(data);
             }
             return dReport;
-            //DataTable dailyMISData = DALFunctions.GetDataTableFromStoredProc("SP_Report_BILL_DailyMISReport", paramList, this);
-            //return dailyMISData;
         }
         public DataTable DoctorPatientCount(DateTime FromDate, DateTime ToDate)
         {
@@ -222,7 +218,6 @@ namespace PulseLogicHMR.DalLayer
             return dtBilDocSummary;
         }
         #endregion
-
 
         #region BillDocDeptSummary
         public DataTable BillDocDeptSummary(DateTime FromDate, DateTime ToDate, int DoctorId)
@@ -249,17 +244,6 @@ namespace PulseLogicHMR.DalLayer
                 new SqlParameter("@SrvDeptName", SrvDeptName)
             };
             DataTable rData = DALFunctions.GetDataTableFromStoredProc("SP_Report_BIL_DoctorDeptItemsSummary", paramList, this);
-            //DynamicReport dReport = new DynamicReport();
-            //if (rData.Tables.Count > 1)
-            //{
-            //    var data = new
-            //    {
-            //        ReportData = rData.Tables[0],
-            //        Summary = rData.Tables[1]
-            //    };
-            //    dReport.Schema = null;
-            //    dReport.JsonData = JsonConvert.SerializeObject(data);
-            //}
             return rData;
         }
         #endregion
@@ -527,7 +511,6 @@ namespace PulseLogicHMR.DalLayer
             var result = new DataSet();
             var context = new ReportingDbContext(connString);
 
-
             // creates a Command 
             var cmd = context.Database.GetDbConnection().CreateCommand();
             cmd.CommandType = CommandType.StoredProcedure;
@@ -535,8 +518,6 @@ namespace PulseLogicHMR.DalLayer
             cmd.Parameters.Add(new SqlParameter("@FromDate", FromDate));
             cmd.Parameters.Add(new SqlParameter("@ToDate", ToDate));
             cmd.Parameters.Add(new SqlParameter("@PatientCode", PatientCode));
-
-
 
             try
             {
@@ -678,8 +659,6 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
-
         #region Total Admitted Patients
         public DataTable TotalAdmittedPatient(DateTime FromDate, DateTime ToDate)
         {
@@ -768,7 +747,6 @@ namespace PulseLogicHMR.DalLayer
                                       new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd" });
             }
 
-
             return dReport;
         }
         #endregion
@@ -782,28 +760,7 @@ namespace PulseLogicHMR.DalLayer
             DataTable CategoryWiseLabData = DALFunctions.GetDataTableFromStoredProc("SP_Report_Lab_CategoryWiseLabReport", paramList, this);
             return CategoryWiseLabData;
         }
-        //public DynamicReport CategoryWiseLabReport(DateTime FromDate, DateTime ToDate)
-        //{
-        //    List<SqlParameter> paramsList = new List<SqlParameter>();
-        //    paramsList.Add(new SqlParameter("@FromDate", FromDate));
-        //    paramsList.Add(new SqlParameter("@ToDate", ToDate));
-        //    //cmd.Parameters.Add();
-        //    //cmd.Parameters.Add(new SqlParameter("@ToDate", ToDate));
 
-        //    DataSet dsCategoryWiseLabReport = GetDatasetFromStoredProc2("SP_Report_Lab_CategoryWiseLabReport_old", paramsList, this.connStr);
-        //    DynamicReport dReport = new DynamicReport();
-        //    dReport.Schema = JsonConvert.SerializeObject(dsCategoryWiseLabReport.Tables[0]);
-        //    //wee need datetime in yyyy-MM-dd format.
-        //    //sud: 5June'18-- it was crashing when only one table comes from db.
-        //    if (dsCategoryWiseLabReport.Tables.Count > 1)
-        //    {
-        //        dReport.JsonData = JsonConvert.SerializeObject(dsCategoryWiseLabReport.Tables[1],
-        //                                            new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd" });
-        //    }
-
-
-        //    return dReport;
-        //}
         #endregion
 
         public DataTable DoctorWisePatientCountLabReport(DateTime FromDate, DateTime ToDate)
@@ -813,7 +770,6 @@ namespace PulseLogicHMR.DalLayer
             DataTable DoctorWiseLabData = DALFunctions.GetDataTableFromStoredProc("SP_Report_Lab_DoctorWisePatientCountLabReport", paramList, this);
             return DoctorWiseLabData;
         }
-
 
         #region Category wise total Item Count Lab Report
         public DataTable CategoryWiseLabItemCountLabReport(DateTime FromDate, DateTime ToDate, String orderStatus)
@@ -852,7 +808,6 @@ namespace PulseLogicHMR.DalLayer
 
         #endregion
 
-
         #region Doctor Wise patient report
         public DynamicReport DoctorWisePatientReport(DateTime FromDate, DateTime ToDate, string PerformerName)
         {
@@ -867,7 +822,6 @@ namespace PulseLogicHMR.DalLayer
             dReport.Schema = JsonConvert.SerializeObject(dsDoctorWisepatientRevenue.Tables[0]);
             dReport.JsonData = dsDoctorWisepatientRevenue.Tables.Count > 1 ? JsonConvert.SerializeObject(dsDoctorWisepatientRevenue.Tables[1],
                                          new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd" }) : null;
-            //return Data.ToList<PatientBillHistoryMaster>();
             return dReport;
         }
         #endregion
@@ -886,7 +840,6 @@ namespace PulseLogicHMR.DalLayer
             dReport.Schema = JsonConvert.SerializeObject(depatwiseappointmentdata.Tables[0]);
             dReport.JsonData = depatwiseappointmentdata.Tables.Count > 1 ? JsonConvert.SerializeObject(depatwiseappointmentdata.Tables[1],
                                          new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd" }) : null;
-            //return Data.ToList<PatientBillHistoryMaster>();
             return dReport;
         }
         #endregion
@@ -899,7 +852,6 @@ namespace PulseLogicHMR.DalLayer
             DataTable patientCreditSummaryData = DALFunctions.GetDataTableFromStoredProc("SP_Report_BIL_PatientCreditSummary", paramList, this);
             return patientCreditSummaryData;
         }
-
 
         #endregion
 
@@ -968,55 +920,6 @@ namespace PulseLogicHMR.DalLayer
             return DoctorReferralData;
         }
         #endregion
-
-        //private DataSet GetTestWiseRevenue2(DateTime FromDate, DateTime ToDate, string connString)
-        //{
-        //    // creates resulting dataset
-        //    var result = new DataSet();
-        //    var context = new ReportingDbContext(connString);
-
-
-        //    // creates a Command 
-        //    var cmd = context.Database.GetDbConnection().CreateCommand();
-        //    cmd.CommandType = CommandType.StoredProcedure;
-        //    cmd.CommandText = "sp_Report_TestWiseRevenue";
-
-        //    //List<SqlParameter> paramsList = new List<SqlParameter>();
-        //    //paramsList.Add(new SqlParameter("@FromDate", FromDate));
-
-
-
-
-        //    cmd.Parameters.Add(new SqlParameter("@FromDate", FromDate));
-        //    cmd.Parameters.Add(new SqlParameter("@ToDate", ToDate));
-
-
-
-
-        //    try
-        //    {
-        //        // executes
-        //        context.Database.GetDbConnection().Open();
-        //        var reader = cmd.ExecuteReader();
-
-        //        // loop through all resultsets (considering that it's possible to have more than one)
-        //        do
-        //        {
-        //            // loads the DataTable (schema will be fetch automatically)
-        //            var tb = new DataTable();
-        //            tb.Load(reader);
-        //            result.Tables.Add(tb);
-
-        //        } while (!reader.IsClosed);
-
-        //        return result;
-        //    }
-        //    finally
-        //    {
-        //        // closes the connection
-        //        context.Database.GetDbConnection().Close();
-        //    }
-        //}
 
         private DataSet GetDatasetFromStoredProc2(string storedProcName, List<SqlParameter> ipParams, string connString)
         {
@@ -1095,7 +998,6 @@ namespace PulseLogicHMR.DalLayer
             DataSet dsIncomeSegReport = DALFunctions.GetDatasetFromStoredProc("SP_Report_BIL_IncomeSegregation", paramsList, reportingDbContext);
             DynamicReport dReport = new DynamicReport();
 
-            //dReport.Schema = dReport.Schema = JsonConvert.SerializeObject(dsIncomeSegReport.Tables[0]); ;
             dReport.Schema = null;//we have only one table returning from the database.. 
             //wee need datetime in yyyy-MM-dd format.
             dReport.JsonData = JsonConvert.SerializeObject(dsIncomeSegReport.Tables[0],
@@ -1151,7 +1053,6 @@ namespace PulseLogicHMR.DalLayer
                 dReport.JsonData = JsonConvert.SerializeObject(dailyCollection,
                                                  new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd" });
                 return dReport;
-
 
             }
             return null;
@@ -1315,15 +1216,11 @@ namespace PulseLogicHMR.DalLayer
         //All IRD Invoice Details 
         public List<InvoiceDetailsModel> GetAllInvoiceDetails(DateTime fromDate, DateTime toDate)
         {
-            //var Data = Database.SqlQueryRaw<InvoiceDetailsModel>("exec SP_All_IRD_InvoiceDetails @FromDate,@ToDate",
-            //    new SqlParameter("@FromDate", fromDate), new SqlParameter("@ToDate", toDate)).ToList();
-            //return Data.ToList<InvoiceDetailsModel>();
 
             var Data = Database.SqlQueryRaw<InvoiceDetailsModel>("exec SP_All_IRD_InvoiceDetails @FromDate,@ToDate",
                 new SqlParameter("@FromDate", fromDate), new SqlParameter("@ToDate", toDate)).ToList();
             return Data.ToList<InvoiceDetailsModel>();
         }
-
 
         // IRD Pharmacy Invoice Details
         public List<PhrmInvoiceDetails> PhrmInvoiceDetails(DateTime FromDate, DateTime ToDate)
@@ -1333,7 +1230,6 @@ namespace PulseLogicHMR.DalLayer
             return Data.ToList<PhrmInvoiceDetails>();
 
         }
-
 
         //IRD - SQL Audit details
         public List<SqlAuditModel> SqlAuditDetails(DateTime FromDate, DateTime ToDate, string LogType)
@@ -1381,8 +1277,6 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
-
         #region BillReferralSummaryReport
         public DynamicReport Bill_ReferralSummary(DateTime FromDate, DateTime ToDate, bool? isExternal)
         {
@@ -1406,8 +1300,6 @@ namespace PulseLogicHMR.DalLayer
             return dReport;
         }
         #endregion
-
-
 
         #region Referral Item Summary
         public DynamicReport Bill_ReferralItemSumamry(DateTime FromDate, DateTime ToDate, int PrescriberId)
@@ -1433,7 +1325,6 @@ namespace PulseLogicHMR.DalLayer
             return dReport;
         }
         #endregion
-
 
         #region IncentiveSummaryReport
         public DynamicReport INCTV_DoctorSummary(DateTime FromDate, DateTime ToDate, Boolean IsRefferalOnly)
@@ -1565,7 +1456,6 @@ namespace PulseLogicHMR.DalLayer
             return dReport;
         }
         #endregion
-
 
         public DataTable PoliceCaseReport(DateTime FromDate, DateTime ToDate)
         {
@@ -1703,7 +1593,6 @@ namespace PulseLogicHMR.DalLayer
             return dReport;
         }
         #endregion
-
 
         #region radiology film count report.
         public DataTable GetFilmCountReport(DateTime fromdate, DateTime todate)
@@ -1844,7 +1733,6 @@ namespace PulseLogicHMR.DalLayer
 
         }
         #endregion
-
 
         #region SchemeDetailInvoiceReport
         public DataTable SchemeDetailInvoiceReport(string fromDate, string toDate, string memberships, string ranks, string users)
@@ -2047,6 +1935,4 @@ namespace PulseLogicHMR.DalLayer
         #endregion
     }
 }
-
-
 
