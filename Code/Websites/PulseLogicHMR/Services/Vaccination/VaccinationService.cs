@@ -125,8 +125,6 @@ namespace PulseLogicHMR.Services.Vaccination
             //add case
             if (patient.PatientId == 0)
             {
-                //var membership = vaccinationDbContext.Schemes.Where(i => i.SchemeName == "General").FirstOrDefault();
-                //patient.MembershipTypeId = membership.SchemeId;
                 patient.VaccinationRegNo = vaccRegdNum;
 
                 patient.IsActive = true;
@@ -134,13 +132,6 @@ namespace PulseLogicHMR.Services.Vaccination
                 patient.IsVaccinationActive = true;//sud:2-Oct'21--earlier this value wasn't saved in create..
                 patient.VaccinationFiscalYearId = fiscalYearId;
 
-                //patient.MembershipTypeId = membership.SchemeId;
-                patient.VaccinationRegNo = vaccRegdNum;
-
-                patient.IsActive = true;
-                patient.IsVaccinationPatient = true;
-                patient.IsVaccinationActive = true;
-                patient.VaccinationFiscalYearId = fiscalYearId;
                 tempPat = CreatePatientAndSave(vaccinationDbContext, patient);  //Krishna,18th,Jul'22 , This function will register a patient(handling duplictae PatientNo i.e. It will be recursive until the unique PatientNo is received.)
                 //After the patient is added we need to create a new visit against Immunization department..
 
@@ -154,11 +145,6 @@ namespace PulseLogicHMR.Services.Vaccination
             {
                 var selectedPat = vaccinationDbContext.Patients.Where(p => (p.PatientId == patient.PatientId)).FirstOrDefault();
                 vaccinationDbContext.Patients.Attach(selectedPat);
-                //if (!selectedPat.MembershipTypeId.HasValue || (selectedPat.MembershipTypeId == 0))
-                //{
-                //    var membership = vaccinationDbContext.Schemes.Where(i => i.SchemeName == "General").FirstOrDefault();
-                //    selectedPat.MembershipTypeId = membership.SchemeId;
-                //}
                 if ((!selectedPat.VaccinationRegNo.HasValue || (selectedPat.VaccinationRegNo == 0)) || !isVaccAutoIncreamentOfRegNumEnabled)
                 {
                     selectedPat.VaccinationRegNo = vaccRegdNum;
