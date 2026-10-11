@@ -523,7 +523,6 @@ namespace PulseLogicHMR.Services.SSF
                 var claimBookingObj = PrepareClaimBooking(claimBooking_DTO);
                 var jsonContent = JsonConvert.SerializeObject(claimBookingObj);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                //var response = await client.PostAsync($"BookingService/", content);
                 var response = await client.PostAsync(ENUM_SSF_ApiEndPoints.BookingService, content);
                 var result = "";
                 var errorResult = new ErrorRoot();
