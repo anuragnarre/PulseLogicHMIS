@@ -537,21 +537,29 @@ namespace PulseLogicHMR.Controllers
 
         private static void UpdateReceivedQuantityInRequisitionItems(int DispatchId, InventoryDbContext db)
         {
-            var modifiedRequisitionItems = new List<RequisitionItemsModel>(); // to Collect modified items
             var dispatchItems = db.DispatchItems.Where(d => d.DispatchId == DispatchId).ToList();
-            if (dispatchItems != null)
+            if (dispatchItems != null && dispatchItems.Any())
             {
-                dispatchItems.ForEach(d =>
+                var reqItemPairs = dispatchItems.Select(d => new { d.RequisitionId, d.RequisitionItemId }).ToList();
+                var reqIds = reqItemPairs.Select(p => p.RequisitionId).Distinct().ToList();
+                var itemIds = reqItemPairs.Select(p => p.RequisitionItemId).Distinct().ToList();
+
+                var requisitionItems = db.RequisitionItems
+                    .Where(r => r.RequisitionId.HasValue && reqIds.Contains(r.RequisitionId.Value) && itemIds.Contains(r.RequisitionItemId))
+                    .ToList();
+
+                var reqItemsMap = requisitionItems
+                    .GroupBy(r => new { r.RequisitionId, r.RequisitionItemId })
+                    .ToDictionary(g => g.Key, g => g.First());
+
+                foreach (var d in dispatchItems)
                 {
-                    var requisitionItem = db.RequisitionItems.Where(r => r.RequisitionId == d.RequisitionId && r.RequisitionItemId == d.RequisitionItemId).FirstOrDefault();
-                    requisitionItem.ReceivedQuantity = (requisitionItem.ReceivedQuantity + d.DispatchedQuantity) ?? 0;
-                    modifiedRequisitionItems.Add(requisitionItem); // Collect modified item
-                });
-            }
-            // Perform a bulk update for all modified requisitionItem entities
-            foreach (var requisitionItem in modifiedRequisitionItems)
-            {
-                db.Entry(requisitionItem).State = EntityState.Modified;
+                    var key = new { RequisitionId = (int?)d.RequisitionId, RequisitionItemId = d.RequisitionItemId };
+                    if (reqItemsMap.TryGetValue(key, out var requisitionItem))
+                    {
+                        requisitionItem.ReceivedQuantity = (requisitionItem.ReceivedQuantity + d.DispatchedQuantity) ?? 0;
+                    }
+                }
             }
             db.SaveChanges();
         }
