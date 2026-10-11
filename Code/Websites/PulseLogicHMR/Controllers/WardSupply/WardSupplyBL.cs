@@ -423,6 +423,7 @@ namespace PulseLogicHMR.Controllers
             var currentDate = DateTime.Now;
             var stockList = db.StoreStocks.Include(s => s.StockMaster).Where(stock => stock.ItemId == consumption.ItemId && stock.StoreId == consumption.StoreId && stock.AvailableQuantity > 0 && stock.IsActive == true).ToList();
             var totalConsumeQty = consumption.ConsumeQuantity;
+            var fiscalYearId = GetCurrentInvFiscalYear(db).FiscalYearId;
             foreach (var stock in stockList)
             {
                 if (stock.AvailableQuantity < totalConsumeQty)
@@ -435,11 +436,10 @@ namespace PulseLogicHMR.Controllers
                         currentDate: currentDate,
                         referenceNo: consumption.ConsumptionId,
                         createdBy: currentUser.EmployeeId,
-                        fiscalYearId: GetCurrentInvFiscalYear(db).FiscalYearId,
+                        fiscalYearId: fiscalYearId,
                         needConfirmation: false
                         );
                     totalConsumeQty -= consumeQty;
-                    db.SaveChanges();
                 }
                 else
                 {
@@ -450,16 +450,16 @@ namespace PulseLogicHMR.Controllers
                         currentDate: currentDate,
                         referenceNo: consumption.ConsumptionId,
                         createdBy: currentUser.EmployeeId,
-                        fiscalYearId: GetCurrentInvFiscalYear(db).FiscalYearId,
+                        fiscalYearId: fiscalYearId,
                         needConfirmation: false
 
                         );
                     totalConsumeQty = 0;
-                    db.SaveChanges();
                     break;
                 }
 
             }
+            db.SaveChanges();
         }
         public static InventoryFiscalYear GetCurrentInvFiscalYear(WardSupplyDbContext db, DateTime? DecidingDate = null)
         {
