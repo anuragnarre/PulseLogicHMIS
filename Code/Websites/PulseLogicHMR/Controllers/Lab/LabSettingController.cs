@@ -435,9 +435,9 @@ namespace PulseLogicHMR.Controllers
                             component.CreatedOn = System.DateTime.Now;
                             component.LabTestId = labTest.LabTestId;
 
-                            _labDbContext.LabTestComponentMap.Add(component);
-                            _labDbContext.SaveChanges();
                         }
+                        _labDbContext.LabTestComponentMap.AddRange(labComponentMapList);
+                        _labDbContext.SaveChanges();
                     }
 
                     _labDbContext.LabTests.Attach(labTest);
