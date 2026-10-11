@@ -104,13 +104,6 @@ namespace PulseLogicHMR.Services.LIS
 
         public IEnumerable<ComponentMasterToMap> GetAllNotMappedDataByMachineId(int id, int? slectedMapId)
         {
-            //int selMapId = slectedMapId.HasValue ? slectedMapId.Value : 0;
-            //var compList = lisDbContext.LabTestComponents.AsNoTracking().AsEnumerable(); // components master table
-            //var mappedCompList = lisDbContext.LISComponentMap.AsNoTracking().AsEnumerable();
-            //var dataTemp = (from comp in compList
-            //                join mappedComp in mappedCompList on comp.ComponentId equals mappedComp.ComponentId
-            //                where mappedComp.IsActive && (mappedComp.MachineId == id) && ((mappedComp.LISComponentMapId != selMapId))
-            //                select comp.ComponentId).ToList();
             var dataToReturn = lisDbContext.LabTestComponents.AsNoTracking().Select(comp => 
                                 new ComponentMasterToMap
                                 {
