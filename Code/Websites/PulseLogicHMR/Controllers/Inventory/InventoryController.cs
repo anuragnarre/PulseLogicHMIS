@@ -3350,7 +3350,7 @@ namespace PulseLogicHMR.Controllers
             //check if verification enabled
             poFromClient.VerifierIds = (poFromClient.IsVerificationEnabled == true) ? InventoryBL.SerializeProcurementVerifiers(poFromClient.VerifierList) : "";
             poFromClient.FiscalYearId = InventoryBL.GetFiscalYear(_inventoryDbContext).FiscalYearId;
-            poFromClient.PONumber = _receiptNumberService.GeneratePurchaseOrderNumber(poFromClient.FiscalYearId, poFromClient.POGroupId);
+
             poFromClient.CreatedBy = currentUser.EmployeeId;
             _inventoryDbContext.PurchaseOrders.Add(poFromClient);
             _inventoryDbContext.SaveChanges();

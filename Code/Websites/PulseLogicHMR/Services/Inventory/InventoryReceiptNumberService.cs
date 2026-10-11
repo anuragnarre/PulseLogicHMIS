@@ -104,16 +104,6 @@ namespace PulseLogicHMR.Services
             return ++goodreceiptnumber;
         }
 
-
-        //To generate purchase order number according to the fiscal year.
-        public int GeneratePurchaseOrderNumber(int? fiscalYearId, int? POGroupId)
-        {
-            int poNumber = (from invtxn in db.PurchaseOrders
-                            where invtxn.FiscalYearId == fiscalYearId && invtxn.POGroupId == POGroupId
-                            select invtxn.PONumber ?? 0).DefaultIfEmpty(0).Max();
-            return ++poNumber;
-        }
-
         //To generate RequestForQuotationNumber according to the fiscal year.
         public int GenerateRequestForQuotationNumber(int? fiscalYearId, int? RFQGroupId)
         {
