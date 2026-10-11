@@ -62,14 +62,10 @@ namespace PulseLogicHMR.ServerModel
         public int StoreId { get; set; }
         [NotMapped]
         public string OrderFromStoreName { get; set; }
-
-        /// <summary>
-        /// TODO: Implement PurchaseOrderNo generation. <!--Remove after implemented-->
-        /// Maintains sequence for PurchaseOrderNo  
-        /// </summary>
         public int? POGroupId { get; set; }
 
         public int? FiscalYearId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int? PONumber { get; set; }
         //below fields are added by Rohit&Ramesh for Imark Internal Inventory use;
         public string ReferenceNo { get; set; }

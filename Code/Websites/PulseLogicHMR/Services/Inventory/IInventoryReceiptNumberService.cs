@@ -49,7 +49,7 @@ namespace PulseLogicHMR.Services
         /// <returns>latest (max+1) GR Number</returns>
         int GenerateGRN(DateTime? GoodsReceiptDate, int? GRGroupId);
 
-        int GeneratePurchaseOrderNumber(int? fiscalYearId, int? POGroupId);
+
         int GenerateRequestForQuotationNumber(int? fiscalYearId, int? RFQGroupId);
 
         int GenerateQuotationNumber(int? fiscalYearId, int? RFQGroupId);
