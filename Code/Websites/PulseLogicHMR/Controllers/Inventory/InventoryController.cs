@@ -3769,9 +3769,12 @@ namespace PulseLogicHMR.Controllers
                         //for deleting old element
                         if (POItmIdList.Any())
                         {
-                            foreach (int poitmid in POItmIdList)
+                            var itemsToCancel = _inventoryDbContext.PurchaseOrderItems
+                                .Where(x => POItmIdList.Contains(x.PurchaseOrderItemId))
+                                .ToList();
+
+                            foreach (var poitm in itemsToCancel)
                             {
-                                var poitm = _inventoryDbContext.PurchaseOrderItems.Find(poitmid);
                                 poitm.IsActive = false;
                                 poitm.POItemStatus = "cancelled";
                                 poitm.ModifiedBy = currentUser.EmployeeId;
