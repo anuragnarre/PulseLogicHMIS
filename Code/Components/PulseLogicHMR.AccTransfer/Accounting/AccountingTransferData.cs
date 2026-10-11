@@ -785,6 +785,7 @@ namespace PulseLogicHMR.AccTransfer
                         Hashtable allReferenceIdWithTypeList = new Hashtable();
                         List<AccountingReferenceTypeViewModel> AllReferenceIds = new List<AccountingReferenceTypeViewModel>();
                         string refBillingSyncIds = "";
+                        List<AccountingTransactionHistoryModel> syncHistoryList = new List<AccountingTransactionHistoryModel>();
                         if (Transaction.Count > 0)
                         {
                             var isGroupbyData = accountingDBContext.CFGParameters.Where(a => a.ParameterGroupName == "Accounting" && a.ParameterName == "IsAllowGroupby").FirstOrDefault().ParameterValue;
@@ -856,8 +857,7 @@ namespace PulseLogicHMR.AccTransfer
                                         ToSynce.SyncedBy = txn.CreatedBy;
                                         ToSynce.SectionId = txn.SectionId;
                                         ToSynce.TransactionType = txn.TransactionType;
-                                        accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                        accountingDBContext.SaveChanges();
+                                        syncHistoryList.Add(ToSynce);
 
                                         for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                         {
@@ -876,6 +876,11 @@ namespace PulseLogicHMR.AccTransfer
                                         }
                                    }
                                 });
+                                if (syncHistoryList.Count > 0)
+                                {
+                                    accountingDBContext.AccountingTransactionHistory.AddRange(syncHistoryList);
+                                    syncHistoryList.Clear();
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
@@ -952,8 +957,7 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SyncedBy = txn.CreatedBy;
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
-                                    accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
+                                    syncHistoryList.Add(ToSynce);
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
@@ -969,6 +973,11 @@ namespace PulseLogicHMR.AccTransfer
                                         }
                                     }
                                 });
+                                if (syncHistoryList.Count > 0)
+                                {
+                                    accountingDBContext.AccountingTransactionHistory.AddRange(syncHistoryList);
+                                    syncHistoryList.Clear();
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
@@ -1038,8 +1047,7 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SyncedBy = txn.CreatedBy;
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
-                                    accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
+                                    syncHistoryList.Add(ToSynce);
 
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
@@ -1056,6 +1064,11 @@ namespace PulseLogicHMR.AccTransfer
                                         }
                                     }
                                 });
+                                if (syncHistoryList.Count > 0)
+                                {
+                                    accountingDBContext.AccountingTransactionHistory.AddRange(syncHistoryList);
+                                    syncHistoryList.Clear();
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
@@ -1124,8 +1137,7 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SyncedBy = txn.CreatedBy;
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
-                                    accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
+                                    syncHistoryList.Add(ToSynce);
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
@@ -1141,6 +1153,11 @@ namespace PulseLogicHMR.AccTransfer
                                         }
                                     }
                                 });
+                                if (syncHistoryList.Count > 0)
+                                {
+                                    accountingDBContext.AccountingTransactionHistory.AddRange(syncHistoryList);
+                                    syncHistoryList.Clear();
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
