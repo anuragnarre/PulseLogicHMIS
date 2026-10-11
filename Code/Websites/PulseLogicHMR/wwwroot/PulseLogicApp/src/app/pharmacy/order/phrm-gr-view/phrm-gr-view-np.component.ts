@@ -44,7 +44,6 @@ export class PhrmGRViewNpComponent implements OnInit, OnDestroy {
             this.showPrint = false;
       }
       Close() {
-            //TODO: Close the pop up and throw the output event to the parent component
             this.showPopUp = false;
             //this.currentGR = null;
             this.popUpCloseEvent.emit();
