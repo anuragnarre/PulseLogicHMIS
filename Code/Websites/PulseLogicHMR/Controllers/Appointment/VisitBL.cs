@@ -479,18 +479,24 @@ namespace PulseLogicHMR.Controllers
         public static int CreateNewPatientQueueNo(VisitDbContext visitDbContext, int visitId, string con)
         {
             int QueueNo;
-            SqlConnection newCon = new SqlConnection(con);
-            newCon.Open();
-            DataSet ds = new DataSet();
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = newCon;
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "SP_VISIT_SetNGetQueueNo";
-            cmd.Parameters.Add(new SqlParameter("@VisitId", visitId));
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            adapter.Fill(ds);
-            newCon.Close();
-            QueueNo = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+            using (SqlConnection newCon = new SqlConnection(con))
+            {
+                newCon.Open();
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = newCon;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "SP_VISIT_SetNGetQueueNo";
+                    cmd.Parameters.AddWithValue("@VisitId", visitId);
+
+                    DataSet ds = new DataSet();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(ds);
+                    }
+                    QueueNo = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+                }
+            }
             //DataTable dt = DALFunctions.GetDataTableFromStoredProc("SP_VISIT_SetNGetQueueNo", new List<SqlParameter>()
             //{  new SqlParameter("@VisitId", visitId)}, visitDbContext);
 
