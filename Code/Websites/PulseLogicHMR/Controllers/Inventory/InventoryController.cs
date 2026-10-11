@@ -2963,16 +2963,24 @@ namespace PulseLogicHMR.Controllers
                         }
                         else
                         {
-                            foreach (var qItems in quotation.quotationItems)
+                            var updateItems = quotation.quotationItems.Where(q => q.QuotationItemId > 0).ToList();
+                            if (updateItems.Any())
                             {
-                                if (qItems.QuotationItemId > 0)
+                                var itemIds = updateItems.Select(q => q.QuotationItemId).ToList();
+                                var dbItems = _inventoryDbContext.QuotationItems
+                                    .Where(qi => itemIds.Contains(qi.QuotationItemId))
+                                    .ToDictionary(qi => qi.QuotationItemId);
+
+                                foreach (var qItem in updateItems)
                                 {
-                                    var quotationItems = _inventoryDbContext.QuotationItems.Find(qItems.QuotationItemId);
-                                    quotationItems.ModifiedBy = currentUser.EmployeeId;
-                                    quotationItems.ModifiedOn = currentDate;
-                                    quotationItems.Price = qItems.Price;
-                                    _inventoryDbContext.SaveChanges();
+                                    if (dbItems.TryGetValue(qItem.QuotationItemId, out var quotationItem))
+                                    {
+                                        quotationItem.ModifiedBy = currentUser.EmployeeId;
+                                        quotationItem.ModifiedOn = currentDate;
+                                        quotationItem.Price = qItem.Price;
+                                    }
                                 }
+                                _inventoryDbContext.SaveChanges();
                             }
                         }
 
