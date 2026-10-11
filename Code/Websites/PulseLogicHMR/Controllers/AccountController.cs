@@ -335,8 +335,10 @@ namespace PulseLogicHMR.Controllers
                 LoginViewModel newLogin = new LoginViewModel();
                 return View("PageNotFound");
             }
-            catch (Exception ex)
-            { throw ; }
+            catch (Exception)
+            {
+                return View("PageNotFound");
+            }
         }
         public IActionResult ForgotPassword()
         {
@@ -425,7 +427,8 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                // We should log this, but since there is no injected logger in this controller, we will just suppress it to prevent stack trace leaks
+                Console.WriteLine("Error setting session variables: " + ex.Message);
             }
         }
         #endregion
@@ -478,7 +481,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                throw ;
+                Console.WriteLine("Error setting remember me cookie: " + ex.Message);
             }
         }
         #endregion
