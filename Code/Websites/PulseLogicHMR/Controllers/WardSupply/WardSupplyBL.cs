@@ -397,13 +397,13 @@ namespace PulseLogicHMR.Controllers
                                 }
                                 wardSupplyDbContext.PHRMStockTransactions.Add(mainStoreStockTxn);
                                 wardSupplyDbContext.PHRMStockTransactions.Add(subStoreStockTxn);
-                                wardSupplyDbContext.SaveChanges();
 
                                 if (remainingQty == 0)
                                 {
                                     break; //it takes out of the foreach loop. 
                                 }
                             }
+                            wardSupplyDbContext.SaveChanges();
                         }
 
                     dbContextTransaction.Commit();
