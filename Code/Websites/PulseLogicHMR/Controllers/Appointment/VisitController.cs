@@ -581,7 +581,7 @@ namespace PulseLogicHMR.Controllers
                         catch (Exception ex)
                         {
                             visitDbTransaction.Rollback();
-                            throw new Exception(ex.Message + " exception details:" + ex.ToString());
+                            throw new Exception("An error occurred while processing the request.");
                         }
                     }
                 }
@@ -655,7 +655,7 @@ namespace PulseLogicHMR.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                Console.WriteLine("An error occurred while getting department name.");
             }
             return null;
         }
@@ -696,7 +696,7 @@ namespace PulseLogicHMR.Controllers
                             //responseData.ErrorMessage = ex.Message + " exception details:" + ex.ToString();
                             //responseData.Status = "Failed";
                             visitDbTransaction.Rollback();
-                            throw new Exception(ex.Message + " exception details:" + ex.ToString());
+                            throw new Exception("An error occurred while processing the request.");
 
                         }
                     }
@@ -769,7 +769,7 @@ namespace PulseLogicHMR.Controllers
                 return clientPat;
 
             }
-            catch (Exception ex) { throw ; }
+            catch (Exception) { throw; }
         }
 
         private PatientModel CreateOPBillingPatient(VisitDbContext visitDbContext, PatientModel clientPat, string connString)
@@ -897,7 +897,7 @@ namespace PulseLogicHMR.Controllers
                 return currVisit;
 
             }
-            catch (Exception ex) { throw ; }
+            catch (Exception) { throw; }
         }
 
         private static Int64? GenerateClaimCode(VisitDbContext visitDbContext, int currPatientId, PatientModel patient)
@@ -989,7 +989,7 @@ namespace PulseLogicHMR.Controllers
             catch (Exception ex)
             {
                 responseData.Status = ENUM_PulseLogicHttpResponseText.Failed;
-                responseData.ErrorMessage = ex.Message.ToString();
+                responseData.ErrorMessage = "An error occurred while processing the request.";
             }
             return Ok(responseData);
         }
@@ -1020,7 +1020,7 @@ namespace PulseLogicHMR.Controllers
             catch (Exception ex)
             {
                 responseData.Status = "Failed";
-                responseData.ErrorMessage = ex.Message.ToString();
+                responseData.ErrorMessage = "An error occurred while processing the request.";
             }
             return Ok(responseData);
         }
@@ -1290,7 +1290,7 @@ namespace PulseLogicHMR.Controllers
                         catch (Exception ex)
                         {
                             visitDbTransaction.Rollback();
-                            throw new Exception(ex.Message + " exception details:" + ex.ToString());
+                            throw new Exception("An error occurred while processing the request.");
                         }
                     }
                 }
@@ -1319,7 +1319,7 @@ namespace PulseLogicHMR.Controllers
             catch (Exception ex)
             {
                 responseData.Status = "Failed";
-                responseData.ErrorMessage = ex.Message.ToString();
+                responseData.ErrorMessage = "An error occurred while processing the request.";
             }
             return Ok(responseData);
         }
