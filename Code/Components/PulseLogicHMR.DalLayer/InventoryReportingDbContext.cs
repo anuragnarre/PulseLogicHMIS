@@ -37,7 +37,6 @@ namespace PulseLogicHMR.DalLayer
                   new SqlParameter("@ItemName", DBNull.Value)).ToList();
                 return Data.ToList<CurrentStockLevel>();
 
-
             }
             else
             {
@@ -139,24 +138,12 @@ namespace PulseLogicHMR.DalLayer
         #region Purchase Order report
         public List<PurchaseOrderModel> PurchaseOrderReport(DateTime FromDate, DateTime ToDate, object StoreId)
         {
-            //if (OrderNumber == 0)
-            //{
             var Data = Database.SqlQueryRaw<PurchaseOrderModel>("exec SP_Report_Inventory_PurchaseOrderSummeryReport @FromDate,@ToDate,@StoreId",
         new SqlParameter("@FromDate", FromDate),
         new SqlParameter("@ToDate", ToDate),
         new SqlParameter("@StoreId", (StoreId != null ? StoreId : DBNull.Value))
         ).ToList();
             return Data.ToList<PurchaseOrderModel>();
-            //}
-            //else
-            //{
-            //    var Data = Database.SqlQueryRaw<PurchaseOrderModel>("exec SP_Report_Inventory_PurchaseOrderSummeryReport @FromDate,@ToDate,@OrderNumber",
-            //    new SqlParameter("@FromDate", FromDate),
-            //    new SqlParameter("@ToDate", ToDate),
-            //    new SqlParameter("@OrderNumber", OrderNumber)
-            //    ).ToList();
-            //    return Data.ToList<PurchaseOrderModel>();
-            //}
 
         }
         #endregion
@@ -198,7 +185,6 @@ namespace PulseLogicHMR.DalLayer
         #region Inventory Summary Report
         public DataTable InventorySummaryReport(DateTime FromDate, DateTime ToDate, int FiscalYearId, int? StoreId)
         {
-
 
             List<SqlParameter> paramList = new List<SqlParameter>() {
                                                                 new SqlParameter("@FromDate", FromDate),
@@ -245,7 +231,6 @@ namespace PulseLogicHMR.DalLayer
             ).ToList();
             return Data.ToList<FixedAssetsModel>();
 
-
         }
         #endregion
 
@@ -262,14 +247,12 @@ namespace PulseLogicHMR.DalLayer
             ).ToList();
             return Data.ToList<FixedAssetsMovementModel>();
 
-
         }
         #endregion
 
         #region Depatment Detail Stock Ledger Report
         public List<DetailStockLedgerModel> DepartmentDetailStockLedgerReport(DateTime FromDate, DateTime ToDate, int? ItemId, int selectedStoreId)
         {
-            //var uptoDateTimeStr = UpToDate.ToString("yyyy-MM-dd");
             var Data = Database.SqlQueryRaw<DetailStockLedgerModel>("exec SP_Report_Inventory_DetailedStockLedger @FromDate,@ToDate,@ItemId,@StoreId",
             new SqlParameter("@FromDate", FromDate),
             new SqlParameter("@ToDate", ToDate),
@@ -278,7 +261,6 @@ namespace PulseLogicHMR.DalLayer
             ).ToList();
 
             return Data.ToList<DetailStockLedgerModel>();
-
 
         }
         #endregion
@@ -411,7 +393,6 @@ namespace PulseLogicHMR.DalLayer
             List<SqlParameter> paramList = new List<SqlParameter>() {
                  new SqlParameter("@fiscalYearId", fiscalYearId),
                 new SqlParameter("@VendorId", VendorId),
-                 //new SqlParameter("@Status", Status)
             };
 
             foreach (SqlParameter parameter in paramList)
@@ -432,7 +413,6 @@ namespace PulseLogicHMR.DalLayer
             List<SqlParameter> paramList = new List<SqlParameter>() {
                 new SqlParameter("@fiscalYearId", fiscalYearId),
                 new SqlParameter("@VendorId", VendorId),
-                 //new SqlParameter("@Status", Status)
             };
 
             foreach (SqlParameter parameter in paramList)
@@ -610,6 +590,4 @@ namespace PulseLogicHMR.DalLayer
     }
 
 }
-
-
 

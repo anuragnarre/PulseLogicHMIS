@@ -71,7 +71,6 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
         #region Deposit Balance Report
         public DataTable PHRMDepositBalanceReport()
         {
@@ -107,24 +106,7 @@ namespace PulseLogicHMR.DalLayer
         #endregion
 
         #region PHRM UserwiseCollection DataTable
-        //public DataTable PHRMUserwiseCollectionReport(DateTime FromDate, DateTime ToDate)
-        //{
-        //    List<SqlParameter> paramList = new List<SqlParameter>() {
-        //        new SqlParameter("@FromDate", FromDate),
-        //         new SqlParameter("@ToDate", ToDate)
-        //    };
 
-        //    foreach (SqlParameter parameter in paramList)
-        //    {
-        //        if (parameter.Value == null)
-        //        {
-        //            parameter.Value = "";
-
-        //        }
-        //    }
-        //    DataTable stockItems = DALFunctions.GetDataTableFromStoredProc("SP_PHRM_UserwiseCollectionReport", paramList, this);
-        //    return stockItems;
-        //}
         public DynamicReport PHRMUserwiseCollectionReport(DateTime FromDate, DateTime ToDate, string CounterId, string CreatedBy, int? StoreId)
         {
             List<SqlParameter> paramList = new List<SqlParameter>() {
@@ -161,14 +143,6 @@ namespace PulseLogicHMR.DalLayer
                   new SqlParameter("@StoreId", StoreId)
             };
 
-            //foreach (SqlParameter parameter in paramList)
-            //{
-            //    if (parameter.Value == null)
-            //    {
-            //        parameter.Value = "";
-
-            //    }
-            //}
             DataTable stockItems = DALFunctions.GetDataTableFromStoredProc("SP_PHRM_CashCollectionSummaryReport", paramList, this);
             return stockItems;
         }
@@ -194,7 +168,6 @@ namespace PulseLogicHMR.DalLayer
             return stockItems;
         }
         #endregion
-
 
         #region PHRM Counterwise Collection DataTable
         public DataTable PHRMCunterwiseCollectionReport(DateTime FromDate, DateTime ToDate)
@@ -233,7 +206,6 @@ namespace PulseLogicHMR.DalLayer
             return itemWiseSalesData;
         }
         #endregion
-
 
         #region PHRM Breakage Items DataTable
         public DataTable PHRMBreakageItemReport(DateTime FromDate, DateTime ToDate)
@@ -298,7 +270,6 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
         #region PHRM Return To Dispensary DataTable
         public DataTable PHRMTransferToDispensaryReport(DateTime FromDate, DateTime ToDate)
         {
@@ -359,7 +330,6 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
         #region PHRM Credit InOut Patient Report        
         public DataTable PHRMCreditInOutPatReport(DateTime FromDate, DateTime ToDate, bool IsInOutPat, string patientName)
         {
@@ -367,9 +337,7 @@ namespace PulseLogicHMR.DalLayer
                 new SqlParameter("@FromDate", FromDate),
                  new SqlParameter("@ToDate", ToDate),
                 new SqlParameter("@IsInOutPat", IsInOutPat)
-                //new SqlParameter("@patientName", patientName)
             };
-
 
             foreach (SqlParameter parameter in paramList)
             {
@@ -384,12 +352,10 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
         #region PHRM Supplier Stock Summary Report        
         public DataTable PHRMSupplierStockSummaryReport(string SupplierName)
         {
             List<SqlParameter> paramList = new List<SqlParameter>() { new SqlParameter("@SupplierName", SupplierName) };
-
 
             foreach (SqlParameter parameter in paramList)
             {
@@ -426,7 +392,6 @@ namespace PulseLogicHMR.DalLayer
         {
             List<SqlParameter> paramList = new List<SqlParameter>() { new SqlParameter("@ItemName", ItemName) };
 
-
             foreach (SqlParameter parameter in paramList)
             {
                 if (parameter.Value == null)
@@ -444,7 +409,6 @@ namespace PulseLogicHMR.DalLayer
         public DataTable PHRMBatchStockReport(string ItemName)
         {
             List<SqlParameter> paramList = new List<SqlParameter>() { new SqlParameter("@ItemName", ItemName) };
-
 
             foreach (SqlParameter parameter in paramList)
             {
@@ -496,7 +460,6 @@ namespace PulseLogicHMR.DalLayer
         {
             List<SqlParameter> paramList = new List<SqlParameter>() { new SqlParameter("@ItemName", ItemName) };
 
-
             foreach (SqlParameter parameter in paramList)
             {
                 if (parameter.Value == null)
@@ -542,7 +505,6 @@ namespace PulseLogicHMR.DalLayer
                 new SqlParameter("@toDate",ToDate)
             };
 
-
             foreach (SqlParameter parameter in paramList)
             {
                 if (parameter.Value == null)
@@ -560,7 +522,6 @@ namespace PulseLogicHMR.DalLayer
         public DataTable PHRMEndingStockSummaryReport(string ItemName)
         {
             List<SqlParameter> paramList = new List<SqlParameter>() { new SqlParameter("@ItemName", ItemName) };
-
 
             foreach (SqlParameter parameter in paramList)
             {
@@ -626,14 +587,7 @@ namespace PulseLogicHMR.DalLayer
                 new SqlParameter("@FiscalYearId", FiscalYearId),
                 new SqlParameter("@StoreId", (Object)StoreId ?? DBNull.Value)
              };
-            //foreach (SqlParameter parameter in paramList)
-            //{
-            //    if (parameter.Value == null)
-            //    {
-            //        parameter.Value = null;
 
-            //    }
-            //}
             DataTable StkSummary = DALFunctions.GetDataTableFromStoredProc("SP_PHRM_RPT_GetStockSummary", paramList, this);
             return StkSummary;
         }
@@ -753,7 +707,6 @@ namespace PulseLogicHMR.DalLayer
         #region Sales Statement Report
         public DataTable SalesStatementReport(DateTime FromDate, DateTime ToDate)
         {
-            //var ToDatePlusOne = ToDate.AddDays(1);//sud:12ul'22--No need to add 1 day. In SP, Convert DATETIME -> DATE and Compare the Date.
             List<SqlParameter> paramList = new List<SqlParameter>()
             {
                 new SqlParameter("@FromDate",FromDate),
@@ -767,7 +720,6 @@ namespace PulseLogicHMR.DalLayer
         #region Insurance Patient Bima Report
         public DataTable InsurancePatientBimaReport(DateTime FromDate, DateTime ToDate, int? CounterId, int? UserId, Int64? ClaimCode, string NSHINumber)
         {
-            //var ToDatePlusOne = ToDate.AddDays(1);//sud:12ul'22--No need to add 1 day. In SP, Convert DATETIME -> DATE and Compare the Date.
             List<SqlParameter> paramList = new List<SqlParameter>()
             {
                 new SqlParameter("@FromDate",FromDate),
@@ -785,7 +737,6 @@ namespace PulseLogicHMR.DalLayer
         #region PatientSalesDetailReport
         public DataTable PatientSalesDetailReport(DateTime FromDate, DateTime ToDate, int? PatientId, int? CounterId, int? UserId, int? StoreId)
         {
-            //var ToDatePlusOne = ToDate.AddDays(1);//sud:12ul'22--No need to add 1 day. In SP, Convert DATETIME -> DATE and Compare the Date.
             List<SqlParameter> paramList = new List<SqlParameter>()
             {
                 new SqlParameter("@FromDate",FromDate),
@@ -803,7 +754,6 @@ namespace PulseLogicHMR.DalLayer
         #region Sales Summary Report
         public DataTable SalesSummaryReport(DateTime FromDate, DateTime ToDate)
         {
-            //var ToDatePlusOne = ToDate.AddDays(1);//sud:12ul'22--No need to add 1 day. In SP, Convert DATETIME -> DATE and Compare the Date.
             List<SqlParameter> paramList = new List<SqlParameter>()
             {
                 new SqlParameter("@FromDate",FromDate),
@@ -841,11 +791,9 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
         #region Purchase Summary Report
         public DataTable PurchaseSummaryReport(DateTime FromDate, DateTime ToDate, int? StoreId)
         {
-            //var ToDatePlusOne = ToDate.AddDays(1);//sud:12ul'22--No need to add 1 day. In SP, Convert DATETIME -> DATE and Compare the Date.
             List<SqlParameter> paramList = new List<SqlParameter>()
             {
                 new SqlParameter("@FromDate",FromDate),
@@ -860,7 +808,6 @@ namespace PulseLogicHMR.DalLayer
         #region Stock Summary II Report
         public DataTable StockSummarySecondReport(DateTime TillDate)
         {
-            //var TillDatePlusOne = TillDate.AddDays(1);//sud:12ul'22--No need to add 1 day. In SP, Convert DATETIME -> DATE and Compare the Date.
             List<SqlParameter> paramList = new List<SqlParameter>()
             {
                 new SqlParameter("@TillDate",TillDate)
@@ -873,7 +820,6 @@ namespace PulseLogicHMR.DalLayer
         #region Stock Transfers Report
         public DataTable PHRMStockTransfersReport(DateTime FromDate, DateTime ToDate, int? itemId, int? sourceStoreId, int? targetStoreId, bool notReceivedStocks)
         {
-            //var ToDatePlusOne = ToDate.AddDays(1);//sud:12ul'22--No need to add 1 day. In SP, Convert DATETIME -> DATE and Compare the Date.
             List<SqlParameter> paramList = new List<SqlParameter>()
             {
                 new SqlParameter("@FromDate",FromDate),
@@ -959,9 +905,6 @@ namespace PulseLogicHMR.DalLayer
         }
         #endregion
 
-
     }
 }
-
-
 
