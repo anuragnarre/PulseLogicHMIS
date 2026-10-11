@@ -482,13 +482,15 @@ namespace PulseLogicHMR.Controllers
             SqlConnection newCon = new SqlConnection(con);
             newCon.Open();
             DataSet ds = new DataSet();
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = newCon;
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "SP_VISIT_SetNGetQueueNo";
-            cmd.Parameters.Add(new SqlParameter("@VisitId", visitId));
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            adapter.Fill(ds);
+            using (SqlCommand cmd = new SqlCommand("SP_VISIT_SetNGetQueueNo", newCon))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@VisitId", visitId));
+                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                {
+                    adapter.Fill(ds);
+                }
+            }
             newCon.Close();
             QueueNo = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
             //DataTable dt = DALFunctions.GetDataTableFromStoredProc("SP_VISIT_SetNGetQueueNo", new List<SqlParameter>()
@@ -848,7 +850,7 @@ namespace PulseLogicHMR.Controllers
 
         public static NewClaimCode_DTO GetLatestClaimCode(VisitDbContext visitDbContext,int schemeId)
         {
-            NewClaimCode_DTO newClaimObj = visitDbContext.Database.SqlQueryRaw<NewClaimCode_DTO>("SP_Claim_GenerateNewClaimCode" + " " + schemeId).FirstOrDefault();
+            NewClaimCode_DTO newClaimObj = visitDbContext.Database.SqlQueryRaw<NewClaimCode_DTO>("SP_Claim_GenerateNewClaimCode {0}", schemeId).FirstOrDefault();
             return newClaimObj;
         }
 
