@@ -53,7 +53,6 @@
     <TypeScriptCompile Remove="wwwroot\**" />
   </ItemGroup>-->
   <ItemGroup>
-    <None Include="App.config" />
     <None Update="Views\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
