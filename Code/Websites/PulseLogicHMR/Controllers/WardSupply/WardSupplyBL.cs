@@ -341,6 +341,9 @@ namespace PulseLogicHMR.Controllers
 
                             double remainingQty = newTransferedStock.DispachedQuantity ?? 0;
 
+                            var newStoreStocks = new List<PHRMStoreStockModel>();
+                            var newTransactions = new List<PHRMStockTransactionModel>();
+
                             foreach (var substoreStock in currentSubStoreStockList)
                             {
                                 var subStoreStockTxn = new PHRMStockTransactionModel(
@@ -358,9 +361,22 @@ namespace PulseLogicHMR.Controllers
 
                                 if (mainStoreStock == null)
                                 {
+                                    mainStoreStock = newStoreStocks.FirstOrDefault(s => s.StockId == substoreStock.StockId && s.StoreId == newDispatchItem.TargetStoreId);
+                                }
+
+                                bool isNewMainStoreStock = false;
+                                if (mainStoreStock == null)
+                                {
                                     mainStoreStock = new PHRMStoreStockModel(stockMaster: substoreStock.StockMaster, storeId: mainStoreId, quantity: 0, costPrice: substoreStock.StockMaster.CostPrice, salePrice: substoreStock.StockMaster.SalePrice);
 
                                     wardSupplyDbContext.StoreStock.Add(mainStoreStock);
+                                    newStoreStocks.Add(mainStoreStock);
+                                    isNewMainStoreStock = true;
+                                }
+
+                                if (isNewMainStoreStock)
+                                {
+                                    // SaveChanges is required because PHRMStockTransactionModel expects StoreStockId to be generated
                                     wardSupplyDbContext.SaveChanges();
                                 }
 
@@ -395,15 +411,17 @@ namespace PulseLogicHMR.Controllers
                                     mainStoreStockTxn.SetInOutQuantity(inQty: remainingQty, outQty: 0);
                                     remainingQty = 0;
                                 }
-                                wardSupplyDbContext.PHRMStockTransactions.Add(mainStoreStockTxn);
-                                wardSupplyDbContext.PHRMStockTransactions.Add(subStoreStockTxn);
-                                wardSupplyDbContext.SaveChanges();
+                                newTransactions.Add(mainStoreStockTxn);
+                                newTransactions.Add(subStoreStockTxn);
 
                                 if (remainingQty == 0)
                                 {
                                     break; //it takes out of the foreach loop. 
                                 }
                             }
+
+                            wardSupplyDbContext.PHRMStockTransactions.AddRange(newTransactions);
+                            wardSupplyDbContext.SaveChanges();
                         }
 
                     dbContextTransaction.Commit();
@@ -439,7 +457,6 @@ namespace PulseLogicHMR.Controllers
                         needConfirmation: false
                         );
                     totalConsumeQty -= consumeQty;
-                    db.SaveChanges();
                 }
                 else
                 {
@@ -455,11 +472,10 @@ namespace PulseLogicHMR.Controllers
 
                         );
                     totalConsumeQty = 0;
-                    db.SaveChanges();
                     break;
                 }
-
             }
+            db.SaveChanges();
         }
         public static InventoryFiscalYear GetCurrentInvFiscalYear(WardSupplyDbContext db, DateTime? DecidingDate = null)
         {
