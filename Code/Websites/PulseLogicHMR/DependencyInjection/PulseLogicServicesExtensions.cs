@@ -22,6 +22,7 @@ using PulseLogicHMR.Services.QueueManagement;
 using PulseLogicHMR.Services.SSF;
 using PulseLogicHMR.Services.Utilities;
 using PulseLogicHMR.Services.Vaccination;
+using PulseLogicHMR.Services.ABDM;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PulseLogicHMR.Core.Billing.PaymentGateway;
@@ -89,6 +90,7 @@ namespace PulseLogicHMR.DependencyInjection
             // Task 1 — Incentive module service (refactored from IncentiveController God Class)
             services.AddTransient<IIncentiveService, IncentiveService>();
 
+            services.AddTransient<IABDMService, ABDMService>();
             return services;
         }
     }
