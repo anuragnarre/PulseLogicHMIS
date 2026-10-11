@@ -857,7 +857,6 @@ namespace PulseLogicHMR.AccTransfer
                                         ToSynce.SectionId = txn.SectionId;
                                         ToSynce.TransactionType = txn.TransactionType;
                                         accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                        accountingDBContext.SaveChanges();
 
                                         for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                         {
@@ -953,7 +952,6 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
                                     accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
@@ -1039,7 +1037,6 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
                                     accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
 
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
@@ -1125,7 +1122,6 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
                                     accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
