@@ -815,6 +815,8 @@ namespace PulseLogicHMR.AccTransfer
                                 voucherNumberList.Add(obj);
                                 //voucherNumberList.Add(distinctVouchers[p].VoucherId, vNum);
                             }
+
+                            List<AccountingTransactionHistoryModel> accountingHistoryList = new List<AccountingTransactionHistoryModel>();
                             //for below line user can only transfer one type of voucher records                            
                             if (sectionId == 2)
                             {//billing                               
@@ -856,8 +858,7 @@ namespace PulseLogicHMR.AccTransfer
                                         ToSynce.SyncedBy = txn.CreatedBy;
                                         ToSynce.SectionId = txn.SectionId;
                                         ToSynce.TransactionType = txn.TransactionType;
-                                        accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                        accountingDBContext.SaveChanges();
+                                        accountingHistoryList.Add(ToSynce);
 
                                         for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                         {
@@ -952,8 +953,7 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SyncedBy = txn.CreatedBy;
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
-                                    accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
+                                    accountingHistoryList.Add(ToSynce);
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
@@ -1038,8 +1038,7 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SyncedBy = txn.CreatedBy;
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
-                                    accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
+                                    accountingHistoryList.Add(ToSynce);
 
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
@@ -1124,8 +1123,7 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SyncedBy = txn.CreatedBy;
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
-                                    accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
+                                    accountingHistoryList.Add(ToSynce);
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
@@ -1173,6 +1171,12 @@ namespace PulseLogicHMR.AccTransfer
                                 accountingDBContext.SaveChanges();
                             }
 
+
+                            if (accountingHistoryList.Count > 0)
+                            {
+                                accountingDBContext.AccountingTransactionHistory.AddRange(accountingHistoryList);
+                                accountingDBContext.SaveChanges();
+                            }
 
                             dbContextTransaction.Commit();
 
