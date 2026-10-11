@@ -486,14 +486,6 @@ namespace PulseLogicHMR.Services
 
                             if (item.StockId != null)
                             {
-                                // removed since gr Date edit feature is disabled
-                                //var PurchaseTxn = ENUM_INV_StockTransactionType.PurchaseItem;
-                                //var stkTxn = db.StockTransactions.FirstOrDefault(a => a.ReferenceNo == item.GoodsReceiptItemId && a.TransactionType == PurchaseTxn);
-                                //if (stkTxn != null)
-                                //{
-                                //    stkTxn.UpdateTransactionDate(item.GRItemDate);
-                                //}
-
                                 var stk = db.StockMasters.Find(item.StockId);
                                 stk.UpdateBatch(item.BatchNO, item.ModifiedBy);
                                 stk.UpdateExpiry(item.ExpiryDate, item.ModifiedBy);
