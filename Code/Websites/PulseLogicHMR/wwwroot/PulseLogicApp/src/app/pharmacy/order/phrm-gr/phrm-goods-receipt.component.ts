@@ -91,7 +91,6 @@ export class PHRMGoodsReceiptComponent {
   IsGReditAfterModification: boolean = false;
   dispensaryList: Array<any> = [];
   selectedDispensary: any = null;
-  goodReceiptHistory: Array<any> = [];
   CheckIsValid: boolean = true;
   isExpiryNotApplicable: boolean = false;
   ExpiryAfter: number = 0;
@@ -132,7 +131,6 @@ export class PHRMGoodsReceiptComponent {
     this.getGoodsReceiptList();
     this.getMainStore();
     this.GetDispensaryList();
-    this.LoadGoodReceiptHistory();
     this.GetPackingTypeList();
     this.showitemlvldiscount();
     this.showpacking();
@@ -776,7 +774,7 @@ export class PHRMGoodsReceiptComponent {
 
       var goSigal: boolean = false;
       if (this.CheckIsValid && isValid && this.grItemList.length > 0)
-        goSigal = this.CheckGRItemHistory();
+        goSigal = true;
 
       if (goSigal) {
         let gr = this.goodsReceiptVM.goodReceipt;
@@ -1573,70 +1571,8 @@ export class PHRMGoodsReceiptComponent {
       }
     );
   }
-  public LoadGoodReceiptHistory() { // of 1 months
-    try {
-      this.goodReceiptHistory = [];
-      this.pharmacyBLService.GetGoodReceiptHistory().subscribe(res => {
-        if (res.Status == "OK" && res.Results && res.Results.length > 0) {
-          this.goodReceiptHistory = res.Results;
-        }
-      });
-
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
 
-  public CheckGRItemHistory(): boolean {
-    var NoOfcurrentGRItems = this.grItemList.length;
-
-    if (this.goodReceiptHistory && this.goodReceiptHistory.length > 0) {
-
-      var filteredGRHistory: Array<any> = [];
-      // filtering GR-history by supplier Id and no of GR-items that matches with current GR
-      filteredGRHistory = this.goodReceiptHistory.filter(a => {
-        if (a.SupplierId == this.currentSupplier.SupplierId && NoOfcurrentGRItems == a.items.length) {
-          return a;
-        }
-      });
-
-      var duplicatePastGR: Array<any> = [];
-      var invoiceString: string = "";
-      if (filteredGRHistory && filteredGRHistory.length) {
-        //One block of GR history
-        filteredGRHistory.forEach(b => {  // b is One GR history block
-
-          var duplicatePastGRItems: Array<any> = [];
-          this.grItemList.forEach(a => {
-
-            var di = b.items.filter(i => i.ItemId == a.ItemId && i.ReceivedQuantity == a.ReceivedQuantity
-              && i.GRItemPrice == a.GRItemPrice && i.SubTotal == a.SubTotal);
-
-            if (di && di.length > 0) {
-              di.forEach(c => {
-                duplicatePastGRItems.push(c); // storing duplicate item
-              });
-            }
-
-          });
-          if (duplicatePastGRItems && duplicatePastGRItems.length == NoOfcurrentGRItems) {
-            duplicatePastGR.push(b);
-            invoiceString = invoiceString + "\n Invoice No.: " + b.InvoiceNo;
-          }
-        });
-
-
-      }
-    }
-    // if (duplicatePastGR && duplicatePastGR.length > 0) {
-    //   var confirmIt = confirm(`Similar GR found with these Invoices: ${invoiceString}\n Want to continue?`);
-    //   if (!confirmIt) {
-    //     return false;
-    //   }
-    // }
-    return true;
-  }
 
   OnInvoiceChange() {
     this.duplicateInvoice = false;
