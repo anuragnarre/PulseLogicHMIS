@@ -190,44 +190,6 @@ namespace PulseLogicHMR.Services
                                               }).FirstOrDefault();
                         return new NepaliDispatchVm { DispatchDetail = DispatchDetail };
                     }
-                //case "inventory-substore":
-                //      {
-                ///sud:20Sep'21--Corrected the LINQ query below which gives Dispatch Details..
-                ///Takin Quantity from StockTransaction Table.
-                //    var dispatchTxn = Enums.ENUM_INV_StockTransactionType.DispatchedItem;
-                //    var DispatchDetail = (from D in inventoryDb.DispatchItems
-                //                          join E in inventoryDb.Employees on D.CreatedBy equals E.EmployeeId
-                //                          from FY in inventoryDb.InventoryFiscalYears.Where(fy => D.CreatedOn >= fy.StartDate && D.CreatedOn <= fy.EndDate)
-
-                //                          where D.DispatchId == DispatchId
-                //                          select new NepaliDispatchDTO
-                //                          {
-                //                              ////TODO: Add fiscal year id in the dispatch table and requisition table, later on.
-                //                              DispatchId = D.DispatchId,
-                //                              RequisitionId = D.RequisitionId,
-                //                              DispatchedDate = D.DispatchedDate,
-                //                              FiscalYear = FY.FiscalYearName,
-                //                              DispatchItems =
-                //                                 (from ST in inventoryDb.StockTransactions.Where(x => D.DispatchItemsId == x.ReferenceNo && x.TransactionType == dispatchTxn)
-                //                                  join I in inventoryDb.Items on D.ItemId equals I.ItemId
-                //                                  join U in inventoryDb.UnitOfMeasurementMaster on I.UnitOfMeasurementId equals U.UOMId
-                //                                  select new NepaliDispatchItemDTO()
-                //                                  {
-                //                                      DispatchItemId = D.DispatchItemsId,
-                //                                      ItemId = D.ItemId,
-                //                                      ItemName = I.ItemName,
-                //                                      RegisterPageNo = I.RegisterPageNumber,//sud:19Sep'21--Need to show this (in Nepali format)--Jinsi Khaata Paana No. 
-                //                                      UOMName = U.UOMName,
-                //                                      Quantity = ST.OutQty,
-                //                                      Price = ST.CostPrice,
-                //                                      BatchNo = ST.BatchNo,
-                //                                      Remark = D.ItemRemarks
-                //                                  }).ToList()
-
-                //                          }).FirstOrDefault();
-                //    return new NepaliDispatchVm { DispatchDetail = DispatchDetail };
-
-                //}
 
                 case "inventory-substore":///Sud:20Sep'21--Issue in below when 2 different stocks are sent against single Dispatc.
                     {
