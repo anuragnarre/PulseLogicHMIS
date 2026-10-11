@@ -3845,21 +3845,21 @@ namespace PulseLogicHMR.Controllers
                 //for cancelling old element
                 if (ReqItmIdList.Any())
                 {
-                    foreach (int reqitmid in ReqItmIdList)
+                    var itemsToCancel = _inventoryDbContext.PurchaseRequestItems
+                                            .Where(x => ReqItmIdList.Contains(x.PurchaseRequestItemId))
+                                            .ToList();
+                    var now = DateTime.Now;
+                    foreach (var reqitm in itemsToCancel)
                     {
-                        var reqitm = _inventoryDbContext.PurchaseRequestItems.Find(reqitmid);
                         reqitm.IsActive = false;
                         reqitm.CancelledBy = currentUser.EmployeeId;
-                        reqitm.CancelledOn = DateTime.Now;
+                        reqitm.CancelledOn = now;
                         reqitm.RequestItemStatus = "withdrawn";
-                        _inventoryDbContext.PurchaseRequestItems.Attach(reqitm);
                         _inventoryDbContext.Entry(reqitm).Property(a => a.IsActive).IsModified = true;
                         _inventoryDbContext.Entry(reqitm).Property(a => a.CancelledOn).IsModified = true;
                         _inventoryDbContext.Entry(reqitm).Property(a => a.CancelledBy).IsModified = true;
                         _inventoryDbContext.Entry(reqitm).Property(a => a.RequestItemStatus).IsModified = true;
-                        _inventoryDbContext.SaveChanges();
                     }
-
                     _inventoryDbContext.SaveChanges();
                 }
                 _inventoryDbContext.PurchaseRequest.Attach(purchaseRequestFromClient);
