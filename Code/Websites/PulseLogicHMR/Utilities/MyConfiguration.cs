@@ -21,6 +21,7 @@ namespace PulseLogicHMR.Core.Configuration
         public GoogleDriveConfiguration GoogleDriveFileUpload { get; set; }
         public JWTTokenConfiguration JwtTokenConfig { get; set; }
         public bool RealTimeSSFClaimBooking { get; set; }
+        public ABDMConfiguration ABDMConfig { get; set; }
     }
     public class GoogleDriveConfiguration
     {
@@ -36,5 +37,13 @@ namespace PulseLogicHMR.Core.Configuration
         public string JwtIssuer { get; set; }
         public string JwtAudience { get; set; }
         public string JwtValidMinutes { get; set; }
+    }
+
+    public class ABDMConfiguration
+    {
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+        public string GatewayUrl { get; set; }
+        public string HealthIdUrl { get; set; }
     }
 }
