@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PulseLogicHMR.Core.Configuration;
+using PulseLogicHMR.Services.ABDM;
 
 namespace PulseLogicHMR.Controllers.ABDM
 {
@@ -9,8 +10,11 @@ namespace PulseLogicHMR.Controllers.ABDM
     [Route("api/v1/[controller]")]
     public class ABDMController : Controller
     {
-        public ABDMController()
+        private readonly IABDMService _abdmService;
+
+        public ABDMController(IABDMService abdmService)
         {
+            _abdmService = abdmService;
         }
 
         [HttpGet("VerifyABHA")]
@@ -22,27 +26,13 @@ namespace PulseLogicHMR.Controllers.ABDM
                 // This requires sending the ClientID and ClientSecret to authenticate, 
                 // and then verifying the ABHA ID.
                 
-                if(string.IsNullOrEmpty(abhaNumber) || abhaNumber.Length != 14)
-                {
-                    return BadRequest(new { Status = "Error", ErrorMessage = "Invalid ABHA Number. Must be 14 digits." });
-                }
+                var result = _abdmService.VerifyABHA(abhaNumber);
 
-                // Mock Response for Proof of Concept (Phase 1)
-                var mockPatientData = new
-                {
-                    FirstName = "Ayushman",
-                    LastName = "Bharat",
-                    Gender = "Male",
-                    YearOfBirth = "1994",
-                    MonthOfBirth = "01",
-                    DayOfBirth = "01",
-                    Mobile = "9999999999",
-                    Address = "New Delhi, India",
-                    StateCode = "07",
-                    DistrictCode = "094"
-                };
-
-                return Ok(new { Status = "OK", Results = mockPatientData });
+                return Ok(new { Status = "OK", Results = result });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Status = "Error", ErrorMessage = ex.Message });
             }
             catch (Exception ex)
             {
