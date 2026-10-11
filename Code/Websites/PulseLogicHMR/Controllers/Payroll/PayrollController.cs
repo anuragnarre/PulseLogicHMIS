@@ -385,11 +385,8 @@ namespace PulseLogicHMR.Controllers
                     if (attendanceDailyTimeRecords != null)
                     {
 
-                        foreach (var attend in attendanceDailyTimeRecords)
-                        {
-                            payrollDbContext.attendanceDailyTimeRecords.Add(attend);
-                            payrollDbContext.SaveChanges();
-                        }
+                        payrollDbContext.attendanceDailyTimeRecords.AddRange(attendanceDailyTimeRecords);
+                        payrollDbContext.SaveChanges();
 
                         var results = (from DRecord in payrollDbContext.attendanceDailyTimeRecords
                                        select new
