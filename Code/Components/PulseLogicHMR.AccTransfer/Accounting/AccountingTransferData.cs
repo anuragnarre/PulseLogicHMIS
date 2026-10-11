@@ -819,6 +819,7 @@ namespace PulseLogicHMR.AccTransfer
                             if (sectionId == 2)
                             {//billing                               
                                 //nbb billing changes
+                                var processedTxns = new List<TransactionModel>();
                                 Transaction.ForEach(txn =>
                                 {
                                     txn.IsReverseTxnAllow = true;
@@ -847,7 +848,6 @@ namespace PulseLogicHMR.AccTransfer
                                             txntemp.TransactionItems[i].HospitalId = currHospitalId;
                                         }
                                         accountingDBContext.Transactions.Add(txntemp);
-                                        accountingDBContext.SaveChanges();
 
                                         //code for add tarnsaction into transaction history tbl for Synced.
                                         AccountingTransactionHistoryModel ToSynce = new AccountingTransactionHistoryModel();
@@ -857,25 +857,34 @@ namespace PulseLogicHMR.AccTransfer
                                         ToSynce.SectionId = txn.SectionId;
                                         ToSynce.TransactionType = txn.TransactionType;
                                         accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                        accountingDBContext.SaveChanges();
 
                                         for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                         {
                                             txntemp.TransactionItems[i].IsActive = true;
 
-                                            if (txntemp.TransactionItems[i].IsTxnDetails == true)
-                                            {
-                                                for (int j = 0; j < txntemp.TransactionItems[i].TransactionItemDetails.Count; j++)
-                                                {
-                                                    TransactionItemDetailModel tmpTxnDetail = txntemp.TransactionItems[i].TransactionItemDetails[j];
-                                                    tmpTxnDetail.TransactionItemId = txntemp.TransactionItems[i].TransactionItemId;
 
-                                                    accountingDBContext.TransactionItemDetails.Add(tmpTxnDetail);
-                                                }
-                                            }
                                         }
+                                    processedTxns.Add(txntemp);
                                    }
                                 });
+
+                                accountingDBContext.SaveChanges();
+
+                                foreach (var txntemp in processedTxns)
+                                {
+                                    for (int i = 0; i < txntemp.TransactionItems.Count; i++)
+                                    {
+                                        if (txntemp.TransactionItems[i].IsTxnDetails == true)
+                                        {
+                                            for (int j = 0; j < txntemp.TransactionItems[i].TransactionItemDetails.Count; j++)
+                                            {
+                                                TransactionItemDetailModel tmpTxnDetail = txntemp.TransactionItems[i].TransactionItemDetails[j];
+                                                tmpTxnDetail.TransactionItemId = txntemp.TransactionItems[i].TransactionItemId;
+                                                accountingDBContext.TransactionItemDetails.Add(tmpTxnDetail);
+                                            }
+                                        }
+                                    }
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
@@ -910,6 +919,7 @@ namespace PulseLogicHMR.AccTransfer
                             else if (sectionId == 1)
                             {//inventory
                              //List<string> allReferenceIds = new List<string>();     
+                                var processedTxns = new List<TransactionModel>();
                                 Transaction.ForEach(txn =>
                                 {
                                     txn.IsReverseTxnAllow = true;
@@ -944,7 +954,6 @@ namespace PulseLogicHMR.AccTransfer
                                         txntemp.TransactionItems[i].HospitalId = currHospitalId;
                                     }
                                     accountingDBContext.Transactions.Add(txntemp);
-                                    accountingDBContext.SaveChanges();
                                     //code for add tarnsaction into transaction history tbl for Synced.
                                     AccountingTransactionHistoryModel ToSynce = new AccountingTransactionHistoryModel();
                                     ToSynce.TransactionDate = txn.TransactionDate;
@@ -953,11 +962,19 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
                                     accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
+                                    }
+                                    processedTxns.Add(txntemp);
+                                });
 
+                                accountingDBContext.SaveChanges();
+
+                                foreach (var txntemp in processedTxns)
+                                {
+                                    for (int i = 0; i < txntemp.TransactionItems.Count; i++)
+                                    {
                                         if (txntemp.TransactionItems[i].IsTxnDetails == true)
                                         {
                                             for (int j = 0; j < txntemp.TransactionItems[i].TransactionItemDetails.Count; j++)
@@ -968,7 +985,7 @@ namespace PulseLogicHMR.AccTransfer
                                             }
                                         }
                                     }
-                                });
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
@@ -1004,6 +1021,7 @@ namespace PulseLogicHMR.AccTransfer
                             else if (sectionId == 3)
                             {//pharmacy
 
+                                var processedTxns = new List<TransactionModel>();
                                 Transaction.ForEach(txn =>
                                 {
                                     txn.IsReverseTxnAllow = true;
@@ -1030,7 +1048,6 @@ namespace PulseLogicHMR.AccTransfer
                                         txntemp.TransactionItems[i].HospitalId = currHospitalId;
                                     }
                                     accountingDBContext.Transactions.Add(txntemp);
-                                    accountingDBContext.SaveChanges();
                                     //code for add tarnsaction into transaction history tbl for Synced.
                                     AccountingTransactionHistoryModel ToSynce = new AccountingTransactionHistoryModel();
                                     ToSynce.TransactionDate = txn.TransactionDate;
@@ -1039,12 +1056,20 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
                                     accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
 
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
+                                    }
+                                    processedTxns.Add(txntemp);
+                                });
 
+                                accountingDBContext.SaveChanges();
+
+                                foreach (var txntemp in processedTxns)
+                                {
+                                    for (int i = 0; i < txntemp.TransactionItems.Count; i++)
+                                    {
                                         if (txntemp.TransactionItems[i].IsTxnDetails == true)
                                         {
                                             for (int j = 0; j < txntemp.TransactionItems[i].TransactionItemDetails.Count; j++)
@@ -1055,7 +1080,7 @@ namespace PulseLogicHMR.AccTransfer
                                             }
                                         }
                                     }
-                                });
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
@@ -1090,6 +1115,7 @@ namespace PulseLogicHMR.AccTransfer
                             else if (sectionId == 5)
                             {//incetive
 
+                                var processedTxns = new List<TransactionModel>();
                                 Transaction.ForEach(txn =>
                                 {
                                     txn.IsReverseTxnAllow = true;
@@ -1116,7 +1142,6 @@ namespace PulseLogicHMR.AccTransfer
                                     }
                                     accountingDBContext.Transactions.Add(txntemp);
                                     txntemp.HospitalId = currHospitalId;
-                                    accountingDBContext.SaveChanges();
                                     //code for add tarnsaction into transaction history tbl for Synced.
                                     AccountingTransactionHistoryModel ToSynce = new AccountingTransactionHistoryModel();
                                     ToSynce.TransactionDate = txn.TransactionDate;
@@ -1125,11 +1150,19 @@ namespace PulseLogicHMR.AccTransfer
                                     ToSynce.SectionId = txn.SectionId;
                                     ToSynce.TransactionType = txn.TransactionType;
                                     accountingDBContext.AccountingTransactionHistory.Add(ToSynce);
-                                    accountingDBContext.SaveChanges();
                                     for (int i = 0; i < txntemp.TransactionItems.Count; i++)
                                     {
                                         txntemp.TransactionItems[i].IsActive = true;
+                                    }
+                                    processedTxns.Add(txntemp);
+                                });
 
+                                accountingDBContext.SaveChanges();
+
+                                foreach (var txntemp in processedTxns)
+                                {
+                                    for (int i = 0; i < txntemp.TransactionItems.Count; i++)
+                                    {
                                         if (txntemp.TransactionItems[i].IsTxnDetails == true)
                                         {
                                             for (int j = 0; j < txntemp.TransactionItems[i].TransactionItemDetails.Count; j++)
@@ -1140,7 +1173,7 @@ namespace PulseLogicHMR.AccTransfer
                                             }
                                         }
                                     }
-                                });
+                                }
                                 accountingDBContext.SaveChanges();
                                 List<string> TransactionType = new List<string>();
                                 var distinctTxnTypeList = new List<string>();
