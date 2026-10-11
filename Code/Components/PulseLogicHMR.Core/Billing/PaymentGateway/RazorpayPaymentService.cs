@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using PulseLogicHMR.ServerModel.MasterModels;
 using Razorpay.Api;
@@ -18,19 +16,15 @@ namespace PulseLogicHMR.Core.Billing.PaymentGateway
                 throw new ArgumentException("Invalid Razorpay settings.");
             }
 
-            RazorpayClient client = new RazorpayClient(settings.PublicKey, settings.SecretKey);
+            var client = CreateClient(settings.PublicKey, settings.SecretKey);
 
             Dictionary<string, object> options = new Dictionary<string, object>();
-            // amount should be in paise (e.g. 500 INR = 50000 paise)
-            // Wait, amount param already assumed smallest unit or not? 
-            // In IPaymentGatewayService I said: Amount in the smallest currency unit. 
-            // So I should just pass (int)amount.
             options.Add("amount", (int)amount); 
             options.Add("currency", currency ?? "INR");
             options.Add("receipt", receiptId);
             options.Add("payment_capture", 1);
 
-            Order order = client.Order.Create(options);
+            Order order = CreateOrder(client, options);
 
             return Task.FromResult(order["id"].ToString());
         }
@@ -51,13 +45,28 @@ namespace PulseLogicHMR.Core.Billing.PaymentGateway
                     { "razorpay_signature", signature }
                 };
 
-                Utils.verifyPaymentSignature(attributes);
+                VerifySignature(attributes);
                 return Task.FromResult(true);
             }
             catch (SignatureVerificationError)
             {
                 return Task.FromResult(false);
             }
+        }
+
+        protected virtual RazorpayClient CreateClient(string key, string secret)
+        {
+            return new RazorpayClient(key, secret);
+        }
+
+        protected virtual Order CreateOrder(RazorpayClient client, Dictionary<string, object> options)
+        {
+            return client.Order.Create(options);
+        }
+
+        protected virtual void VerifySignature(Dictionary<string, string> attributes)
+        {
+            Utils.verifyPaymentSignature(attributes);
         }
     }
 }
