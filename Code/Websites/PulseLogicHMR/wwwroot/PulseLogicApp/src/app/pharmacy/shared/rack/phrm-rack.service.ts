@@ -10,8 +10,8 @@ export class PhrmRackService {
 
     }
 
-    public GetRackList() {
-        return this.phrmRackEndpoint.GetRackList()
+    public GetRackList(offset?: number, limit?: number) {
+        return this.phrmRackEndpoint.GetRackList(offset, limit)
             .map(res => { return res });
     }
 

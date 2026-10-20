@@ -13,8 +13,12 @@ export class PhrmRackEndPoint {
     }
 
     //GET: list of rack
-    public GetRackList() {
-        return this.http.get<any>("/api/PharmacyRack", this.options);
+    public GetRackList(offset?: number, limit?: number) {
+        let url = "/api/PharmacyRack";
+        if (offset !== undefined && limit !== undefined) {
+            url += `?offset=${offset}&limit=${limit}`;
+        }
+        return this.http.get<any>(url, this.options);
     }
 
     // POST: add new rack
