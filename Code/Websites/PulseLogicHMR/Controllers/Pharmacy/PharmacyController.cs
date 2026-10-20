@@ -5952,7 +5952,7 @@ namespace PulseLogicHMR.Controllers
                                                 var stockTxn = phrmdbcontext.StockTransactions.Where(a => a.StockId == itm.StockId && a.StoreStockId == itm.StoreStockId).FirstOrDefault();
                                                 stockTxn.SetInOutQuantity(itm.ReceivedQuantity + itm.FreeQuantity, 0);
 
-                                                //TODO: Update Batch, ExpiryDate, CostPrice and Update SalePrice for that item
+                                                // Update Batch, ExpiryDate, CostPrice and Update SalePrice for that item
                                                 stockTxn.UpdateBatch(itm.BatchNo, currentUser.EmployeeId);
                                                 stockTxn.UpdateExpiry(itm.ExpiryDate, currentUser.EmployeeId);
                                                 stockTxn.UpdateCostPrice((decimal)itm.CostPrice);
