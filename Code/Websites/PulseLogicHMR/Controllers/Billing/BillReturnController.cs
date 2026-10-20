@@ -643,7 +643,7 @@ namespace PulseLogicHMR.Controllers
 
                                     SSF_ClaimBookingService_DTO claimBooking = SSF_ClaimBookingService_DTO.GetMappedToBookClaim(billObj, patientSchemes);
 
-                                    Task.Run(() => BillingBL.SyncToSSFServer(claimBooking, "billing", ssfDbContext, patientSchemes, currentUser));
+                                    Task.Run(() => BillingBL.SyncToSSFServerAsync(claimBooking, "billing", ssfDbContext, patientSchemes, currentUser));
                                 }
                             }
                             //end: --section 7: Send Return To SSF Server for SSF Patients

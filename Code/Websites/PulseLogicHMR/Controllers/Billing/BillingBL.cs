@@ -472,14 +472,14 @@ namespace PulseLogicHMR.Controllers.Billing
 
             return empDueAmountObj;
         }
-        public static void SyncToSSFServer(SSF_ClaimBookingService_DTO claimBooking, string moduleName, SSFDbContext dbContext, PatientSchemeMapModel patientSchemeMap, RbacUser currentUser)
+        public static async System.Threading.Tasks.Task SyncToSSFServerAsync(SSF_ClaimBookingService_DTO claimBooking, string moduleName, SSFDbContext dbContext, PatientSchemeMapModel patientSchemeMap, RbacUser currentUser)
         {
             SSFClaimBookingModel claimBookingModel = new SSFClaimBookingModel();
             SSF_RealTimeBookingServiceResponse realTimeclaimBookingService = new SSF_RealTimeBookingServiceResponse();
             try
             {
                 var SSFCred = GetSSFCredentials(dbContext);
-                realTimeclaimBookingService = PulseLogicHMR.Sync.SSF.APIs.BookClaim(claimBooking, SSFCred);
+                realTimeclaimBookingService = await PulseLogicHMR.Sync.SSF.APIs.BookClaimAsync(claimBooking, SSFCred);
             }
             catch (Exception ex)
             {
@@ -490,6 +490,11 @@ namespace PulseLogicHMR.Controllers.Billing
             claimBookingModel.BookingStatus = realTimeclaimBookingService.BookingStatus;
             PostToClaimBookingLog(dbContext, moduleName, claimBookingModel, claimBooking, patientSchemeMap, currentUser);
 
+        }
+
+        public static void SyncToSSFServer(SSF_ClaimBookingService_DTO claimBooking, string moduleName, SSFDbContext dbContext, PatientSchemeMapModel patientSchemeMap, RbacUser currentUser)
+        {
+            SyncToSSFServerAsync(claimBooking, moduleName, dbContext, patientSchemeMap, currentUser).GetAwaiter().GetResult();
         }
         public static void PostToClaimBookingLog(SSFDbContext dbContext, string moduleName, SSFClaimBookingModel claimBooking, SSF_ClaimBookingService_DTO claimBookingObj, PatientSchemeMapModel patientSchemeMap, RbacUser currentUser)
         {
