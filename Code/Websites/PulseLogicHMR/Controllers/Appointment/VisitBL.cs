@@ -848,7 +848,7 @@ namespace PulseLogicHMR.Controllers
 
         public static NewClaimCode_DTO GetLatestClaimCode(VisitDbContext visitDbContext,int schemeId)
         {
-            NewClaimCode_DTO newClaimObj = visitDbContext.Database.SqlQueryRaw<NewClaimCode_DTO>("SP_Claim_GenerateNewClaimCode" + " " + schemeId).FirstOrDefault();
+            NewClaimCode_DTO newClaimObj = visitDbContext.Database.SqlQueryRaw<NewClaimCode_DTO>("SP_Claim_GenerateNewClaimCode {0}", schemeId).FirstOrDefault();
             return newClaimObj;
         }
 
