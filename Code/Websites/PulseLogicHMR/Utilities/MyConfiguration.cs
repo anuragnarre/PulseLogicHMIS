@@ -21,7 +21,16 @@ namespace PulseLogicHMR.Core.Configuration
         public GoogleDriveConfiguration GoogleDriveFileUpload { get; set; }
         public JWTTokenConfiguration JwtTokenConfig { get; set; }
         public bool RealTimeSSFClaimBooking { get; set; }
+        public ABDMConfiguration ABDMConfig { get; set; }
     }
+
+    public class ABDMConfiguration
+    {
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+        public string BaseUrl { get; set; }
+    }
+
     public class GoogleDriveConfiguration
     {
         public string ServiceAccountKey { get; set; }
