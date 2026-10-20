@@ -5,7 +5,7 @@ namespace PulseLogicHMR.Services
 {
     public interface IVerificationService
     {
-        int CreateVerification(int EmployeeId,int CurrentVerificationLevel,int CurrentVerificationLevelCount, int MaxVerificationLevel, string VerificationStatus,string VerificationRemarks,int? ParentVerificationId);
+        int CreateVerification(CreateVerificationDto dto);
         List<VerificationViewModel> GetVerificationViewModel(int VerificationId);
         int UpdateVerifcation(int VerificationId, int EmployeeId, string VerificationStatus);
     }

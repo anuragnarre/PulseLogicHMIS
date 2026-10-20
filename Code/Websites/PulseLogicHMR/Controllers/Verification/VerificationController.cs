@@ -112,7 +112,7 @@ namespace PulseLogicHMR.Controllers
                 var CurrentVerificationLevelCount = requisition.CurrentVerificationLevelCount + 1;
                 var MaxVerificationLevel = requisition.MaxVerificationLevel;
                 int? ParentVerificationId = requisition.VerificationId;
-                var VerificationId = this._verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationLevel, CurrentVerificationLevelCount, MaxVerificationLevel, Status, VerificationRemarks, ParentVerificationId);
+                var VerificationId = this._verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationLevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = Status, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 VerificationBL.UpdateRequisitionAfterApproved(dbContext, requisition, VerificationId, currentUser, CurrentVerificationLevelCount);
 
                 responseData.Status = "OK";
@@ -142,7 +142,7 @@ namespace PulseLogicHMR.Controllers
                     ParentVerificationId = inventoryDbContext.Requisitions.Where(req => req.RequisitionId == RequisitionId)
                         .Select(req => req.VerificationId).FirstOrDefault();
                 }
-                var VerificationId = _verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationlevel, CurrentVerificationLevelCount, MaxVerificationLevel, VerificationStatus, VerificationRemarks, ParentVerificationId);
+                var VerificationId = _verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationlevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = VerificationStatus, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 bool flag = InventoryBL.CancelSubstoreRequisition(inventoryDbContext, RequisitionId, CancelRemarks, currentUser, VerificationId);
 
 
@@ -218,7 +218,7 @@ namespace PulseLogicHMR.Controllers
                 var CurrentVerificationLevelCount = PurchaseRequest.CurrentVerificationLevelCount + 1;
                 var MaxVerificationLevel = PurchaseRequest.MaxVerificationLevel;
                 int? ParentVerificationId = PurchaseRequest.VerificationId;
-                var VerificationId = this._verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationLevel, CurrentVerificationLevelCount, MaxVerificationLevel, Status, VerificationRemarks, ParentVerificationId);
+                var VerificationId = this._verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationLevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = Status, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 if (CurrentVerificationLevelCount == MaxVerificationLevel)
                 {
                     PurchaseRequest.RequestStatus = "pending";
@@ -253,7 +253,7 @@ namespace PulseLogicHMR.Controllers
                     ParentVerificationId = inventoryDbContext.PurchaseRequest.Where(req => req.PurchaseRequestId == PurchaseRequestId)
                         .Select(req => req.VerificationId).FirstOrDefault();
                 }
-                var VerificationId = _verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationlevel, CurrentVerificationLevelCount, MaxVerificationLevel, VerificationStatus, VerificationRemarks, ParentVerificationId);
+                var VerificationId = _verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationlevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = VerificationStatus, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 bool flag = InventoryBL.CancelPurchaseRequestById(inventoryDbContext, PurchaseRequestId, CancelRemarks, currentUser, VerificationId);
 
 
@@ -354,7 +354,7 @@ namespace PulseLogicHMR.Controllers
                 var CurrentVerificationLevelCount = PurchaseOrder.CurrentVerificationLevelCount + 1;
                 var MaxVerificationLevel = PurchaseOrder.MaxVerificationLevel;
                 int? ParentVerificationId = PurchaseOrder.VerificationId;
-                var VerificationId = this._verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationLevel, CurrentVerificationLevelCount, MaxVerificationLevel, Status, VerificationRemarks, ParentVerificationId);
+                var VerificationId = this._verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationLevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = Status, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 if (CurrentVerificationLevelCount == MaxVerificationLevel)
                 {
                     PurchaseOrder.POStatus = "active";
@@ -390,7 +390,7 @@ namespace PulseLogicHMR.Controllers
                     ParentVerificationId = db.PurchaseOrders.Where(req => req.PurchaseOrderId == PurchaseOrderId)
                         .Select(req => req.VerificationId).FirstOrDefault();
                 }
-                var VerificationId = _verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationlevel, CurrentVerificationLevelCount, MaxVerificationLevel, VerificationStatus, VerificationRemarks, ParentVerificationId);
+                var VerificationId = _verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationlevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = VerificationStatus, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 bool flag = InventoryBL.CancelPurchaseOrderById(db, PurchaseOrderId, CancelRemarks, currentUser, POStatus, VerificationId);
 
 
@@ -470,7 +470,7 @@ namespace PulseLogicHMR.Controllers
                 var CurrentVerificationLevelCount = GoodsReceipt.CurrentVerificationLevelCount + 1;
                 var MaxVerificationLevel = GoodsReceipt.MaxVerificationLevel;
                 int? ParentVerificationId = GoodsReceipt.VerificationId;
-                var VerificationId = _verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationLevel, CurrentVerificationLevelCount, MaxVerificationLevel, Status, VerificationRemarks, ParentVerificationId);
+                var VerificationId = _verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationLevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = Status, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 //Set IMIR No and Date once the verification is done.
                 GoodsReceipt.IMIRDate = DateTime.Now;
                 if (GoodsReceipt.IMIRNo == null)
@@ -526,7 +526,7 @@ namespace PulseLogicHMR.Controllers
                     ParentVerificationId = db.GoodsReceipts.Where(req => req.GoodsReceiptID == GoodsReceiptId)
                         .Select(req => req.VerificationId).FirstOrDefault();
                 }
-                var VerificationId = _verificationService.CreateVerification(currentUser.EmployeeId, CurrentVerificationlevel, CurrentVerificationLevelCount, MaxVerificationLevel, VerificationStatus, VerificationRemarks, ParentVerificationId);
+                var VerificationId = _verificationService.CreateVerification(new CreateVerificationDto { EmployeeId = currentUser.EmployeeId, CurrentVerificationLevel = CurrentVerificationlevel, CurrentVerificationLevelCount = CurrentVerificationLevelCount, MaxVerificationLevel = MaxVerificationLevel, VerificationStatus = VerificationStatus, VerificationRemarks = VerificationRemarks, ParentVerificationId = ParentVerificationId });
                 InventoryBL.CancelGoodsReceipt(db, GoodsReceiptId, CancelRemarks, currentUser, GRStatus, VerificationId);
 
 

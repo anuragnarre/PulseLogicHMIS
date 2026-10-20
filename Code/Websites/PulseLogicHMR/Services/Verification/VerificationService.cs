@@ -49,17 +49,17 @@ namespace PulseLogicHMR.Services
         /// <param name="MaxVerificationLevel">The maximum verification level set during substore creation.</param>
         /// <param name="VerificationStatus"> The status of the verification.</param>
         /// <returns>The verification id of the newly created verification.</returns>
-        public int CreateVerification(int EmployeeId, int CurrentVerificationLevel, int CurrentVerificationLevelCount, int MaxVerificationLevel, string VerificationStatus, string VerificationRemarks, int? ParentVerificationId)
+        public int CreateVerification(CreateVerificationDto dto)
         {
             VerificationModel verification = new VerificationModel();
-            verification.VerifiedBy = EmployeeId;
+            verification.VerifiedBy = dto.EmployeeId;
             verification.VerifiedOn = DateTime.Now;
-            verification.CurrentVerificationLevel = CurrentVerificationLevel;
-            verification.CurrentVerificationLevelCount = CurrentVerificationLevelCount;
-            verification.MaxVerificationLevel = MaxVerificationLevel;
-            verification.VerificationStatus = VerificationStatus;
-            verification.VerificationRemarks = VerificationRemarks;
-            verification.ParentVerificationId = ParentVerificationId;
+            verification.CurrentVerificationLevel = dto.CurrentVerificationLevel;
+            verification.CurrentVerificationLevelCount = dto.CurrentVerificationLevelCount;
+            verification.MaxVerificationLevel = dto.MaxVerificationLevel;
+            verification.VerificationStatus = dto.VerificationStatus;
+            verification.VerificationRemarks = dto.VerificationRemarks;
+            verification.ParentVerificationId = dto.ParentVerificationId;
             _dbContext.VerificationModel.Add(verification);
             _dbContext.SaveChanges();
             return verification.VerificationId;
