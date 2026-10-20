@@ -299,6 +299,8 @@ namespace PulseLogicHMR.Controllers
         }
         public static Boolean StockTransferToPharmacy(List<WARDStockModel> stkTransfer, WardSupplyDbContext wardSupplyDbContext, PharmacyDbContext pharmacyDbContext, RbacUser currentUser, String ReceivedBy)
         {
+            var currentDate = DateTime.Now;
+            var currentFiscalYearId = wardSupplyDbContext.PharmacyFiscalYears.Where(fsc => fsc.StartDate <= currentDate && fsc.EndDate >= currentDate).FirstOrDefault().FiscalYearId;
             int dispatchId = (from D in wardSupplyDbContext.PHRMSubStoreDispatchItems
                               select D.DispatchId).DefaultIfEmpty(0).Max() ?? 0;
             dispatchId++;
@@ -318,6 +320,7 @@ namespace PulseLogicHMR.Controllers
                                 SourceStoreId = newTransferedStock.StoreId,
                                 TargetStoreId = mainStoreId,
                                 DispatchId = dispatchId,
+                                FiscalYearId = currentFiscalYearId,
                                 CostPrice = newTransferedStock.CostPrice,
                                 SalePrice = (decimal)newTransferedStock.SalePrice,
                                 BatchNo = newTransferedStock.BatchNo,

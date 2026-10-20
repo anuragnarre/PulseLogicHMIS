@@ -167,7 +167,7 @@ namespace PulseLogicHMR.Services
                                               join I in pharmacyDb.PHRMItemMaster on D.ItemId equals I.ItemId
                                               join U in pharmacyDb.PHRMUnitOfMeasurement on I.UOMId equals U.UOMId
                                               //TODO: Add fiscal year id in the dispatch table and requisition table, later on.
-                                              from FY in pharmacyDb.PharmacyFiscalYears.Where(fy => D.CreatedOn >= fy.StartDate && D.CreatedOn <= fy.EndDate)
+                                              from FY in pharmacyDb.PharmacyFiscalYears.Where(fy => D.FiscalYearId == fy.FiscalYearId).DefaultIfEmpty()
                                               where D.DispatchId == DispatchId
                                               group new { D, E, FY, I, U } by D.DispatchId into DGrouped
                                               select new NepaliDispatchDTO
@@ -175,7 +175,7 @@ namespace PulseLogicHMR.Services
                                                   DispatchId = DGrouped.FirstOrDefault().D.DispatchId,
                                                   RequisitionId = DGrouped.FirstOrDefault().D.RequisitionId,
                                                   DispatchedDate = DGrouped.FirstOrDefault().D.DispatchedDate,
-                                                  FiscalYear = DGrouped.FirstOrDefault().FY.FiscalYearName,
+                                                  FiscalYear = DGrouped.FirstOrDefault().FY != null ? DGrouped.FirstOrDefault().FY.FiscalYearName : null,
                                                   DispatchItems = DGrouped.Select(DI => new NepaliDispatchItemDTO
                                                   {
                                                       DispatchItemId = DI.D.DispatchItemsId,
@@ -247,7 +247,7 @@ namespace PulseLogicHMR.Services
                                                   DispatchId = DGrouped.FirstOrDefault().D.DispatchId,
                                                   RequisitionId = DGrouped.FirstOrDefault().D.RequisitionId,
                                                   DispatchedDate = DGrouped.FirstOrDefault().D.DispatchedDate,
-                                                  FiscalYear = DGrouped.FirstOrDefault().FY.FiscalYearName,
+                                                  FiscalYear = DGrouped.FirstOrDefault().FY != null ? DGrouped.FirstOrDefault().FY.FiscalYearName : null,
                                                   DispatchItems = DGrouped.Select(DI => new NepaliDispatchItemDTO
                                                   {
                                                       DispatchItemId = DI.D.DispatchItemsId,
