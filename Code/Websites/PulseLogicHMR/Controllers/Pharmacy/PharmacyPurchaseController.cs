@@ -698,8 +698,11 @@ namespace PulseLogicHMR.Controllers.Pharmacy
                                 var storeStock = _pharmacyDbContext.StoreStocks.Find(storeStockId);
                                 storeStock.UpdateAvailableQuantity(newQty: 0);
 
-                                //TODO:find the stockTxn and Update the IsActive flag to false;
-
+                                var existingStockTxns = _pharmacyDbContext.StockTransactions.Where(a => a.StoreStockId == storeStockId && a.IsActive == true).ToList();
+                                foreach (var txn in existingStockTxns)
+                                {
+                                    txn.UpdateIsActive(false);
+                                }
                             }
                             _pharmacyDbContext.SaveChanges();
                         }
