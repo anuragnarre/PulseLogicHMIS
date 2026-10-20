@@ -833,7 +833,6 @@ namespace PulseLogicHMR.Controllers
                     itm.IntegrationItemId = currEmployee.EmployeeId;
                     //itm.ProcedureCode = currEmployee.EmployeeId.ToString();
                     masterDbContext.BillingServiceItems.Add(itm);
-                    masterDbContext.SaveChanges();
                 }
                 else
                 {
@@ -851,7 +850,6 @@ namespace PulseLogicHMR.Controllers
                         itm.IntegrationItemId = currEmployee.EmployeeId;
                         //itm.ProcedureCode = currEmployee.EmployeeId.ToString();
                         masterDbContext.BillingServiceItems.Add(itm);
-                        masterDbContext.SaveChanges();
                     }
                     else
                     {
@@ -880,12 +878,11 @@ namespace PulseLogicHMR.Controllers
                         //masterDbContext.Entry(itmFromServer).Property(b => b.IsInsForeignerPriceApplicable).IsModified = true;
                         //masterDbContext.Entry(itmFromServer).Property(b => b.IsFractionApplicable).IsModified = true;
 
-                        masterDbContext.SaveChanges();
-
                     }
                 }
             });
 
+            masterDbContext.SaveChanges();
 
         }
         private object GetEmployeeType(bool ShowIsActive)
