@@ -63,18 +63,20 @@ namespace PulseLogicHMR.ServerModel
             if (!IsDispensary) throw new InvalidOperationException("Payment Mode feature is only available for Disensary.");
             if (string.IsNullOrWhiteSpace(PaymentModeName)) throw new ArgumentException($"'{nameof(PaymentModeName)}' cannot be null or whitespace.", nameof(PaymentModeName));
 
-            AvailablePaymentModes.Add(new PaymentModesSettings(PaymentModeName, IsRemarksMandatory));
-            AvailablePaymentModesJSON = JsonConvert.SerializeObject(AvailablePaymentModes);
+            var modes = AvailablePaymentModes;
+            modes.Add(new PaymentModesSettings(PaymentModeName, IsRemarksMandatory));
+            AvailablePaymentModesJSON = JsonConvert.SerializeObject(modes);
         }
         public void RemovePaymentMode(string PaymentModeName)
         {
             if (!IsDispensary) throw new InvalidOperationException("Payment Mode feature is only available for Disensary.");
             if (string.IsNullOrWhiteSpace(PaymentModeName)) throw new ArgumentException($"'{nameof(PaymentModeName)}' cannot be null or whitespace.", nameof(PaymentModeName));
 
-            var paymentModeToRemove = AvailablePaymentModes.FirstOrDefault(a => a.PaymentModeName == PaymentModeName);
+            var modes = AvailablePaymentModes;
+            var paymentModeToRemove = modes.FirstOrDefault(a => a.PaymentModeName == PaymentModeName);
             if (paymentModeToRemove == null) throw new ArgumentNullException($"'{nameof(PaymentModeName)}' was not found in Available Payment Modes.", nameof(PaymentModeName));
-            AvailablePaymentModes.Remove(paymentModeToRemove);
-            AvailablePaymentModesJSON = JsonConvert.SerializeObject(AvailablePaymentModes);
+            modes.Remove(paymentModeToRemove);
+            AvailablePaymentModesJSON = JsonConvert.SerializeObject(modes);
         }
         public void SetDefaultPaymentMode(string PaymentMode)
         {
