@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace PulseLogicHMR.Core.Utilities.Messaging
 {
@@ -10,13 +11,13 @@ namespace PulseLogicHMR.Core.Utilities.Messaging
         private readonly string _fromPhoneNumber;
         private readonly string _fromWhatsAppNumber;
 
-        public TwilioMessagingService()
+        public TwilioMessagingService(IOptions<TwilioSettings> options)
         {
-            // TODO: In a real implementation, fetch these from AppSettings or DB parameters
-            _accountSid = "AC_MOCK_SID";
-            _authToken = "MOCK_TOKEN";
-            _fromPhoneNumber = "+1234567890";
-            _fromWhatsAppNumber = "whatsapp:+1234567890";
+            var settings = options.Value;
+            _accountSid = settings.AccountSid;
+            _authToken = settings.AuthToken;
+            _fromPhoneNumber = settings.FromPhoneNumber;
+            _fromWhatsAppNumber = settings.FromWhatsAppNumber;
         }
 
         public async Task<bool> SendSmsAsync(string phoneNumber, string message)
