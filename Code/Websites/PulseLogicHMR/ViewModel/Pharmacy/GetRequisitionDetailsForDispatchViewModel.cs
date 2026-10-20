@@ -44,21 +44,30 @@ namespace PulseLogicHMR.ViewModel.Pharmacy
                                                       AllocatedStoreRackName = (RackLJ != null) ? RackLJ.RackNo : "N/A",
                                                   }).ToListAsync();
             var mainStoreId = db.PHRMStore.Where(a => a.Category == "store" && a.SubCategory == "pharmacy").Select(a => a.StoreId).FirstOrDefault();
+
             //for each item, find the stock and find out available stock and prefil dispatching item with first-expiry-first-out logic
+            var itemIds = requisition.RequisitionItems.Select(ri => ri.ItemId).ToList();
+            var allAvailableStocks = await (from S in db.StoreStocks.Where(s => s.StoreId == mainStoreId && itemIds.Contains(s.ItemId) && s.IsActive == true && s.AvailableQuantity > 0)
+                                            group S by new { S.ItemId, S.StockMaster.BatchNo, S.StockMaster.ExpiryDate, S.StockMaster.SalePrice, S.StockMaster.CostPrice } into SGrouped
+                                            select new
+                                            {
+                                                ItemId = SGrouped.Key.ItemId,
+                                                AvailableStock = new AvailableStockDto
+                                                {
+                                                    BatchNo = SGrouped.Key.BatchNo,
+                                                    ExpiryDate = SGrouped.Key.ExpiryDate,
+                                                    SalePrice = SGrouped.Key.SalePrice,
+                                                    CostPrice = SGrouped.Key.CostPrice,
+                                                    AvailableQuantity = SGrouped.Sum(s => s.AvailableQuantity)
+                                                }
+                                            }).ToListAsync();
+            var stockByItem = allAvailableStocks.GroupBy(x => x.ItemId).ToDictionary(g => g.Key, g => g.Select(x => x.AvailableStock).OrderBy(x => x.ExpiryDate).ToList());
+
             foreach (var item in requisition.RequisitionItems)
             {
                 //find the available stock
-                item.AvailableStockList = await (from S in db.StoreStocks.Where(s => s.StoreId == mainStoreId && s.ItemId == item.ItemId && s.IsActive == true && s.AvailableQuantity > 0)
-                                                 group S by new { S.StockMaster.BatchNo, S.StockMaster.ExpiryDate, S.StockMaster.SalePrice, S.StockMaster.CostPrice } into SGrouped
-                                                 orderby SGrouped.Key.ExpiryDate
-                                                 select new AvailableStockDto
-                                                 {
-                                                     BatchNo = SGrouped.Key.BatchNo,
-                                                     ExpiryDate = SGrouped.Key.ExpiryDate,
-                                                     SalePrice = SGrouped.Key.SalePrice,
-                                                     CostPrice = SGrouped.Key.CostPrice,
-                                                     AvailableQuantity = SGrouped.Sum(s => s.AvailableQuantity)
-                                                 }).ToListAsync();
+                item.AvailableStockList = stockByItem.ContainsKey(item.ItemId) ? stockByItem[item.ItemId] : new List<AvailableStockDto>();
+
                 //if no stock found, then dispatch should not be allowed, set the flag here and disable in client side.
                 if (item.AvailableStockList?.Count() == 0) item.IsDispatchForbidden = true;
                 //pre-fill the dispatch items with first-expriy-first-out logic
