@@ -22,12 +22,12 @@ namespace PulseLogicHMR.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
 
             try
             {
-                responseData.Results = _designationService.ListDesignation();
+                responseData.Results = _designationService.ListDesignation(pageNumber, pageSize);
                 responseData.Status = "OK";
 
             }
