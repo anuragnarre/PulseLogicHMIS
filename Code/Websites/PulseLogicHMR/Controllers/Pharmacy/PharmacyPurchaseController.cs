@@ -607,13 +607,16 @@ namespace PulseLogicHMR.Controllers.Pharmacy
 
                                     //find the stock txn list for that particular grItem to update Batch and Expiry
                                     var stockTxn = _pharmacyDbContext.StockTransactions.Where(a => a.StockId == itm.StockId && a.StoreStockId == itm.StoreStockId).FirstOrDefault();
-                                    stockTxn.SetInOutQuantity(itm.ReceivedQuantity + itm.FreeQuantity, 0);
+                                    if (stockTxn != null)
+                                    {
+                                        stockTxn.SetInOutQuantity(itm.ReceivedQuantity + itm.FreeQuantity, 0);
 
-                                    //TODO: Update Batch, ExpiryDate, CostPrice and Update SalePrice for that item
-                                    stockTxn.UpdateBatch(itm.BatchNo, currentUser.EmployeeId);
-                                    stockTxn.UpdateExpiry(itm.ExpiryDate, currentUser.EmployeeId);
-                                    stockTxn.UpdateCostPrice((decimal)itm.CostPrice);
-                                    stockTxn.UpdateMRP(itm.SalePrice);
+                                        // Update Batch, ExpiryDate, CostPrice and Update SalePrice for that item
+                                        stockTxn.UpdateBatch(itm.BatchNo, currentUser.EmployeeId);
+                                        stockTxn.UpdateExpiry(itm.ExpiryDate, currentUser.EmployeeId);
+                                        stockTxn.UpdateCostPrice((decimal)itm.CostPrice);
+                                        stockTxn.UpdateMRP(itm.SalePrice);
+                                    }
                                 }
                                 _pharmacyDbContext.SaveChanges();
 
