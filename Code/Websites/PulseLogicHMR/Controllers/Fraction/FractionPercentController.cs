@@ -22,12 +22,12 @@ namespace PulseLogicHMR.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(int offset = 0, int limit = 100)
         {
 
             try
             {
-                responseData.Results = _FractionPercentService.ListFractionApplicableItems();
+                responseData.Results = _FractionPercentService.ListFractionApplicableItems(offset, limit);
                 responseData.Status = "OK";
 
             }

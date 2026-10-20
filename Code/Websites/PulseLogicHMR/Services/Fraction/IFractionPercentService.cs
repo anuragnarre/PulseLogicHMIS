@@ -11,7 +11,7 @@ namespace PulseLogicHMR.Services
 {
     public interface IFractionPercentService
     {
-        List<FractionPercentVM> ListFractionApplicableItems();
+        List<FractionPercentVM> ListFractionApplicableItems(int offset, int limit);
         FractionPercentVM AddFractionPercent(FractionPercentModel model);
         FractionPercentVM UpdateFractionPercent(FractionPercentModel model);
         FractionPercentVM GetFractionPercent(int id);
