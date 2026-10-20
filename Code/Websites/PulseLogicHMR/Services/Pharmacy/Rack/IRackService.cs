@@ -7,7 +7,7 @@ namespace PulseLogicHMR.Services.Pharmacy.Rack
 {
     public interface IRackService
     {
-        List<RackViewModel> ListRack();
+        List<RackViewModel> ListRack(int? offset = null, int? limit = null);
         RackViewModel AddRack(PHRMRackModel model);
         RackViewModel UpdateRack(RackViewModel model);
         RackViewModel GetRack(int id);
