@@ -316,12 +316,17 @@ namespace PulseLogicHMR.Utilities
         public DataTable getNepaliMonth(int month)
         {
             sqlConnection = GetLocalSqlConnection();
-            sqlQuery = "Select * from d_NepaliMonth where Code = '" + month + "'";
-            SqlDataAdapter da = new SqlDataAdapter(sqlQuery, sqlConnection);
-            DataSet ds = new DataSet();
-
-            da.Fill(ds, "getnepalimonth");
-            return ds.Tables["getnepalimonth"];
+            sqlQuery = "Select * from d_NepaliMonth where Code = @Month";
+            using (SqlCommand cmd = new SqlCommand(sqlQuery, sqlConnection))
+            {
+                cmd.Parameters.AddWithValue("@Month", month);
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    DataSet ds = new DataSet();
+                    da.Fill(ds, "getnepalimonth");
+                    return ds.Tables["getnepalimonth"];
+                }
+            }
         }
 
         private SqlConnection GetLocalSqlConnection()
