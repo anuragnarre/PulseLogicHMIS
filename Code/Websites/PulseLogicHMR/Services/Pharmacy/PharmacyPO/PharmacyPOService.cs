@@ -82,14 +82,12 @@ namespace PulseLogicHMR.Services.Pharmacy.PharmacyPO
         {
             var itemList = await (from I in db.PHRMItemMaster.Where(I => I.IsActive == true)
                                   from U in db.PHRMUnitOfMeasurement.Where(U => U.UOMId == I.UOMId).DefaultIfEmpty()
-                                  //let GRI = db.PHRMGoodsReceiptItems.Where(GRI => I.ItemId == GRI.ItemId).OrderByDescending(GRI => GRI.GoodReceiptItemId).FirstOrDefault()
                                   select new GetItemForPODto
                                   {
                                       ItemId = I.ItemId,
                                       ItemName = I.ItemName,
                                       ItemCode = I.ItemCode,
                                       UOMName = (U != null) ? U.UOMName : "N/A",
-                                      //LastGRItemPrice = (GRI != null) ? GRI.GRItemPrice : 0,
                                       IsVATApplicable = I.IsVATApplicable,
                                       VATPercentage = I.PurchaseVATPercentage,
                                       GenericId = (int)I.GenericId,
