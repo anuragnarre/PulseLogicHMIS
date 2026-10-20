@@ -1,3 +1,4 @@
+using PulseLogicHMR.ServerModel.PharmacyModels;
 using PulseLogicHMR.CommonTypes;
 using PulseLogicHMR.Core;
 using PulseLogicHMR.Core.Configuration;
@@ -54,9 +55,46 @@ namespace PulseLogicHMR.Controllers
         }
         // GET: api/values
         [HttpGet]
-        public string Get(string reqType, int? supplierId, int itemTypeId, int companyId, int categoryId, string status, int purchaseOrderId, int goodsReceiptId, int itemId, string batchNo, int returnToSupplierId, int invoiceId, int writeOffId, int employeeId, int? patientId, int providerId, int visitId, bool IsOutdoorPat, int requisitionId, int dispatchId, DateTime currentDate, DateTime FromDate, DateTime ToDate, int FiscalYearId, int DispensaryId,
-            int settlementId, int invoiceid, int? gdprintId, int invoiceretid, string CancelRemarks, int storeId, string invoiceNo, int organizationId, int CreditNotePrintId, int? PriceCategoryId, int? PatientVisitId, string MemberNo)
+        public string Get([FromQuery] PharmacyQueryParameters query)
         {
+            string reqType = query.reqType;
+            int? supplierId = query.supplierId;
+            int itemTypeId = query.itemTypeId;
+            int companyId = query.companyId;
+            int categoryId = query.categoryId;
+            string status = query.status;
+            int purchaseOrderId = query.purchaseOrderId;
+            int goodsReceiptId = query.goodsReceiptId;
+            int itemId = query.itemId;
+            string batchNo = query.batchNo;
+            int returnToSupplierId = query.returnToSupplierId;
+            int invoiceId = query.invoiceId;
+            int writeOffId = query.writeOffId;
+            int employeeId = query.employeeId;
+            int? patientId = query.patientId;
+            int providerId = query.providerId;
+            int visitId = query.visitId;
+            bool IsOutdoorPat = query.IsOutdoorPat;
+            int requisitionId = query.requisitionId;
+            int dispatchId = query.dispatchId;
+            DateTime currentDate = query.currentDate;
+            DateTime FromDate = query.FromDate;
+            DateTime ToDate = query.ToDate;
+            int FiscalYearId = query.FiscalYearId;
+            int DispensaryId = query.DispensaryId;
+            int settlementId = query.settlementId;
+            int invoiceid = query.invoiceid;
+            int? gdprintId = query.gdprintId;
+            int invoiceretid = query.invoiceretid;
+            string CancelRemarks = query.CancelRemarks;
+            int storeId = query.storeId;
+            string invoiceNo = query.invoiceNo;
+            int organizationId = query.organizationId;
+            int CreditNotePrintId = query.CreditNotePrintId;
+            int? PriceCategoryId = query.PriceCategoryId;
+            int? PatientVisitId = query.PatientVisitId;
+            string MemberNo = query.MemberNo;
+
             PulseLogicHTTPResponse<object> responseData = new PulseLogicHTTPResponse<object>();
             PharmacyDbContext phrmdbcontext = new PharmacyDbContext(connString);
             RbacDbContext rbacDbContext = new RbacDbContext(connString);
