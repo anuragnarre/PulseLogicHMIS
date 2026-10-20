@@ -66,8 +66,7 @@ namespace PulseLogicHMR.Services
                                                RequisitionNo = R.RequisitionNo,
                                                RequisitionDate = R.RequisitionDate,
                                                RequestedByName = C.FullName,
-                                               //TODO: Sanjit: Fix this code as it will always bring later fiscal year only
-                                               FiscalYear = (from fy in inventoryDb.FiscalYears.OrderByDescending(a => a.FiscalYearName) select fy.FiscalYearName).FirstOrDefault(),
+                                               FiscalYear = (from fy in inventoryDb.FiscalYears.Where(a => a.FiscalYearId == R.FiscalYearId) select fy.FiscalYearName).FirstOrDefault(),
                                                RequestingRemarks = R.Remarks,
                                            }).FirstOrDefault();
 
@@ -96,7 +95,7 @@ namespace PulseLogicHMR.Services
                                                RequisitionNo = R.RequisitionNo,
                                                RequisitionDate = R.RequisitionDate,
                                                RequestedByName = C.FullName,
-                                               FiscalYear = (from fy in wardDbContext.InvFiscalYears.OrderByDescending(a => a.FiscalYearName) select fy.NpFiscalYearName).FirstOrDefault(),
+                                               FiscalYear = (from fy in wardDbContext.InvFiscalYears.Where(a => a.StartDate <= R.RequisitionDate && a.EndDate >= R.RequisitionDate) select fy.NpFiscalYearName).FirstOrDefault(),
                                                RequestingRemarks = ""
                                            }).FirstOrDefault();
 
@@ -129,7 +128,7 @@ namespace PulseLogicHMR.Services
                                                RequisitionNo = R.RequisitionNo,
                                                RequisitionDate = R.RequisitionDate,
                                                RequestedByName = C.FullName,
-                                               FiscalYear = (from fy in pharmacyDb.PharmacyFiscalYears.OrderByDescending(a => a.FiscalYearName) select fy.NpFiscalYearName).FirstOrDefault(),
+                                               FiscalYear = (from fy in pharmacyDb.PharmacyFiscalYears.Where(a => a.FiscalYearId == R.FiscalYearId) select fy.NpFiscalYearName).FirstOrDefault(),
                                                RequestingRemarks = "",
 
                                            }).FirstOrDefault();
