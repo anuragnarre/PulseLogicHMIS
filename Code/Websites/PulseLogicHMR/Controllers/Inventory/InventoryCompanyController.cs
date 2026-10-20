@@ -22,12 +22,12 @@ namespace PulseLogicHMR.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] int skip = 0, [FromQuery] int limit = 100)
         {
 
             try
             {
-                responseData.Results = _inventoryCompanyService.ListCompany();
+                responseData.Results = _inventoryCompanyService.ListCompany(skip, limit);
                 responseData.Status = "OK";
 
             }
