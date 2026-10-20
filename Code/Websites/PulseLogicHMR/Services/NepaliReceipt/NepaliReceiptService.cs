@@ -66,8 +66,7 @@ namespace PulseLogicHMR.Services
                                                RequisitionNo = R.RequisitionNo,
                                                RequisitionDate = R.RequisitionDate,
                                                RequestedByName = C.FullName,
-                                               //TODO: Sanjit: Fix this code as it will always bring later fiscal year only
-                                               FiscalYear = (from fy in inventoryDb.FiscalYears.OrderByDescending(a => a.FiscalYearName) select fy.FiscalYearName).FirstOrDefault(),
+                                               FiscalYear = (from fy in inventoryDb.InventoryFiscalYears.Where(fy => R.RequisitionDate >= fy.StartDate && R.RequisitionDate <= fy.EndDate) select fy.FiscalYearName).FirstOrDefault(),
                                                RequestingRemarks = R.Remarks,
                                            }).FirstOrDefault();
 
@@ -96,7 +95,7 @@ namespace PulseLogicHMR.Services
                                                RequisitionNo = R.RequisitionNo,
                                                RequisitionDate = R.RequisitionDate,
                                                RequestedByName = C.FullName,
-                                               FiscalYear = (from fy in wardDbContext.InvFiscalYears.OrderByDescending(a => a.FiscalYearName) select fy.NpFiscalYearName).FirstOrDefault(),
+                                               FiscalYear = (from fy in wardDbContext.InvFiscalYears.Where(fy => R.RequisitionDate >= fy.StartDate && R.RequisitionDate <= fy.EndDate) select fy.NpFiscalYearName).FirstOrDefault(),
                                                RequestingRemarks = ""
                                            }).FirstOrDefault();
 
@@ -129,7 +128,7 @@ namespace PulseLogicHMR.Services
                                                RequisitionNo = R.RequisitionNo,
                                                RequisitionDate = R.RequisitionDate,
                                                RequestedByName = C.FullName,
-                                               FiscalYear = (from fy in pharmacyDb.PharmacyFiscalYears.OrderByDescending(a => a.FiscalYearName) select fy.NpFiscalYearName).FirstOrDefault(),
+                                               FiscalYear = (from fy in pharmacyDb.PharmacyFiscalYears.Where(fy => R.RequisitionDate >= fy.StartDate && R.RequisitionDate <= fy.EndDate) select fy.NpFiscalYearName).FirstOrDefault(),
                                                RequestingRemarks = "",
 
                                            }).FirstOrDefault();
@@ -166,7 +165,6 @@ namespace PulseLogicHMR.Services
                                               join E in pharmacyDb.Employees on D.CreatedBy equals E.EmployeeId
                                               join I in pharmacyDb.PHRMItemMaster on D.ItemId equals I.ItemId
                                               join U in pharmacyDb.PHRMUnitOfMeasurement on I.UOMId equals U.UOMId
-                                              //TODO: Add fiscal year id in the dispatch table and requisition table, later on.
                                               from FY in pharmacyDb.PharmacyFiscalYears.Where(fy => D.CreatedOn >= fy.StartDate && D.CreatedOn <= fy.EndDate)
                                               where D.DispatchId == DispatchId
                                               group new { D, E, FY, I, U } by D.DispatchId into DGrouped
@@ -202,7 +200,6 @@ namespace PulseLogicHMR.Services
                 //                          where D.DispatchId == DispatchId
                 //                          select new NepaliDispatchDTO
                 //                          {
-                //                              ////TODO: Add fiscal year id in the dispatch table and requisition table, later on.
                 //                              DispatchId = D.DispatchId,
                 //                              RequisitionId = D.RequisitionId,
                 //                              DispatchedDate = D.DispatchedDate,
@@ -237,9 +234,7 @@ namespace PulseLogicHMR.Services
                                               join I in inventoryDb.Items on D.ItemId equals I.ItemId
                                               join U in inventoryDb.UnitOfMeasurementMaster on I.UnitOfMeasurementId equals U.UOMId
                                               from ST in inventoryDb.StockTransactions.Where(x => D.DispatchItemsId == x.ReferenceNo && x.TransactionType == dispatchTxn)
-                                                  //TODO: Add fiscal year id in the dispatch table and requisition table, later on.
                                               from FY in inventoryDb.InventoryFiscalYears.Where(fy => D.DispatchedDate >= fy.StartDate && D.DispatchedDate <= fy.EndDate)
-
                                               where D.DispatchId == DispatchId && D.RequisitionId == RequisitionId
                                               group new { D, E, FY, I, U, ST } by D.DispatchId into DGrouped
                                               select new NepaliDispatchDTO
